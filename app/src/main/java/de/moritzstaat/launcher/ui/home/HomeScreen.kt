@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import de.moritzstaat.launcher.data.app.AppEntry
 import de.moritzstaat.launcher.data.app.AppKey
 import de.moritzstaat.launcher.data.icon.IconLoader
+import de.moritzstaat.launcher.data.notification.NotificationSummary
 import de.moritzstaat.launcher.ui.applist.AppListSheetState
 
 /**
@@ -49,6 +50,9 @@ fun HomeScreen(
     onOpenSettings: () -> Unit = {},
     onLongPressFavorite: (AppEntry, Rect?) -> Unit = { _, _ -> },
     onReorderFavorites: (List<String>) -> Unit = {},
+    notifications: Map<String, NotificationSummary> = emptyMap(),
+    onNotificationClick: (NotificationSummary) -> Unit = {},
+    onNotificationDismiss: (NotificationSummary) -> Unit = {},
     onSheetSettled: (Boolean) -> Unit = {},
     widgetSlotContent: @Composable () -> Unit = {},
 ) {
@@ -105,6 +109,9 @@ fun HomeScreen(
                 onLaunch = onLaunch,
                 onLongPress = onLongPressFavorite,
                 onReorder = onReorderFavorites,
+                notifications = notifications,
+                onNotificationClick = onNotificationClick,
+                onNotificationDismiss = onNotificationDismiss,
             )
             // Everything below stays empty on purpose: the app list slides in here.
             // Long pressing that empty area is the way into the launcher settings.

@@ -9,6 +9,7 @@ import de.moritzstaat.launcher.data.search.ContactSearch
 import de.moritzstaat.launcher.data.search.SearchEngine
 import de.moritzstaat.launcher.data.db.LauncherDatabase
 import de.moritzstaat.launcher.data.icon.IconCache
+import de.moritzstaat.launcher.data.notification.NotificationRepository
 import de.moritzstaat.launcher.data.icon.IconLoader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,6 +45,12 @@ class ServiceLocator(context: Context) {
     val searchEngine: SearchEngine by lazy { SearchEngine(shortcutRepository, contactSearch) }
 
     val appActions: AppActions by lazy { AppActions(context, database, appRepository) }
+
+    /**
+     * Fed by the notification listener service. Created eagerly enough that the service can
+     * publish into it the moment the system binds it, which can happen before any UI exists.
+     */
+    val notificationRepository: NotificationRepository by lazy { NotificationRepository() }
 
     val iconCache: IconCache by lazy { IconCache() }
 

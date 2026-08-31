@@ -9,6 +9,7 @@ import de.moritzstaat.launcher.LauncherApplication
 import de.moritzstaat.launcher.data.app.AppActions
 import de.moritzstaat.launcher.data.app.AppEntry
 import de.moritzstaat.launcher.data.app.AppKey
+import de.moritzstaat.launcher.data.db.NotificationPrefEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,6 +26,7 @@ data class AppActionsState(
     val isHidden: Boolean = false,
     val shortcuts: List<ShortcutInfo> = emptyList(),
     val favoritesFull: Boolean = false,
+    val notificationsRedacted: Boolean = false,
 )
 
 /** Drives the long press menu of a single app row. */
@@ -46,10 +48,17 @@ class AppActionsViewModel(application: Application) : AndroidViewModel(applicati
         viewModelScope.launch {
             val favorite = actions.isFavorite(entry.key)
             val full = services.database.favoriteDao().count() >= AppActions.MAX_FAVORITES
+            val redacted = services.database.notificationPrefDao().getAll()
+                .any { it.packageName == entry.key.packageName && it.redacted }
             val loaded = withContext(Dispatchers.IO) { shortcuts.shortcutsFor(entry.key) }
             _state.update { current ->
                 if (current?.entry?.key != entry.key) current
-                else current.copy(isFavorite = favorite, shortcuts = loaded, favoritesFull = full)
+                else current.copy(
+                    isFavorite = favorite,
+                    shortcuts = loaded,
+                    favoritesFull = full,
+                    notificationsRedacted = redacted,
+                )
             }
         }
     }
@@ -87,6 +96,19 @@ class AppActionsViewModel(application: Application) : AndroidViewModel(applicati
         val current = _state.value ?: return
         viewModelScope.launch {
             actions.setHidden(current.entry.key, true)
+            dismiss()
+        }
+    }
+
+    /** Switches this app between showing the notification content and just "new message". */
+    fun toggleNotificationRedaction() {
+        val current = _state.value ?: return
+        val packageName = current.entry.key.packageName
+        val redacted = !current.notificationsRedacted
+        viewModelScope.launch {
+            val dao = services.database.notificationPrefDao()
+            if (redacted) dao.upsert(NotificationPrefEntity(packageName, true))
+            else dao.delete(packageName)
             dismiss()
         }
     }

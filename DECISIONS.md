@@ -102,3 +102,21 @@ Jede selbst getroffene Entscheidung mit einer Zeile Begruendung.
   Composable haelt nur noch den Zustand.
 - **Deinstallieren geht ueber `ACTION_DELETE` an das System.** Der Launcher entfernt selbst
   nichts, die Bestaetigung bleibt beim Nutzer.
+
+## 7 — Benachrichtigungen
+- **`NotificationTextExtractor` arbeitet auf einem eigenen `NotificationContent`,
+  nicht auf `Bundle`.** Das Auspacken der Plattform-Extras steckt in einer duennen Adapter-
+  Funktion, die Regeln dahinter sind ohne Geraet testbar.
+- **Tippen auf den Vorschautext oeffnet die Benachrichtigung, Tippen auf den App-Namen die
+  App.** Ein einziger Klickbereich haette entweder die App oder die Nachricht unerreichbar
+  gemacht.
+- **`FLAG_GROUP_SUMMARY` wird zusaetzlich zu `FLAG_ONGOING_EVENT` verworfen.** Sonst steht
+  bei Messengern die Sammelmeldung statt der eigentlichen Nachricht in der Zeile.
+- **Pro-App-Schalter in Room, nicht in DataStore.** Es ist eine Angabe pro App, also
+  Nutzerdaten; DataStore bleibt fuer globale Einstellungen. Dafuer Schema-Version 2 mit
+  echter Migration.
+- **`SwipeableRow` als eigene Komponente.** Wischen links verwirft die Benachrichtigung,
+  wischen rechts ist schon fuer das Pop-up in Etappe 10 verdrahtet. Nur Richtungen mit
+  Handler lassen sich ziehen.
+- **Der Listener-Dienst haelt eine statische Referenz auf sich selbst.** `cancelNotification`
+  gibt es nur auf der gebundenen Instanz; alles andere laeuft ueber das Repository.

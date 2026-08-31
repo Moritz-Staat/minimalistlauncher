@@ -49,6 +49,7 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
     val sections by homeViewModel.sections.collectAsStateWithLifecycle()
     val query by searchViewModel.query.collectAsStateWithLifecycle()
     val results by searchViewModel.results.collectAsStateWithLifecycle()
+    val notifications by homeViewModel.notifications.collectAsStateWithLifecycle()
     val actionsState by actionsViewModel.state.collectAsStateWithLifecycle()
     val renaming by actionsViewModel.renaming.collectAsStateWithLifecycle()
 
@@ -93,6 +94,9 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
             onReorderFavorites = homeViewModel::reorderFavorites,
             onOpenSettings = { shellViewModel.open(OverlayTarget.Settings) },
             onSheetSettled = onSheetSettled,
+            notifications = notifications,
+            onNotificationClick = homeViewModel::openNotification,
+            onNotificationDismiss = homeViewModel::dismissNotification,
         )
         AppListScrim(sheetState = sheetState)
         AppListPanel(
@@ -103,6 +107,9 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
             onLaunch = homeViewModel::launch,
             onLongPress = actionsViewModel::open,
             onSettled = onSheetSettled,
+            notifications = notifications,
+            onNotificationClick = homeViewModel::openNotification,
+            onNotificationDismiss = homeViewModel::dismissNotification,
             searchActive = query.isNotBlank(),
             resultsContent = {
                 SearchResultsList(
@@ -148,6 +155,7 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
                 onToggleFavorite = actionsViewModel::toggleFavorite,
                 onRename = actionsViewModel::startRename,
                 onChangeIcon = actionsViewModel::dismiss,
+                onToggleNotificationRedaction = actionsViewModel::toggleNotificationRedaction,
                 onHide = actionsViewModel::hide,
                 onAppInfo = actionsViewModel::openAppInfo,
                 onUninstall = actionsViewModel::requestUninstall,

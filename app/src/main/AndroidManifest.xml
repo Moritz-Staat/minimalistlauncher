@@ -34,6 +34,20 @@
                 <category android:name="android.intent.category.LAUNCHER_APP" />
             </intent-filter>
         </activity>
+
+        <!--
+          Optional: drives the notification previews and the media widget. Android revokes the
+          access on every reinstall, so it has to be granted again after each adb install.
+        -->
+        <service
+            android:name=".service.LauncherNotificationListener"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

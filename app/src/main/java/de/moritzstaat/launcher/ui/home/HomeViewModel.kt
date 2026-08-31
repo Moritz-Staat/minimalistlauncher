@@ -8,6 +8,9 @@ import de.moritzstaat.launcher.LauncherApplication
 import de.moritzstaat.launcher.data.app.AppActions
 import de.moritzstaat.launcher.data.app.AppEntry
 import de.moritzstaat.launcher.data.app.AppKey
+import de.moritzstaat.launcher.data.notification.NotificationSummary
+import de.moritzstaat.launcher.service.LauncherNotificationListener
+import android.app.PendingIntent
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -42,6 +45,30 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             .take(MAX_FAVORITES)
             .toList()
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), emptyList())
+
+    /** Notification previews, keyed by package. Empty while the access is not granted. */
+    val notifications: StateFlow<Map<String, NotificationSummary>> =
+        services.notificationRepository.summaries
+
+    /** Opens what the notification points at; falls back to starting the app. */
+    fun openNotification(summary: NotificationSummary) {
+        val intent = summary.contentIntent
+        if (intent == null) {
+            services.appRepository.installedApps.value
+                .firstOrNull { it.key.packageName == summary.packageName }
+                ?.let { services.appRepository.launch(it.key) }
+            return
+        }
+        try {
+            intent.send()
+        } catch (_: PendingIntent.CanceledException) {
+            // The notification vanished between rendering and tapping; nothing to open.
+        }
+    }
+
+    fun dismissNotification(summary: NotificationSummary) {
+        LauncherNotificationListener.dismissAll(summary.keys)
+    }
 
     fun launch(appKey: AppKey, sourceBounds: Rect? = null) {
         services.appRepository.launch(appKey, sourceBounds)

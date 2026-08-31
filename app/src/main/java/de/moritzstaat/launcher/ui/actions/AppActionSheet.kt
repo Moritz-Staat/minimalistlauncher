@@ -36,6 +36,7 @@ fun AppActionSheet(
     onToggleFavorite: () -> Unit,
     onRename: () -> Unit,
     onChangeIcon: () -> Unit,
+    onToggleNotificationRedaction: () -> Unit,
     onHide: () -> Unit,
     onAppInfo: () -> Unit,
     onUninstall: () -> Unit,
@@ -87,6 +88,14 @@ fun AppActionSheet(
             )
             ActionRow(label = "Umbenennen", onClick = onRename)
             ActionRow(label = "Icon aendern", onClick = onChangeIcon)
+            ActionRow(
+                label = if (state.notificationsRedacted) {
+                    "Benachrichtigungsinhalt zeigen"
+                } else {
+                    "Nur \"Neue Nachricht\" zeigen"
+                },
+                onClick = onToggleNotificationRedaction,
+            )
             ActionRow(label = "Ausblenden", onClick = onHide)
             ActionRow(label = "App-Info", onClick = onAppInfo)
             ActionRow(label = "Deinstallieren", onClick = onUninstall)

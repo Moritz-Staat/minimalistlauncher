@@ -90,3 +90,19 @@ interface IconOverrideDao {
     @Query("DELETE FROM icon_overrides")
     suspend fun clear()
 }
+
+@Dao
+interface NotificationPrefDao {
+
+    @Query("SELECT packageName FROM notification_prefs WHERE redacted = 1")
+    fun observeRedacted(): Flow<List<String>>
+
+    @Query("SELECT * FROM notification_prefs")
+    suspend fun getAll(): List<NotificationPrefEntity>
+
+    @Upsert
+    suspend fun upsert(pref: NotificationPrefEntity)
+
+    @Query("DELETE FROM notification_prefs WHERE packageName = :packageName")
+    suspend fun delete(packageName: String)
+}

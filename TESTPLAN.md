@@ -70,3 +70,25 @@ Einstellungen > Apps > Standard-Apps > Start-App.
 12. Langdruck auf einen Favoriten ohne Bewegung. Erwartung: das App-Menue oeffnet sich.
 13. Zurueck-Geste bei offener Suche. Erwartung: erst wird die Suche geleert, erst danach
     schliesst die Liste.
+
+## Etappe 7 — Benachrichtigungen
+1. Ohne erteilten Zugriff starten. Erwartung: Launcher laeuft vollstaendig, nur ohne
+   Vorschautexte. Keine Fehlermeldung, keine leere Zeile.
+2. Zugriff in der Einrichtung erteilen. Erwartung: der Systemdialog fuer
+   Benachrichtigungszugriff oeffnet sich; danach erscheinen Vorschautexte.
+3. Nachricht in einem Messenger empfangen. Erwartung: Text steht einzeilig unter dem
+   App-Namen, mit Ellipsis statt Umbruch.
+4. Zweite und dritte Nachricht derselben App. Erwartung: Zaehler rechts in der Zeile, Vorschau
+   zeigt die neueste.
+5. Gruppenchat. Erwartung: "Absender: Text". Einzelchat: nur der Text, ohne Namensdopplung.
+6. Auf den Vorschautext tippen. Erwartung: die App oeffnet sich an der Nachricht.
+7. Auf den App-Namen tippen. Erwartung: die App startet normal.
+8. Zeile nach links wischen. Erwartung: die Benachrichtigung ist verworfen, auch in der
+   Systemleiste.
+9. Musik abspielen. Erwartung: die Medien-Benachrichtigung taucht NICHT als Vorschautext auf
+   (FLAG_ONGOING_EVENT).
+10. Im Langdruck-Menue "Nur 'Neue Nachricht' zeigen" waehlen. Erwartung: ab der naechsten
+    Nachricht steht dort nur noch "Neue Nachricht".
+11. **Heikel:** Nach jedem `adb install -r` ist der Benachrichtigungszugriff weg. Symptom:
+    alle Vorschautexte verschwinden nach einem Update. Gegenmassnahme: in den Systemein-
+    stellungen erneut erteilen; die Einrichtung zeigt den Status an.

@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import de.moritzstaat.launcher.data.app.AppEntry
 import de.moritzstaat.launcher.data.app.AppKey
 import de.moritzstaat.launcher.data.icon.IconLoader
+import de.moritzstaat.launcher.data.notification.NotificationSummary
 
 /**
  * The app list, pulled in from the bottom over the favourites.
@@ -42,7 +43,9 @@ fun AppListPanel(
     onLaunch: (AppKey, Rect?) -> Unit,
     modifier: Modifier = Modifier,
     onLongPress: (AppEntry, Rect?) -> Unit = { _, _ -> },
-    notificationPreviews: Map<String, String> = emptyMap(),
+    notifications: Map<String, NotificationSummary> = emptyMap(),
+    onNotificationClick: (NotificationSummary) -> Unit = {},
+    onNotificationDismiss: (NotificationSummary) -> Unit = {},
     onSettled: (Boolean) -> Unit = {},
     topInset: Dp = 0.dp,
     searchActive: Boolean = false,
@@ -73,9 +76,13 @@ fun AppListPanel(
                         AppRow(
                             entry = entry,
                             iconLoader = iconLoader,
-                            notificationPreview = notificationPreviews[entry.key.flatten()],
+                            notification = notifications[entry.key.packageName],
                             onClick = { bounds -> onLaunch(entry.key, bounds) },
                             onLongClick = { bounds -> onLongPress(entry, bounds) },
+                            onNotificationClick = notifications[entry.key.packageName]
+                                ?.let { summary -> { onNotificationClick(summary) } },
+                            onNotificationDismiss = notifications[entry.key.packageName]
+                                ?.let { summary -> { onNotificationDismiss(summary) } },
                         )
                     }
                     item(key = KEY_BOTTOM_SPACE) { Spacer(Modifier.height(BOTTOM_SPACE)) }

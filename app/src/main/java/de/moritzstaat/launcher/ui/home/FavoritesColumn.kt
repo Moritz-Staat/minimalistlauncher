@@ -19,6 +19,7 @@ import androidx.compose.ui.zIndex
 import de.moritzstaat.launcher.data.app.AppEntry
 import de.moritzstaat.launcher.data.app.AppKey
 import de.moritzstaat.launcher.data.icon.IconLoader
+import de.moritzstaat.launcher.data.notification.NotificationSummary
 import de.moritzstaat.launcher.ui.applist.AppRow
 import de.moritzstaat.launcher.ui.applist.AppRowDefaults
 
@@ -36,7 +37,9 @@ fun FavoritesColumn(
     modifier: Modifier = Modifier,
     onLongPress: (AppEntry, Rect?) -> Unit = { _, _ -> },
     onReorder: (List<String>) -> Unit = {},
-    notificationPreviews: Map<String, String> = emptyMap(),
+    notifications: Map<String, NotificationSummary> = emptyMap(),
+    onNotificationClick: (NotificationSummary) -> Unit = {},
+    onNotificationDismiss: (NotificationSummary) -> Unit = {},
 ) {
     // Local working copy so the rows can move while the finger is down; the database order
     // wins again as soon as the flow re-emits after the commit.
@@ -51,7 +54,11 @@ fun FavoritesColumn(
             AppRow(
                 entry = entry,
                 iconLoader = iconLoader,
-                notificationPreview = notificationPreviews[entry.key.flatten()],
+                notification = notifications[entry.key.packageName],
+                onNotificationClick = notifications[entry.key.packageName]
+                    ?.let { summary -> { onNotificationClick(summary) } },
+                onNotificationDismiss = notifications[entry.key.packageName]
+                    ?.let { summary -> { onNotificationDismiss(summary) } },
                 onClick = { bounds -> onLaunch(entry.key, bounds) },
                 onLongClick = null,
                 modifier = Modifier

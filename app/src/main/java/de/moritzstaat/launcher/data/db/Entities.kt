@@ -33,3 +33,13 @@ data class IconOverrideEntity(
     val iconPackPackage: String?,
     val drawableName: String?,
 )
+
+/**
+ * Per app notification preference. Only rows the user actually changed are stored; everything
+ * absent means "show the content".
+ */
+@Entity(tableName = "notification_prefs")
+data class NotificationPrefEntity(
+    @PrimaryKey val packageName: String,
+    val redacted: Boolean,
+)

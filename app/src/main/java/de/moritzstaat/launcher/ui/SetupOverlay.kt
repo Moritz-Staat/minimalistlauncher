@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
+import de.moritzstaat.launcher.data.notification.NotificationAccess
 import de.moritzstaat.launcher.system.HomeRole
 
 /**
@@ -31,10 +32,12 @@ import de.moritzstaat.launcher.system.HomeRole
 fun SetupOverlay(onDismiss: () -> Unit) {
     val context = LocalContext.current
     var isDefaultHome by remember { mutableStateOf(HomeRole.isHeld(context)) }
+    var hasNotificationAccess by remember { mutableStateOf(NotificationAccess.isGranted(context)) }
 
     // The role dialog result arrives before the role is actually written, so re-read on resume.
     LifecycleResumeEffect(Unit) {
         isDefaultHome = HomeRole.isHeld(context)
+        hasNotificationAccess = NotificationAccess.isGranted(context)
         onPauseOrDispose { }
     }
 
@@ -70,6 +73,25 @@ fun SetupOverlay(onDismiss: () -> Unit) {
             enabled = !isDefaultHome,
         ) {
             Text(text = "Als Standard-Launcher setzen")
+        }
+        Text(
+            text = if (hasNotificationAccess) {
+                "Benachrichtigungszugriff ist erteilt."
+            } else {
+                "Ohne Benachrichtigungszugriff laeuft alles ausser Vorschautexten und Media-Widget."
+            },
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        Button(
+            onClick = {
+                runCatching { context.startActivity(NotificationAccess.settingsIntent(context)) }
+                    .onFailure {
+                        context.startActivity(NotificationAccess.fallbackSettingsIntent())
+                    }
+            },
+            enabled = !hasNotificationAccess,
+        ) {
+            Text(text = "Benachrichtigungszugriff erteilen")
         }
         TextButton(onClick = onDismiss) {
             Text(text = "Schliessen")

@@ -3,6 +3,7 @@ package de.moritzstaat.launcher
 import android.app.Application
 import android.content.res.Configuration
 import de.moritzstaat.launcher.di.ServiceLocator
+import kotlinx.coroutines.launch
 
 /**
  * Holds the process wide singletons. Kept deliberately thin: everything the launcher needs
@@ -16,6 +17,20 @@ class LauncherApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         services = ServiceLocator(this)
+        observeNotificationPreferences()
+    }
+
+    /**
+     * Keeps the per app "only show that something arrived" preference in sync with the
+     * notification repository. Runs off the main thread, so opening the database costs the
+     * cold start nothing.
+     */
+    private fun observeNotificationPreferences() {
+        services.applicationScope.launch {
+            services.database.notificationPrefDao().observeRedacted().collect { packages ->
+                services.notificationRepository.setRedactedPackages(packages.toSet())
+            }
+        }
     }
 
     /**
