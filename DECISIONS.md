@@ -152,3 +152,18 @@ Jede selbst getroffene Entscheidung mit einer Zeile Begruendung.
 - **Die Uhr wird ersetzt, nicht ueberlagert**, wenn ein Widget im Slot "statt der Uhr" liegt.
 - **`WidgetSlot` als Composable in `ui/home` geloescht.** Namenskollision mit dem gleichnamigen
   Enum; der Wrapper war ohnehin nur ein `Box`.
+
+## 10 — Pop-ups
+- **Eine Liste aus `AppListItem`, nicht zwei getrennte Listen.** Ordner stehen alphabetisch
+  zwischen den Apps, also muessen sie durch dieselbe Sortierung laufen.
+- **Eine App liegt in hoechstens einem Ordner** und verschwindet dann aus der obersten Ebene.
+  Sonst steht dieselbe App zweimal in der Liste.
+- **Leere Ordner werden automatisch geloescht.** Ein Ordner ohne Apps ist nur eine Zeile, die
+  nichts tut.
+- **Der Blur liegt auf einem Container um den ganzen Launcher**, gesteuert von einem
+  `animateFloatAsState`, das nur im `graphicsLayer`-Lambda gelesen wird. So kostet das
+  Oeffnen eines Pop-ups keine Rekomposition der Liste.
+- **Die Karte wird an der Zeilenposition verankert und auf 55 % Bildschirmhoehe begrenzt**,
+  damit sie bei einer Zeile ganz unten nicht aus dem Bild laeuft.
+- **Das Widget-Pop-up ist kein eigener Fall**, sondern der Slot `WidgetSlot.Popup` mit dem
+  AppKey als `ownerKey` innerhalb des App-Pop-ups.

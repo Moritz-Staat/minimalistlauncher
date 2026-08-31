@@ -36,6 +36,7 @@ fun AppActionSheet(
     onToggleFavorite: () -> Unit,
     onRename: () -> Unit,
     onChangeIcon: () -> Unit,
+    onMoveToFolder: () -> Unit,
     onToggleNotificationRedaction: () -> Unit,
     onHide: () -> Unit,
     onAppInfo: () -> Unit,
@@ -88,6 +89,7 @@ fun AppActionSheet(
             )
             ActionRow(label = "Umbenennen", onClick = onRename)
             ActionRow(label = "Icon aendern", onClick = onChangeIcon)
+            ActionRow(label = "In Ordner legen", onClick = onMoveToFolder)
             ActionRow(
                 label = if (state.notificationsRedacted) {
                     "Benachrichtigungsinhalt zeigen"

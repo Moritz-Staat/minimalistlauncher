@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -24,25 +23,30 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import de.moritzstaat.launcher.data.app.AppEntry
+import de.moritzstaat.launcher.data.app.AppFolder
 import de.moritzstaat.launcher.data.app.AppKey
+import de.moritzstaat.launcher.data.app.AppListItem
 import de.moritzstaat.launcher.data.icon.IconLoader
 import de.moritzstaat.launcher.data.notification.NotificationSummary
 
 /**
  * The app list, pulled in from the bottom over the favourites.
  *
- * A plain LazyColumn with stable keys: no grid, no pages, no dock. The list never scrolls
- * horizontally, which keeps the horizontal swipe free for the pop-ups of stage 10.
+ * A plain LazyColumn with stable keys: no grid, no pages, no dock. Folders sit in the same
+ * list at their alphabetical position. The list never scrolls horizontally, which keeps the
+ * horizontal swipe free for the pop-ups.
  */
 @Composable
 fun AppListPanel(
-    apps: List<AppEntry>,
+    items: List<AppListItem>,
     iconLoader: IconLoader,
     sheetState: AppListSheetState,
     listState: LazyListState,
     onLaunch: (AppKey, Rect?) -> Unit,
+    onOpenFolder: (AppFolder, Rect?) -> Unit,
     modifier: Modifier = Modifier,
     onLongPress: (AppEntry, Rect?) -> Unit = { _, _ -> },
+    onOpenPopup: (AppEntry, Rect?) -> Unit = { _, _ -> },
     notifications: Map<String, NotificationSummary> = emptyMap(),
     onNotificationClick: (NotificationSummary) -> Unit = {},
     onNotificationDismiss: (NotificationSummary) -> Unit = {},
@@ -72,18 +76,28 @@ fun AppListPanel(
             } else {
                 LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
                     item(key = KEY_TOP_INSET) { Spacer(Modifier.height(topInset)) }
-                    items(items = apps, key = { it.key.flatten() }) { entry ->
-                        AppRow(
-                            entry = entry,
-                            iconLoader = iconLoader,
-                            notification = notifications[entry.key.packageName],
-                            onClick = { bounds -> onLaunch(entry.key, bounds) },
-                            onLongClick = { bounds -> onLongPress(entry, bounds) },
-                            onNotificationClick = notifications[entry.key.packageName]
-                                ?.let { summary -> { onNotificationClick(summary) } },
-                            onNotificationDismiss = notifications[entry.key.packageName]
-                                ?.let { summary -> { onNotificationDismiss(summary) } },
-                        )
+                    items(count = items.size, key = { items[it].id }) { index ->
+                        when (val item = items[index]) {
+                            is AppListItem.App -> {
+                                val summary = notifications[item.entry.key.packageName]
+                                AppRow(
+                                    entry = item.entry,
+                                    iconLoader = iconLoader,
+                                    notification = summary,
+                                    onClick = { bounds -> onLaunch(item.entry.key, bounds) },
+                                    onLongClick = { bounds -> onLongPress(item.entry, bounds) },
+                                    onNotificationClick = summary?.let { { onNotificationClick(it) } },
+                                    onNotificationDismiss = summary?.let { { onNotificationDismiss(it) } },
+                                    onSwipeRight = { bounds -> onOpenPopup(item.entry, bounds) },
+                                )
+                            }
+
+                            is AppListItem.Folder -> FolderRow(
+                                folder = item.folder,
+                                iconLoader = iconLoader,
+                                onOpen = { bounds -> onOpenFolder(item.folder, bounds) },
+                            )
+                        }
                     }
                     item(key = KEY_BOTTOM_SPACE) { Spacer(Modifier.height(BOTTOM_SPACE)) }
                 }

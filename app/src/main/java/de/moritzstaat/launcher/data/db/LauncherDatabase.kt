@@ -16,8 +16,10 @@ import androidx.sqlite.execSQL
         IconOverrideEntity::class,
         NotificationPrefEntity::class,
         WidgetEntity::class,
+        FolderEntity::class,
+        FolderItemEntity::class,
     ],
-    version = 3,
+    version = 4,
     exportSchema = true,
 )
 abstract class LauncherDatabase : RoomDatabase() {
@@ -28,6 +30,7 @@ abstract class LauncherDatabase : RoomDatabase() {
     abstract fun iconOverrideDao(): IconOverrideDao
     abstract fun notificationPrefDao(): NotificationPrefDao
     abstract fun widgetDao(): WidgetDao
+    abstract fun folderDao(): FolderDao
 
     companion object {
         fun create(context: Context): LauncherDatabase =
@@ -35,7 +38,7 @@ abstract class LauncherDatabase : RoomDatabase() {
                 context.applicationContext,
                 LauncherDatabase::class.java,
                 "launcher.db",
-            ).addMigrations(MIGRATION_1_2, MIGRATION_2_3).build()
+            ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4).build()
 
         /** Stage 7 added the per app notification preference. */
         private val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -59,6 +62,25 @@ abstract class LauncherDatabase : RoomDatabase() {
                         "`ownerKey` TEXT, " +
                         "`position` INTEGER NOT NULL, " +
                         "PRIMARY KEY(`appWidgetId`))",
+                )
+            }
+        }
+
+        /** Stage 10 added folders. */
+        private val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(connection: SQLiteConnection) {
+                connection.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `folders` (" +
+                        "`id` INTEGER NOT NULL, " +
+                        "`name` TEXT NOT NULL, " +
+                        "PRIMARY KEY(`id`))",
+                )
+                connection.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `folder_items` (" +
+                        "`folderId` INTEGER NOT NULL, " +
+                        "`appKey` TEXT NOT NULL, " +
+                        "`position` INTEGER NOT NULL, " +
+                        "PRIMARY KEY(`folderId`, `appKey`))",
                 )
             }
         }

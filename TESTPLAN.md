@@ -128,3 +128,17 @@ Einstellungen > Apps > Standard-Apps > Start-App.
    Ursache waere ein fehlendes `startListening()`; es haengt an `MainActivity.onStart`.
 10. **Heikel:** Widget entfernen, Geraet neu starten. Erwartung: kein Geister-Widget. Symptom
     sonst: eine leere Flaeche, deren ID nie freigegeben wurde.
+
+## Etappe 10 — Pop-ups
+1. Zeile in der App-Liste nach rechts wischen. Erwartung: die Karte erscheint auf Hoehe der
+   Zeile, nicht in der Bildmitte; der Hintergrund wird dunkler und unscharf.
+2. Neben die Karte tippen, Zurueck-Geste, Karte nach links wischen. Erwartung: jedes davon
+   schliesst das Pop-up.
+3. Waehrend die App-Liste offen ist: nach links und rechts wischen darf die Liste nie
+   horizontal verschieben.
+4. Im App-Pop-up: Shortcuts der App, die aktuelle Benachrichtigung und "Weitere Aktionen".
+5. Langdruck auf eine Zeile, "In Ordner legen", neuen Ordner anlegen. Erwartung: die App
+   verschwindet aus der obersten Ebene, der Ordner steht alphabetisch an ihrer Stelle.
+6. Ordnerzeile antippen oder nach rechts wischen. Erwartung: Pop-up mit den Apps des Ordners.
+7. Letzte App aus einem Ordner nehmen. Erwartung: der Ordner verschwindet von selbst.
+8. Ordner-Icon pruefen: bis zu vier Mini-Icons der enthaltenen Apps.

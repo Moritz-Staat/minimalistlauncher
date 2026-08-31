@@ -36,6 +36,7 @@ class ServiceLocator(context: Context) {
             appRepository = appRepository,
             customLabelDao = database.customLabelDao(),
             hiddenAppDao = database.hiddenAppDao(),
+            folderDao = database.folderDao(),
             externalScope = applicationScope,
         )
     }

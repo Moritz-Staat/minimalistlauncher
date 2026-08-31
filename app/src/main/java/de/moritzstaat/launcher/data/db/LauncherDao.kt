@@ -125,3 +125,47 @@ interface WidgetDao {
     @Query("DELETE FROM widgets WHERE appWidgetId = :appWidgetId")
     suspend fun delete(appWidgetId: Int)
 }
+
+@Dao
+interface FolderDao {
+
+    @Query("SELECT * FROM folders ORDER BY name ASC")
+    fun observeFolders(): Flow<List<FolderEntity>>
+
+    @Query("SELECT * FROM folder_items ORDER BY position ASC")
+    fun observeItems(): Flow<List<FolderItemEntity>>
+
+    @Query("SELECT * FROM folders ORDER BY name ASC")
+    suspend fun getFolders(): List<FolderEntity>
+
+    @Query("SELECT * FROM folder_items ORDER BY position ASC")
+    suspend fun getItems(): List<FolderItemEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertFolder(folder: FolderEntity): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertItem(item: FolderItemEntity)
+
+    @Query("SELECT COUNT(*) FROM folder_items WHERE folderId = :folderId")
+    suspend fun countItems(folderId: Long): Int
+
+    @Query("DELETE FROM folder_items WHERE appKey = :appKey")
+    suspend fun removeApp(appKey: String)
+
+    @Query("DELETE FROM folders WHERE id = :folderId")
+    suspend fun deleteFolder(folderId: Long)
+
+    @Query("DELETE FROM folder_items WHERE folderId = :folderId")
+    suspend fun clearFolder(folderId: Long)
+
+    @Query("UPDATE folders SET name = :name WHERE id = :folderId")
+    suspend fun renameFolder(folderId: Long, name: String)
+
+    /** Removing the last app also removes the folder; an empty folder is only clutter. */
+    @Transaction
+    suspend fun removeAppAndPrune(appKey: String, folderId: Long) {
+        removeApp(appKey)
+        if (countItems(folderId) == 0) deleteFolder(folderId)
+    }
+}

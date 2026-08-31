@@ -113,6 +113,43 @@ class AppActionsViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
+    private val _folderPicking = MutableStateFlow<AppEntry?>(null)
+    val folderPicking: StateFlow<AppEntry?> = _folderPicking.asStateFlow()
+
+    fun startFolderPicking() {
+        _folderPicking.value = _state.value?.entry
+        dismiss()
+    }
+
+    fun cancelFolderPicking() {
+        _folderPicking.value = null
+    }
+
+    fun moveToFolder(folderId: Long) {
+        val entry = _folderPicking.value ?: return
+        viewModelScope.launch {
+            actions.moveToFolder(entry.key, folderId)
+            _folderPicking.value = null
+        }
+    }
+
+    fun moveToNewFolder(name: String) {
+        val entry = _folderPicking.value ?: return
+        if (name.isBlank()) return
+        viewModelScope.launch {
+            actions.moveToNewFolder(entry.key, name)
+            _folderPicking.value = null
+        }
+    }
+
+    fun removeFromFolders() {
+        val entry = _folderPicking.value ?: return
+        viewModelScope.launch {
+            actions.removeFromFolders(entry.key)
+            _folderPicking.value = null
+        }
+    }
+
     fun openAppInfo() {
         val current = _state.value ?: return
         actions.openAppInfo(current.entry.key, current.anchorBounds)

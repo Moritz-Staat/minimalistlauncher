@@ -59,3 +59,18 @@ data class WidgetEntity(
     val ownerKey: String?,
     val position: Int,
 )
+
+/** A folder. It sits in the app list alphabetically, exactly where an app of that name would. */
+@Entity(tableName = "folders")
+data class FolderEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val name: String,
+)
+
+/** Membership of one app in one folder. Apps inside a folder leave the top level list. */
+@Entity(tableName = "folder_items", primaryKeys = ["folderId", "appKey"])
+data class FolderItemEntity(
+    val folderId: Long,
+    val appKey: String,
+    val position: Int,
+)

@@ -7,7 +7,9 @@ import androidx.lifecycle.viewModelScope
 import de.moritzstaat.launcher.LauncherApplication
 import de.moritzstaat.launcher.data.app.AppActions
 import de.moritzstaat.launcher.data.app.AppEntry
+import de.moritzstaat.launcher.data.app.AppFolder
 import de.moritzstaat.launcher.data.app.AppKey
+import de.moritzstaat.launcher.data.app.AppListItem
 import de.moritzstaat.launcher.data.notification.NotificationSummary
 import de.moritzstaat.launcher.service.LauncherNotificationListener
 import android.app.PendingIntent
@@ -29,7 +31,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     val apps: StateFlow<List<AppEntry>> = services.appIndex.visibleApps
 
+    /** What the list actually renders: ungrouped apps plus folders, in one alphabet. */
+    val items: StateFlow<List<AppListItem>> = services.appIndex.visibleItems
+
     val sections: StateFlow<List<String>> = services.appIndex.sections
+
+    val folders: StateFlow<List<AppFolder>> = services.appIndex.folders
 
     /**
      * Favourites keep the order the user gave them, not the alphabet, and are capped so the

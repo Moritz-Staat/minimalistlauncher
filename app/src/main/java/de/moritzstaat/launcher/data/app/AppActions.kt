@@ -6,6 +6,8 @@ import android.graphics.Rect
 import android.net.Uri
 import de.moritzstaat.launcher.data.db.CustomLabelEntity
 import de.moritzstaat.launcher.data.db.FavoriteEntity
+import de.moritzstaat.launcher.data.db.FolderEntity
+import de.moritzstaat.launcher.data.db.FolderItemEntity
 import de.moritzstaat.launcher.data.db.HiddenAppEntity
 import de.moritzstaat.launcher.data.db.LauncherDatabase
 
@@ -54,6 +56,35 @@ class AppActions(
         } else {
             dao.delete(flat)
         }
+    }
+
+    /** An app belongs to at most one folder, so this replaces any previous membership. */
+    suspend fun moveToFolder(appKey: AppKey, folderId: Long) {
+        val dao = database.folderDao()
+        val flat = appKey.flatten()
+        dao.removeApp(flat)
+        dao.insertItem(FolderItemEntity(folderId, flat, dao.countItems(folderId)))
+        pruneEmptyFolders()
+    }
+
+    /** Creates a folder and puts the app in it. Returns the new folder id. */
+    suspend fun moveToNewFolder(appKey: AppKey, name: String): Long {
+        val dao = database.folderDao()
+        val folderId = dao.insertFolder(FolderEntity(name = name.trim()))
+        moveToFolder(appKey, folderId)
+        return folderId
+    }
+
+    suspend fun removeFromFolders(appKey: AppKey) {
+        database.folderDao().removeApp(appKey.flatten())
+        pruneEmptyFolders()
+    }
+
+    /** An empty folder is only clutter in the app list. */
+    private suspend fun pruneEmptyFolders() {
+        val dao = database.folderDao()
+        val used = dao.getItems().map { it.folderId }.toHashSet()
+        dao.getFolders().filterNot { it.id in used }.forEach { dao.deleteFolder(it.id) }
     }
 
     fun openAppInfo(appKey: AppKey, sourceBounds: Rect? = null): Boolean =
