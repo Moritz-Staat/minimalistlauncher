@@ -65,3 +65,20 @@ Jede selbst getroffene Entscheidung mit einer Zeile Begruendung.
   ohnehin so vor) — sonst gibt es bei leerer Favoritenliste keinen Weg in die Einrichtung.
 - **Icons ueber einen eigenen `IconLoader`, nicht ueber Coil.** Coil bringt fuer
   `LauncherActivityInfo`-Drawables nichts; es bleibt fuer Cover-Bilder in Etappe 8.
+
+## 5 — Wave-Alphabet
+- **Skalierung ueber `graphicsLayer`-Lambda, aktiver Index ueber `derivedStateOf`.** Das
+  Ziehen loest nur Neuzeichnen aus; rekomponiert wird genau einmal pro Buchstabenwechsel,
+  und zwar nur die Leiste.
+- **Gleich hohe Slots ueber `weight(1f)` statt gemessener Positionen.** Damit ist die
+  Slot-Hoehe im Layer-Lambda direkt `size.height` und die Wave braucht keine Messwerte.
+- **`indexAt` klemmt statt zu verwerfen.** Wer ueber das obere oder untere Ende hinausfaehrt,
+  bleibt auf dem ersten bzw. letzten Buchstaben haengen, statt die Leiste zu verlieren.
+- **`SEGMENT_TICK` erst ab API 34, darunter `CLOCK_TICK`.** minSdk ist 31; das Zielgeraet
+  bekommt den richtigen Tick.
+- **Ausschluss-Rechteck nur bei Aenderung setzen.** `onGloballyPositioned` feuert oft; ein
+  Vergleich spart einen Systemaufruf pro Layout-Durchlauf.
+- **`FallbackEdgeInset` = 8 dp existiert als Konstante, ist aber noch nicht verdrahtet.**
+  Das System begrenzt Ausschluss-Rechtecke auf 200 dp Hoehe pro Kante, die Leiste ist
+  hoeher. Ob das in der Praxis stoert, entscheidet der Geraetetest; die Umschaltung kommt
+  als Einstellung in Etappe 12.

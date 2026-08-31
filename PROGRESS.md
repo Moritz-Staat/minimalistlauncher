@@ -11,7 +11,7 @@ dort weiterarbeiten.
 | 2 | Launcher-Grundgeruest (Manifest, Theme, HOME-Rolle) | fertig | HOME-Intent-Filter, transparentes Wallpaper-Theme, edge-to-edge, BackHandler, onNewIntent schliesst Overlays, ROLE_HOME-Dialog |
 | 3 | App-Index (LauncherApps, Collator-Sortierung, Room) | fertig | AppRepository ueber LauncherApps mit registerCallback, AppIndex mit Custom-Labels/Hidden, Collator de_DE, Room-Tabellen, IconCache/IconLoader; 13 Unit-Tests gruen |
 | 4 | Homescreen (Uhr, Favoriten, App-Liste) | fertig | Uhr+Datum, Widget-Slot, Favoriten (max. 8), App-Liste als LazyColumn mit stabilen Keys, Wisch-Sheet mit Blur; TESTPLAN.md angelegt |
-| 5 | Wave-Alphabet | offen | - |
+| 5 | Wave-Alphabet | fertig | Leiste rechts, Gauss-Skalierung im graphicsLayer, derivedStateOf fuer den aktiven Index, SEGMENT_TICK, Gesten-Ausschluss; 8 Unit-Tests gruen |
 | 6 | Suche und App-Aktionen | offen | - |
 | 7 | Benachrichtigungen | offen | - |
 | 8 | Media-Widget | offen | - |

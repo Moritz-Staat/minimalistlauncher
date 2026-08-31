@@ -33,3 +33,20 @@ Einstellungen > Apps > Standard-Apps > Start-App.
 8. Zeilenmasse pruefen: Icon links 40 dp, Zeilenhoehe 56 dp, kein Raster, keine Seiten.
 9. Langdruck auf die freie Flaeche unter den Favoriten. Erwartung: Einrichtung oeffnet sich.
 10. Zurueck-Geste bei offener App-Liste. Erwartung: Liste schliesst, Launcher bleibt.
+
+## Etappe 5 — Wave-Alphabet
+1. Leiste am rechten Rand pruefen: nur belegte Anfangsbuchstaben, `#` am Ende, ca. 32 dp breit.
+2. Finger auf einen Buchstaben legen (nicht wischen). Erwartung: die App-Liste faehrt sofort
+   hoch und springt auf diesen Buchstaben.
+3. Finger die Leiste entlangziehen. Erwartung: der Buchstabe unter dem Finger ist gross, die
+   Nachbarn abgestuft kleiner, alles ruckelfrei.
+4. Bei jedem Buchstabenwechsel ein kurzer haptischer Tick.
+5. **Heikel:** Ziehen ganz am rechten Rand starten. Erwartung: die Leiste reagiert, die
+   Zurueck-Geste greift nicht. Symptom bei Fehlschlag: statt der Leiste passiert Zurueck oder
+   es blitzt der Zurueck-Pfeil auf.
+   Gegenmassnahme: `AlphabetBarDefaults.FallbackEdgeInset` (8 dp) als `edgeInset` an
+   `AlphabetBar` uebergeben, damit die Leiste vom Rand abrueckt.
+6. Ueber das obere und untere Ende der Leiste hinausziehen. Erwartung: es bleibt beim ersten
+   bzw. letzten Buchstaben, die Geste bricht nicht ab.
+7. Finger heben. Erwartung: die Buchstaben gehen auf Normalgroesse zurueck, die Liste bleibt
+   an der angesprungenen Stelle stehen.
