@@ -7,7 +7,7 @@ dort weiterarbeiten.
 | # | Etappe | Status | Zuletzt |
 |---|--------|--------|---------|
 | 0 | Repo, Doku, .gitignore | fertig | Repo geklont, CLAUDE.md/PROGRESS.md/DECISIONS.md/.gitignore angelegt |
-| 1 | Projektgeruest (Gradle, Compose, Room/KSP, DataStore, Coil) | offen | - |
+| 1 | Projektgeruest (Gradle, Compose, Room/KSP, DataStore, Coil) | fertig | Version Catalog, App-Modul, leere MainActivity mit Compose; assembleDebug gruen |
 | 2 | Launcher-Grundgeruest (Manifest, Theme, HOME-Rolle) | offen | - |
 | 3 | App-Index (LauncherApps, Collator-Sortierung, Room) | offen | - |
 | 4 | Homescreen (Uhr, Favoriten, App-Liste) | offen | - |
