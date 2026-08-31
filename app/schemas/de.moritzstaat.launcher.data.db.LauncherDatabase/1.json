@@ -1,0 +1,107 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "f8a2ed87fa357b4e11dbf8519cdf9f06",
+    "entities": [
+      {
+        "tableName": "favorites",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`appKey` TEXT NOT NULL, `position` INTEGER NOT NULL, PRIMARY KEY(`appKey`))",
+        "fields": [
+          {
+            "fieldPath": "appKey",
+            "columnName": "appKey",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "appKey"
+          ]
+        }
+      },
+      {
+        "tableName": "hidden_apps",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`appKey` TEXT NOT NULL, PRIMARY KEY(`appKey`))",
+        "fields": [
+          {
+            "fieldPath": "appKey",
+            "columnName": "appKey",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "appKey"
+          ]
+        }
+      },
+      {
+        "tableName": "custom_labels",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`appKey` TEXT NOT NULL, `label` TEXT NOT NULL, PRIMARY KEY(`appKey`))",
+        "fields": [
+          {
+            "fieldPath": "appKey",
+            "columnName": "appKey",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "label",
+            "columnName": "label",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "appKey"
+          ]
+        }
+      },
+      {
+        "tableName": "icon_overrides",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`appKey` TEXT NOT NULL, `iconPackPackage` TEXT, `drawableName` TEXT, PRIMARY KEY(`appKey`))",
+        "fields": [
+          {
+            "fieldPath": "appKey",
+            "columnName": "appKey",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "iconPackPackage",
+            "columnName": "iconPackPackage",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "drawableName",
+            "columnName": "drawableName",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "appKey"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f8a2ed87fa357b4e11dbf8519cdf9f06')"
+    ]
+  }
+}

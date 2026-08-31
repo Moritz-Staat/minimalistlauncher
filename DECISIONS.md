@@ -32,3 +32,21 @@ Jede selbst getroffene Entscheidung mit einer Zeile Begruendung.
 - **`HomeRole.createSettingsIntent()` als Fallback** auf `ACTION_HOME_SETTINGS`, falls ein
   OEM-Build den Rollendialog verweigert. Erzwungen wird nichts.
 - **`tools/build.sh`** pinnt JDK 21, weil `java` nicht in der PATH-Umgebung liegt.
+
+## 3 — App-Index
+- **`Collator.SECONDARY` statt `TERTIARY`.** Bei TERTIARY sortiert die deutsche Collation
+  Kleinbuchstaben vor Grossbuchstaben; "gmail" landete dann vor "Gmail". Gross/Klein
+  entscheidet jetzt nicht, der Tiebreak ist ein einfacher String-Vergleich.
+- **Eigene Konstanten fuer die Trim-Level (40/80).** `TRIM_MEMORY_BACKGROUND` und
+  `TRIM_MEMORY_COMPLETE` sind auf API 36 deprecated, der Callback liefert die Werte aber
+  weiterhin. `TRIM_MEMORY_UI_HIDDEN` wird bewusst ignoriert — das kommt bei jedem App-Start
+  und wuerde den Icon-Cache staendig leeren.
+- **`AppKey` wird als flacher String `paket/klasse#serial` persistiert.** Eine Spalte statt
+  drei in jeder Tabelle und im JSON-Backup; die Trennzeichen kommen in Paket- oder
+  Klassennamen nicht vor.
+- **`AppIndex` als eigene Schicht ueber `AppRepository`.** Das Repository liefert nur, was das
+  System kennt; Custom-Labels und versteckte Apps kommen erst darueber dazu.
+- **Manuelle DI ueber `ServiceLocator`.** Hilt waere eine weitere Bibliothek und Startzeit
+  fuer eine Handvoll Singletons.
+- **Icon-Cache in Bytes begrenzt (1/8 Heap, hart bei 96 MB).** Wenige riesige Icons duerfen
+  den Cache nicht leerdruecken; Budget aus Etappe 17.
