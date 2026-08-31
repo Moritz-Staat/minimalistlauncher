@@ -82,3 +82,23 @@ Jede selbst getroffene Entscheidung mit einer Zeile Begruendung.
   Das System begrenzt Ausschluss-Rechtecke auf 200 dp Hoehe pro Kante, die Leiste ist
   hoeher. Ob das in der Praxis stoert, entscheidet der Geraetetest; die Umschaltung kommt
   als Einstellung in Etappe 12.
+
+## 6 — Suche und App-Aktionen
+- **Eigener `TextNormalizer` mit Index-Rueckabbildung.** Fuer die Hervorhebung muss jeder
+  gefaltete Buchstabe auf seine Stelle im Originallabel zurueckzeigen; "ss" aus "ß" zeigt
+  auf dasselbe Original-Zeichen.
+- **Sechs Rangstufen statt eines Punktesystems.** Exakt > Praefix > Wortanfang > Initialen >
+  Teilfolge ab Wortanfang > Teilfolge. Das ist die Reihenfolge, die Nutzer erwarten, und
+  laesst sich testen.
+- **Suche laeuft ueber die sichtbaren Apps, nicht ueber alle.** Ausgeblendete Apps sollen
+  ausgeblendet bleiben; ein Schalter dafuer kommt mit den Einstellungen in Etappe 16.
+- **Kein Material3-`SearchBar`.** Die Komponente bringt eigene Vollbild-Expansion und
+  eigenes Zurueck-Verhalten mit, das mit "Zurueck verlaesst den Launcher nie" kollidiert.
+- **Web-Suche mit DuckDuckGo-URL als Rueckfall**, falls keine App `ACTION_WEB_SEARCH`
+  beantwortet. Die letzte Zeile darf nie ins Leere fuehren.
+- **Langdruck auf einen Favoriten startet das Ziehen, nicht das Menue.** Wer ohne Bewegung
+  loslaesst, bekommt trotzdem das Menue — `AppRow.onLongClick` ist dafuer nullbar geworden.
+- **`applyDrag` als reine Funktion.** Das Umsortieren ist damit ohne Geraet testbar; die
+  Composable haelt nur noch den Zustand.
+- **Deinstallieren geht ueber `ACTION_DELETE` an das System.** Der Launcher entfernt selbst
+  nichts, die Bestaetigung bleibt beim Nutzer.

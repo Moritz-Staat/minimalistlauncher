@@ -5,6 +5,7 @@ import android.graphics.Rect
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import de.moritzstaat.launcher.LauncherApplication
+import de.moritzstaat.launcher.data.app.AppActions
 import de.moritzstaat.launcher.data.app.AppEntry
 import de.moritzstaat.launcher.data.app.AppKey
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,6 +21,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val favoriteDao = services.database.favoriteDao()
 
     val iconLoader = services.iconLoader
+
+    val shortcutRepository = services.shortcutRepository
 
     val apps: StateFlow<List<AppEntry>> = services.appIndex.visibleApps
 
@@ -62,8 +65,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch { favoriteDao.replaceOrder(appKeys.take(MAX_FAVORITES)) }
     }
 
-    companion object {
-        const val MAX_FAVORITES = 8
-        private const val STOP_TIMEOUT_MS = 5_000L
+    private companion object {
+        const val MAX_FAVORITES = AppActions.MAX_FAVORITES
+        const val STOP_TIMEOUT_MS = 5_000L
     }
 }

@@ -12,7 +12,7 @@ dort weiterarbeiten.
 | 3 | App-Index (LauncherApps, Collator-Sortierung, Room) | fertig | AppRepository ueber LauncherApps mit registerCallback, AppIndex mit Custom-Labels/Hidden, Collator de_DE, Room-Tabellen, IconCache/IconLoader; 13 Unit-Tests gruen |
 | 4 | Homescreen (Uhr, Favoriten, App-Liste) | fertig | Uhr+Datum, Widget-Slot, Favoriten (max. 8), App-Liste als LazyColumn mit stabilen Keys, Wisch-Sheet mit Blur; TESTPLAN.md angelegt |
 | 5 | Wave-Alphabet | fertig | Leiste rechts, Gauss-Skalierung im graphicsLayer, derivedStateOf fuer den aktiven Index, SEGMENT_TICK, Gesten-Ausschluss; 8 Unit-Tests gruen |
-| 6 | Suche und App-Aktionen | offen | - |
+| 6 | Suche und App-Aktionen | fertig | Fuzzy-Matcher mit 6 Rangstufen, Suchfeld unten, Shortcuts/Kontakte/Websuche, Langdruck-Menue, Favoriten-Drag&Drop; 41 Unit-Tests gruen |
 | 7 | Benachrichtigungen | offen | - |
 | 8 | Media-Widget | offen | - |
 | 9 | Widget-Host | offen | - |

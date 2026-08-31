@@ -50,3 +50,23 @@ Einstellungen > Apps > Standard-Apps > Start-App.
    bzw. letzten Buchstaben, die Geste bricht nicht ab.
 7. Finger heben. Erwartung: die Buchstaben gehen auf Normalgroesse zurueck, die Liste bleibt
    an der angesprungenen Stelle stehen.
+
+## Etappe 6 — Suche und App-Aktionen
+1. App-Liste aufziehen. Erwartung: Suchfeld sitzt unten, ueber der Navigationsleiste.
+2. "gm" tippen. Erwartung: Gmail steht weit oben, die getroffenen Buchstaben sind fett.
+3. "off" tippen. Erwartung: "Öffi" wird gefunden (Diakritika egal).
+4. "strassen" tippen, wenn eine App mit "Straße" im Namen installiert ist. Erwartung: Treffer.
+5. Letzte Zeile ist immer "Im Web suchen". Antippen oeffnet die Websuche.
+6. Ohne Kontakt-Berechtigung suchen. Erwartung: keine Kontakte, keine Fehlermeldung.
+7. Langdruck auf eine Zeile in der App-Liste. Erwartung: Menue mit den App-Shortcuts oben,
+   darunter Favorit, Umbenennen, Icon aendern, Ausblenden, App-Info, Deinstallieren.
+8. **Heikel:** App-Shortcuts erscheinen erst, wenn Minimalist der Standard-Launcher ist.
+   Symptom sonst: das Menue zeigt nur die Launcher-Aktionen.
+9. Umbenennen, App-Liste schliessen und wieder oeffnen. Erwartung: der neue Name steht da und
+   die App ist danach an der neuen alphabetischen Stelle einsortiert.
+10. Ausblenden. Erwartung: die App verschwindet aus Liste und Favoriten, bleibt installiert.
+11. Langdruck auf einen Favoriten und ziehen. Erwartung: die Zeile klebt am Finger, die
+    anderen ruecken nach, nach dem Loslassen bleibt die Reihenfolge erhalten.
+12. Langdruck auf einen Favoriten ohne Bewegung. Erwartung: das App-Menue oeffnet sich.
+13. Zurueck-Geste bei offener Suche. Erwartung: erst wird die Suche geleert, erst danach
+    schliesst die Liste.

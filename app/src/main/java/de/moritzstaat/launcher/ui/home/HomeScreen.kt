@@ -47,6 +47,8 @@ fun HomeScreen(
     onLaunch: (AppKey, Rect?) -> Unit,
     modifier: Modifier = Modifier,
     onOpenSettings: () -> Unit = {},
+    onLongPressFavorite: (AppEntry, Rect?) -> Unit = { _, _ -> },
+    onReorderFavorites: (List<String>) -> Unit = {},
     onSheetSettled: (Boolean) -> Unit = {},
     widgetSlotContent: @Composable () -> Unit = {},
 ) {
@@ -101,6 +103,8 @@ fun HomeScreen(
                 favorites = favorites,
                 iconLoader = iconLoader,
                 onLaunch = onLaunch,
+                onLongPress = onLongPressFavorite,
+                onReorder = onReorderFavorites,
             )
             // Everything below stays empty on purpose: the app list slides in here.
             // Long pressing that empty area is the way into the launcher settings.

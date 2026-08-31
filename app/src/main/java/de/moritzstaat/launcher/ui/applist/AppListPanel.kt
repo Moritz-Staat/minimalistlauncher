@@ -3,6 +3,7 @@ package de.moritzstaat.launcher.ui.applist
 import android.graphics.Rect
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,11 +41,13 @@ fun AppListPanel(
     listState: LazyListState,
     onLaunch: (AppKey, Rect?) -> Unit,
     modifier: Modifier = Modifier,
-    onLongPress: (AppKey, Rect?) -> Unit = { _, _ -> },
+    onLongPress: (AppEntry, Rect?) -> Unit = { _, _ -> },
     notificationPreviews: Map<String, String> = emptyMap(),
     onSettled: (Boolean) -> Unit = {},
     topInset: Dp = 0.dp,
-    overlayContent: @Composable () -> Unit = {},
+    searchActive: Boolean = false,
+    resultsContent: @Composable () -> Unit = {},
+    overlayContent: @Composable BoxScope.() -> Unit = {},
 ) {
     val nestedScroll = remember(sheetState, listState, onSettled) {
         SheetNestedScrollConnection(sheetState, listState, onSettled)
@@ -61,18 +64,22 @@ fun AppListPanel(
         sheetState.heightPx = constraints.maxHeight.toFloat()
 
         Box(modifier = Modifier.fillMaxSize().nestedScroll(nestedScroll)) {
-            LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
-                item(key = KEY_TOP_INSET) { Spacer(Modifier.height(topInset)) }
-                items(items = apps, key = { it.key.flatten() }) { entry ->
-                    AppRow(
-                        entry = entry,
-                        iconLoader = iconLoader,
-                        notificationPreview = notificationPreviews[entry.key.flatten()],
-                        onClick = { bounds -> onLaunch(entry.key, bounds) },
-                        onLongClick = { bounds -> onLongPress(entry.key, bounds) },
-                    )
+            if (searchActive) {
+                resultsContent()
+            } else {
+                LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
+                    item(key = KEY_TOP_INSET) { Spacer(Modifier.height(topInset)) }
+                    items(items = apps, key = { it.key.flatten() }) { entry ->
+                        AppRow(
+                            entry = entry,
+                            iconLoader = iconLoader,
+                            notificationPreview = notificationPreviews[entry.key.flatten()],
+                            onClick = { bounds -> onLaunch(entry.key, bounds) },
+                            onLongClick = { bounds -> onLongPress(entry, bounds) },
+                        )
+                    }
+                    item(key = KEY_BOTTOM_SPACE) { Spacer(Modifier.height(BOTTOM_SPACE)) }
                 }
-                item(key = KEY_BOTTOM_SPACE) { Spacer(Modifier.height(BOTTOM_SPACE)) }
             }
             overlayContent()
         }

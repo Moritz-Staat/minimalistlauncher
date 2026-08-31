@@ -1,8 +1,12 @@
 package de.moritzstaat.launcher.di
 
 import android.content.Context
+import de.moritzstaat.launcher.data.app.AppActions
 import de.moritzstaat.launcher.data.app.AppIndex
 import de.moritzstaat.launcher.data.app.AppRepository
+import de.moritzstaat.launcher.data.app.ShortcutRepository
+import de.moritzstaat.launcher.data.search.ContactSearch
+import de.moritzstaat.launcher.data.search.SearchEngine
 import de.moritzstaat.launcher.data.db.LauncherDatabase
 import de.moritzstaat.launcher.data.icon.IconCache
 import de.moritzstaat.launcher.data.icon.IconLoader
@@ -30,6 +34,16 @@ class ServiceLocator(context: Context) {
             externalScope = applicationScope,
         )
     }
+
+    val shortcutRepository: ShortcutRepository by lazy {
+        ShortcutRepository(context, appRepository)
+    }
+
+    val contactSearch: ContactSearch by lazy { ContactSearch(context) }
+
+    val searchEngine: SearchEngine by lazy { SearchEngine(shortcutRepository, contactSearch) }
+
+    val appActions: AppActions by lazy { AppActions(context, database, appRepository) }
 
     val iconCache: IconCache by lazy { IconCache() }
 

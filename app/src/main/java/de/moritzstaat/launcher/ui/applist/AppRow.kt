@@ -18,7 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import de.moritzstaat.launcher.data.app.AppEntry
 import de.moritzstaat.launcher.data.icon.IconLoader
@@ -43,7 +48,8 @@ fun AppRow(
     onClick: (Rect?) -> Unit,
     modifier: Modifier = Modifier,
     notificationPreview: String? = null,
-    onLongClick: (Rect?) -> Unit = {},
+    highlightIndices: IntArray? = null,
+    onLongClick: ((Rect?) -> Unit)? = null,
 ) {
     val boundsHolder = remember { BoundsHolder() }
 
@@ -62,7 +68,8 @@ fun AppRow(
             }
             .combinedClickable(
                 onClick = { onClick(boundsHolder.value) },
-                onLongClick = { onLongClick(boundsHolder.value) },
+                // Null keeps the long press free for the drag detector of the favourites.
+                onLongClick = onLongClick?.let { callback -> { callback(boundsHolder.value) } },
             )
             .padding(horizontal = AppRowDefaults.HorizontalPadding),
         verticalAlignment = Alignment.CenterVertically,
@@ -79,7 +86,7 @@ fun AppRow(
             verticalArrangement = Arrangement.Center,
         ) {
             Text(
-                text = entry.label,
+                text = highlightedLabel(entry.label, highlightIndices),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
@@ -93,6 +100,21 @@ fun AppRow(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
+            }
+        }
+    }
+}
+
+/** Marks the characters the search matcher actually used. */
+private fun highlightedLabel(label: String, matchedIndices: IntArray?): AnnotatedString {
+    if (matchedIndices == null || matchedIndices.isEmpty()) return AnnotatedString(label)
+    val highlighted = matchedIndices.toHashSet()
+    return buildAnnotatedString {
+        label.forEachIndexed { index, char ->
+            if (index in highlighted) {
+                withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append(char) }
+            } else {
+                append(char)
             }
         }
     }
