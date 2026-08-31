@@ -8,7 +8,9 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +30,9 @@ import de.moritzstaat.launcher.ui.search.SearchResultsList
 import de.moritzstaat.launcher.ui.search.SearchViewModel
 import de.moritzstaat.launcher.ui.shell.OverlayTarget
 import de.moritzstaat.launcher.ui.shell.ShellViewModel
+import de.moritzstaat.launcher.ui.widget.WidgetPicker
+import de.moritzstaat.launcher.ui.widget.WidgetViewModel
+import de.moritzstaat.launcher.data.widget.WidgetSlot
 import kotlinx.coroutines.launch
 
 /**
@@ -52,6 +57,9 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
     val notifications by homeViewModel.notifications.collectAsStateWithLifecycle()
     val actionsState by actionsViewModel.state.collectAsStateWithLifecycle()
     val renaming by actionsViewModel.renaming.collectAsStateWithLifecycle()
+
+    val widgetViewModel: WidgetViewModel = viewModel()
+    var widgetPickerSlot by remember { mutableStateOf<WidgetSlot?>(null) }
 
     val scope = rememberCoroutineScope()
     val sheetState = rememberAppListSheetState()
@@ -78,6 +86,7 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
 
     BackHandler(enabled = true) {
         when {
+            widgetPickerSlot != null -> widgetPickerSlot = null
             actionsState != null -> actionsViewModel.dismiss()
             query.isNotEmpty() -> searchViewModel.clear()
             else -> shellViewModel.closeOverlays()
@@ -169,7 +178,20 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
             )
         }
         if (overlay == OverlayTarget.Settings) {
-            SetupOverlay(onDismiss = { shellViewModel.closeOverlays() })
+            SetupOverlay(
+                onDismiss = { shellViewModel.closeOverlays() },
+                onAddWidget = { slot -> widgetPickerSlot = slot },
+            )
+        }
+        widgetPickerSlot?.let { slot ->
+            WidgetPicker(
+                slot = slot,
+                ownerKey = null,
+                host = widgetViewModel.host,
+                onPlaced = { id -> widgetViewModel.place(id, slot) },
+                onDiscard = widgetViewModel::discard,
+                onDismiss = { widgetPickerSlot = null },
+            )
         }
     }
 }

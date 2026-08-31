@@ -15,7 +15,7 @@ dort weiterarbeiten.
 | 6 | Suche und App-Aktionen | fertig | Fuzzy-Matcher mit 6 Rangstufen, Suchfeld unten, Shortcuts/Kontakte/Websuche, Langdruck-Menue, Favoriten-Drag&Drop; 41 Unit-Tests gruen |
 | 7 | Benachrichtigungen | fertig | NotificationListenerService, Vorschau pro Paket mit Zaehler, MessagingStyle, Tippen oeffnet contentIntent, Wischen verwirft, Pro-App-Redaktion (DB v2); 52 Unit-Tests gruen |
 | 8 | Media-Widget | fertig | MediaSessionManager ueber den Notification-Listener, eigenes Composable, Palette-Akzent mit Kontraktpruefung, 30-s-Nachlauf, Kopfhoerer-Einblendung; 59 Unit-Tests gruen |
-| 9 | Widget-Host | offen | - |
+| 9 | Widget-Host | fertig | AppWidgetHost mit fester ID, eigener Waehler mit bindAppWidgetIdIfAllowed/ACTION_APPWIDGET_BIND, Konfigurations-Activity, HorizontalPager-Stapel, deleteAppWidgetId inkl. Orphan-Aufraeumen (DB v3) |
 | 10 | Pop-ups | offen | - |
 | 11 | Icons (Icon-Packs, Dots, Monochrom) | offen | - |
 | 12 | Theming | offen | - |

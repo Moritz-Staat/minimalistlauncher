@@ -43,3 +43,19 @@ data class NotificationPrefEntity(
     @PrimaryKey val packageName: String,
     val redacted: Boolean,
 )
+
+/**
+ * One bound app widget. [appWidgetId] is the id the [android.appwidget.AppWidgetHost] handed
+ * out; it must be deleted through the host when this row goes away, otherwise the id leaks and
+ * survives restarts.
+ *
+ * [ownerKey] is null for the home screen slots and carries the flattened AppKey for widgets
+ * that live inside an app pop-up.
+ */
+@Entity(tableName = "widgets")
+data class WidgetEntity(
+    @PrimaryKey val appWidgetId: Int,
+    val slot: String,
+    val ownerKey: String?,
+    val position: Int,
+)

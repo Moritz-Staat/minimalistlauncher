@@ -106,3 +106,22 @@ interface NotificationPrefDao {
     @Query("DELETE FROM notification_prefs WHERE packageName = :packageName")
     suspend fun delete(packageName: String)
 }
+
+@Dao
+interface WidgetDao {
+
+    @Query("SELECT * FROM widgets ORDER BY position ASC")
+    fun observeAll(): Flow<List<WidgetEntity>>
+
+    @Query("SELECT * FROM widgets ORDER BY position ASC")
+    suspend fun getAll(): List<WidgetEntity>
+
+    @Query("SELECT COUNT(*) FROM widgets WHERE slot = :slot AND (ownerKey IS :ownerKey)")
+    suspend fun countIn(slot: String, ownerKey: String?): Int
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(widget: WidgetEntity)
+
+    @Query("DELETE FROM widgets WHERE appWidgetId = :appWidgetId")
+    suspend fun delete(appWidgetId: Int)
+}

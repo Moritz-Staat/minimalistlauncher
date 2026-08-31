@@ -8,6 +8,7 @@ import android.provider.AlarmClock
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -32,7 +33,10 @@ import de.moritzstaat.launcher.data.app.AppKey
 import de.moritzstaat.launcher.data.icon.IconLoader
 import de.moritzstaat.launcher.data.notification.NotificationSummary
 import de.moritzstaat.launcher.ui.applist.AppListSheetState
+import de.moritzstaat.launcher.data.widget.WidgetSlot
 import de.moritzstaat.launcher.ui.media.MediaSlot
+import de.moritzstaat.launcher.ui.widget.HomeWidgetSlot
+import de.moritzstaat.launcher.ui.widget.hasClockReplacementWidget
 
 /**
  * Home screen body: clock at roughly a quarter of the screen height, date, widget slot,
@@ -95,12 +99,24 @@ fun HomeScreen(
             verticalArrangement = Arrangement.Top,
         ) {
             Spacer(Modifier.height(clockTopPadding))
-            ClockBlock(
-                onClockClick = { openClockApp(context) },
+            if (hasClockReplacementWidget()) {
+                // A widget in that slot takes the clock's place entirely, not just its space.
+                HomeWidgetSlot(
+                    slot = WidgetSlot.InsteadOfClock,
+                    modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING),
+                )
+            } else {
+                ClockBlock(
+                    onClockClick = { openClockApp(context) },
+                    modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING),
+                )
+            }
+            Spacer(Modifier.height(16.dp))
+            HomeWidgetSlot(
+                slot = WidgetSlot.UnderClock,
                 modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING),
             )
-            Spacer(Modifier.height(16.dp))
-            WidgetSlot(modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING)) {
+            Box(modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING)) {
                 widgetSlotContent()
             }
             Spacer(Modifier.height(16.dp))

@@ -33,6 +33,17 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /** A listening widget host is what keeps placed widgets updating. */
+    override fun onStart() {
+        super.onStart()
+        (application as LauncherApplication).services.widgetHost.startListening()
+    }
+
+    override fun onStop() {
+        (application as LauncherApplication).services.widgetHost.stopListening()
+        super.onStop()
+    }
+
     /**
      * Pressing home collapses the launcher back to its resting state. Without this the user
      * would press home and stare at whatever overlay was open before.

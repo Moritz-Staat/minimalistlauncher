@@ -108,3 +108,23 @@ Einstellungen > Apps > Standard-Apps > Start-App.
 9. Kopfhoerer einstecken (oder Bluetooth-Box verbinden), nachdem in den Einstellungen
    Musik-Apps hinterlegt wurden. Erwartung: die Apps erscheinen kurz oben und verschwinden
    nach rund 20 Sekunden von selbst.
+
+## Etappe 9 — Widget-Host
+1. Einrichtung oeffnen, "Widget unter der Uhr" waehlen. Erwartung: Liste aller installierten
+   Widget-Anbieter, alphabetisch.
+2. Ein Widget ohne Konfiguration waehlen. Erwartung: es erscheint sofort unter der Uhr.
+3. Ein Widget mit Konfiguration waehlen (z. B. eine Uhr- oder Wetter-App). Erwartung: die
+   Konfigurationsseite der App oeffnet sich; nach Abbrechen bleibt kein leeres Kaestchen zurueck.
+4. Ein Widget waehlen, das eine Bestaetigung verlangt. Erwartung: der Systemdialog
+   "Zugriff auf Widget erlauben" erscheint.
+5. Zweites Widget in denselben Slot legen. Erwartung: horizontal wischbarer Stapel mit
+   Punktanzeige darunter.
+6. Waehrend des Wischens im Stapel: die App-Liste darf sich nicht mitbewegen.
+7. Langdruck auf ein Widget. Erwartung: Rueckfrage "Widget entfernen?", danach ist es weg.
+8. "Widget statt der Uhr" setzen. Erwartung: die Uhr verschwindet, das Widget steht an ihrer
+   Stelle. Nach dem Entfernen ist die Uhr wieder da.
+9. **Heikel:** App verlassen und zurueckkehren. Erwartung: die Widgets sind noch da und
+   aktualisieren sich. Symptom bei Fehlschlag: leere graue Flaechen.
+   Ursache waere ein fehlendes `startListening()`; es haengt an `MainActivity.onStart`.
+10. **Heikel:** Widget entfernen, Geraet neu starten. Erwartung: kein Geister-Widget. Symptom
+    sonst: eine leere Flaeche, deren ID nie freigegeben wurde.

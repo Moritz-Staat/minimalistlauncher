@@ -3,6 +3,8 @@ package de.moritzstaat.launcher.ui
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import de.moritzstaat.launcher.data.notification.NotificationAccess
+import de.moritzstaat.launcher.data.widget.WidgetSlot
 import de.moritzstaat.launcher.system.HomeRole
 
 /**
@@ -29,7 +32,10 @@ import de.moritzstaat.launcher.system.HomeRole
  * system dialog. Replaced by the full onboarding in stage 16.
  */
 @Composable
-fun SetupOverlay(onDismiss: () -> Unit) {
+fun SetupOverlay(
+    onDismiss: () -> Unit,
+    onAddWidget: (WidgetSlot) -> Unit = {},
+) {
     val context = LocalContext.current
     var isDefaultHome by remember { mutableStateOf(HomeRole.isHeld(context)) }
     var hasNotificationAccess by remember { mutableStateOf(NotificationAccess.isGranted(context)) }
@@ -52,6 +58,7 @@ fun SetupOverlay(onDismiss: () -> Unit) {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
             .safeDrawingPadding()
+            .verticalScroll(rememberScrollState())
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
@@ -92,6 +99,13 @@ fun SetupOverlay(onDismiss: () -> Unit) {
             enabled = !hasNotificationAccess,
         ) {
             Text(text = "Benachrichtigungszugriff erteilen")
+        }
+        Text(text = "Widgets", style = MaterialTheme.typography.titleMedium)
+        Button(onClick = { onAddWidget(WidgetSlot.UnderClock) }) {
+            Text(text = "Widget unter der Uhr")
+        }
+        Button(onClick = { onAddWidget(WidgetSlot.InsteadOfClock) }) {
+            Text(text = "Widget statt der Uhr")
         }
         TextButton(onClick = onDismiss) {
             Text(text = "Schliessen")

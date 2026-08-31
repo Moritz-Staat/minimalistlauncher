@@ -135,3 +135,20 @@ Jede selbst getroffene Entscheidung mit einer Zeile Begruendung.
   waere eine weitere Bibliothek und mehrere MB fuer drei Symbole.
 - **`LauncherSettings` schon jetzt angelegt**, obwohl DataStore erst ab Etappe 12 richtig
   gebraucht wird — die Musik-App-Liste ist die erste globale Einstellung.
+
+## 9 — Widget-Host
+- **Feste Host-ID `0x4C41`.** Sie identifiziert den Launcher gegenueber dem System ueber
+  Neustarts hinweg; eine geaenderte ID wuerde alle gebundenen Widgets verwaisen lassen.
+- **Eigener Widget-Waehler ueber `getInstalledProviders()` statt `ACTION_APPWIDGET_PICK`.**
+  Der Systempicker bindet selbst und umgeht damit `bindAppWidgetIdIfAllowed`.
+- **`deleteAppWidgetId` immer zusammen mit der Datenbankzeile.** `WidgetViewModel.remove`
+  macht beides, jeder abgebrochene Pfad im Waehler ruft `discard`. Zusaetzlich raeumt
+  `pruneOrphans` beim Laden auf, falls doch einmal eine ID uebrig bleibt.
+- **Konfigurations-Activity zuerst per explizitem `ACTION_APPWIDGET_CONFIGURE`.** Nur wenn
+  die Activity nicht aufloesbar ist, uebernimmt
+  `AppWidgetHost.startAppWidgetConfigureActivityForResult`. Dessen Ergebnis landet in der
+  Activity, nicht im Compose-Launcher — dieser Pfad behaelt das Widget optimistisch.
+- **`updateAppWidgetSize` mit `SizeF`-Liste** (API 31), nicht die veraltete Min/Max-Variante.
+- **Die Uhr wird ersetzt, nicht ueberlagert**, wenn ein Widget im Slot "statt der Uhr" liegt.
+- **`WidgetSlot` als Composable in `ui/home` geloescht.** Namenskollision mit dem gleichnamigen
+  Enum; der Wrapper war ohnehin nur ein `Box`.

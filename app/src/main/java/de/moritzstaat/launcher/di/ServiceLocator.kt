@@ -12,6 +12,7 @@ import de.moritzstaat.launcher.data.icon.IconCache
 import de.moritzstaat.launcher.data.media.AudioOutputRepository
 import de.moritzstaat.launcher.data.media.MediaRepository
 import de.moritzstaat.launcher.data.settings.LauncherSettings
+import de.moritzstaat.launcher.data.widget.WidgetHostController
 import de.moritzstaat.launcher.data.notification.NotificationRepository
 import de.moritzstaat.launcher.data.icon.IconLoader
 import kotlinx.coroutines.CoroutineScope
@@ -60,6 +61,8 @@ class ServiceLocator(context: Context) {
     val audioOutputRepository: AudioOutputRepository by lazy { AudioOutputRepository(context) }
 
     val settings: LauncherSettings by lazy { LauncherSettings(context) }
+
+    val widgetHost: WidgetHostController by lazy { WidgetHostController(context) }
 
     val iconCache: IconCache by lazy { IconCache() }
 

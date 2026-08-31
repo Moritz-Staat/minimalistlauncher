@@ -15,8 +15,9 @@ import androidx.sqlite.execSQL
         CustomLabelEntity::class,
         IconOverrideEntity::class,
         NotificationPrefEntity::class,
+        WidgetEntity::class,
     ],
-    version = 2,
+    version = 3,
     exportSchema = true,
 )
 abstract class LauncherDatabase : RoomDatabase() {
@@ -26,6 +27,7 @@ abstract class LauncherDatabase : RoomDatabase() {
     abstract fun customLabelDao(): CustomLabelDao
     abstract fun iconOverrideDao(): IconOverrideDao
     abstract fun notificationPrefDao(): NotificationPrefDao
+    abstract fun widgetDao(): WidgetDao
 
     companion object {
         fun create(context: Context): LauncherDatabase =
@@ -33,7 +35,7 @@ abstract class LauncherDatabase : RoomDatabase() {
                 context.applicationContext,
                 LauncherDatabase::class.java,
                 "launcher.db",
-            ).addMigrations(MIGRATION_1_2).build()
+            ).addMigrations(MIGRATION_1_2, MIGRATION_2_3).build()
 
         /** Stage 7 added the per app notification preference. */
         private val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -43,6 +45,20 @@ abstract class LauncherDatabase : RoomDatabase() {
                         "`packageName` TEXT NOT NULL, " +
                         "`redacted` INTEGER NOT NULL, " +
                         "PRIMARY KEY(`packageName`))",
+                )
+            }
+        }
+
+        /** Stage 9 added the bound app widgets. */
+        private val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(connection: SQLiteConnection) {
+                connection.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `widgets` (" +
+                        "`appWidgetId` INTEGER NOT NULL, " +
+                        "`slot` TEXT NOT NULL, " +
+                        "`ownerKey` TEXT, " +
+                        "`position` INTEGER NOT NULL, " +
+                        "PRIMARY KEY(`appWidgetId`))",
                 )
             }
         }
