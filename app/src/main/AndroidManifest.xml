@@ -2,19 +2,33 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
+        android:name=".LauncherApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.MinimalistLauncher">
 
+        <!--
+          MAIN + HOME + DEFAULT + LAUNCHER_APP marks this activity as a home screen.
+          CATEGORY_LAUNCHER is deliberately absent: a launcher must not show up in its
+          own app list. Settings are reached from inside the launcher instead.
+        -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:launchMode="singleTask"
+            android:stateNotNeeded="true"
+            android:excludeFromRecents="true"
+            android:enableOnBackInvokedCallback="true"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|uiMode|density|fontScale|layoutDirection|locale"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.MinimalistLauncher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER_APP" />
             </intent-filter>
         </activity>
     </application>

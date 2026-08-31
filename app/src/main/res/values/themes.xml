@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.MinimalistLauncher" parent="android:Theme.Material.NoActionBar" />
+    <!--
+      A home screen draws on top of the live wallpaper, so the window itself must be
+      transparent and must ask the window manager to keep the wallpaper visible behind it.
+      System bar colours stay transparent; insets are handled by enableEdgeToEdge().
+    -->
+    <style name="Theme.MinimalistLauncher" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowContentTransitions">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
 </resources>
