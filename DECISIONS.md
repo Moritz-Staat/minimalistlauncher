@@ -50,3 +50,18 @@ Jede selbst getroffene Entscheidung mit einer Zeile Begruendung.
   fuer eine Handvoll Singletons.
 - **Icon-Cache in Bytes begrenzt (1/8 Heap, hart bei 96 MB).** Wenige riesige Icons duerfen
   den Cache nicht leerdruecken; Budget aus Etappe 17.
+
+## 4 — Homescreen
+- **Uhr bei 22 % der Bildschirmhoehe statt exakt 25 %.** Mit Statusleisten-Inset landet der
+  optische Schwerpunkt sonst zu tief.
+- **App-Liste als eigene Ebene ueber dem Homescreen, nicht als BottomSheet-Komponente.**
+  Material3s ModalBottomSheet bringt eigenes Scrim- und Back-Verhalten mit, das mit der
+  Regel "Zurueck verlaesst den Launcher nie" kollidiert.
+- **Blur und Verschiebung ueber `graphicsLayer`-Lambdas.** Der Fortschritt wird erst in der
+  Draw-Phase gelesen; Ziehen loest damit keine Rekomposition der Liste aus.
+- **Sheet-Fortschritt in einem `Animatable`, Bedienung ueber NestedScroll.** Eine
+  durchgehende Geste kann so scrollen und danach die Liste wieder wegschieben.
+- **Langdruck auf die freie Flaeche oeffnet die Einstellungen** (Etappe 14 zieht das
+  ohnehin so vor) — sonst gibt es bei leerer Favoritenliste keinen Weg in die Einrichtung.
+- **Icons ueber einen eigenen `IconLoader`, nicht ueber Coil.** Coil bringt fuer
+  `LauncherActivityInfo`-Drawables nichts; es bleibt fuer Cover-Bilder in Etappe 8.

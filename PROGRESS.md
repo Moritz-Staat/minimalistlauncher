@@ -10,7 +10,7 @@ dort weiterarbeiten.
 | 1 | Projektgeruest (Gradle, Compose, Room/KSP, DataStore, Coil) | fertig | Version Catalog, App-Modul, leere MainActivity mit Compose; assembleDebug gruen |
 | 2 | Launcher-Grundgeruest (Manifest, Theme, HOME-Rolle) | fertig | HOME-Intent-Filter, transparentes Wallpaper-Theme, edge-to-edge, BackHandler, onNewIntent schliesst Overlays, ROLE_HOME-Dialog |
 | 3 | App-Index (LauncherApps, Collator-Sortierung, Room) | fertig | AppRepository ueber LauncherApps mit registerCallback, AppIndex mit Custom-Labels/Hidden, Collator de_DE, Room-Tabellen, IconCache/IconLoader; 13 Unit-Tests gruen |
-| 4 | Homescreen (Uhr, Favoriten, App-Liste) | offen | - |
+| 4 | Homescreen (Uhr, Favoriten, App-Liste) | fertig | Uhr+Datum, Widget-Slot, Favoriten (max. 8), App-Liste als LazyColumn mit stabilen Keys, Wisch-Sheet mit Blur; TESTPLAN.md angelegt |
 | 5 | Wave-Alphabet | offen | - |
 | 6 | Suche und App-Aktionen | offen | - |
 | 7 | Benachrichtigungen | offen | - |
