@@ -167,3 +167,23 @@ Jede selbst getroffene Entscheidung mit einer Zeile Begruendung.
   damit sie bei einer Zeile ganz unten nicht aus dem Bild laeuft.
 - **Das Widget-Pop-up ist kein eigener Fall**, sondern der Slot `WidgetSlot.Popup` mit dem
   AppKey als `ownerKey` innerhalb des App-Pop-ups.
+
+## 11 — Icons
+- **`packageManager.getResourcesForApplication` statt des in der Vorgabe genannten
+  `Resources.forPackage`.** Eine solche API gibt es im Android-SDK nicht; das ist der
+  vorhandene Weg an fremde Ressourcen.
+- **`<queries>` mit genau den zwei Icon-Pack-Actions.** Damit ist `queryIntentActivities`
+  fuer die Pack-Erkennung erlaubt, ohne `QUERY_ALL_PACKAGES`. Die App-Liste kommt weiterhin
+  ausschliesslich aus `LauncherApps`.
+- **`IconPackFilterBuilder` ist die gemeinsame Regelbasis** fuer den kompilierten
+  res/xml-Pfad (XmlPullParser) und den Assets-Pfad (SAX). Nur so ist das Parsen ohne Geraet
+  testbar.
+- **Auto-Replace nur bei sicherem Treffer (`MIN_SCORE`).** Ein falsches Icon ist schlimmer
+  als das Original-Icon.
+- **Manuell gesetzte Icons speichern das Pack mit.** Beim Pack-Wechsel wird das alte Pack bei
+  Bedarf nachgeladen, statt die Auswahl stillschweigend zu verwerfen.
+- **Punkte-Modus nutzt `getVibrantColor`, sonst die dominante Farbe.** Der Vibrant-Wert
+  trifft die Markenfarbe besser; die dominante Farbe ist der Rueckfall, damit jede App
+  abgedeckt ist.
+- **Monochrom bevorzugt `AdaptiveIconDrawable.getMonochrome()` (API 33+)** und faellt sonst
+  auf eine Saettigung von 0 zurueck — auf minSdk 31 gibt es die Ebene noch nicht.

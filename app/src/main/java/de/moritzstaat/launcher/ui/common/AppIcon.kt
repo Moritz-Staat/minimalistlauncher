@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.moritzstaat.launcher.data.app.AppKey
 import de.moritzstaat.launcher.data.icon.IconLoader
 
@@ -27,7 +28,9 @@ fun AppIcon(
     contentDescription: String? = null,
 ) {
     val sizePx = with(LocalDensity.current) { size.roundToPx() }
-    val bitmap by produceState<ImageBitmap?>(initialValue = null, appKey, sizePx) {
+    // Redraw when the icon style, the pack or a manual override changes.
+    val config by iconLoader.config.collectAsStateWithLifecycle()
+    val bitmap by produceState<ImageBitmap?>(initialValue = null, appKey, sizePx, config.signature) {
         value = iconLoader.load(appKey, sizePx)?.asImageBitmap()
     }
 

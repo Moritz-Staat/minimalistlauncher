@@ -142,3 +142,23 @@ Einstellungen > Apps > Standard-Apps > Start-App.
 6. Ordnerzeile antippen oder nach rechts wischen. Erwartung: Pop-up mit den Apps des Ordners.
 7. Letzte App aus einem Ordner nehmen. Erwartung: der Ordner verschwindet von selbst.
 8. Ordner-Icon pruefen: bis zu vier Mini-Icons der enthaltenen Apps.
+
+## Etappe 11 — Icons
+1. Ohne installiertes Icon-Pack in die Einstellungen. Erwartung: "Kein Icon-Pack installiert",
+   Eintrag "Icon-Pack" ist nicht waehlbar.
+2. Ein ADW- oder Nova-Pack installieren, Einstellungen erneut oeffnen. Erwartung: das Pack
+   steht in der Liste.
+3. Pack waehlen. Erwartung: Icons wechseln sofort, in Liste und Favoriten gleichzeitig.
+4. Eine App pruefen, die das Pack nicht kennt. Erwartung: entweder ein passendes Icon per
+   Namensabgleich oder das Original auf dem Pack-Hintergrund — nie ein offensichtlich
+   falsches Icon.
+5. Langdruck auf eine App, "Icon aendern", ein Drawable waehlen. Erwartung: nur diese App
+   aendert sich.
+6. Auf ein anderes Pack wechseln. Erwartung: das von Hand gesetzte Icon bleibt erhalten.
+7. "Zuruecksetzen" im Icon-Dialog. Erwartung: die App bekommt wieder das Pack- bzw.
+   Original-Icon.
+8. Punkte-Modus. Erwartung: jede App bekommt einen farbigen Punkt, auch frisch installierte.
+9. Monochrom-Modus. Erwartung: einfarbige Silhouetten; Apps ohne Monochrom-Ebene erscheinen
+   in Graustufen statt zu fehlen.
+10. Nach einem Pack-Wechsel Geraet drehen. Erwartung: Icons bleiben korrekt (Cache wird bei
+    Konfigurationswechsel geleert).

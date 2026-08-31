@@ -4,6 +4,19 @@
     <!-- Optional: only used to offer contacts in the search. The launcher works without it. -->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
+    <!--
+      Package visibility limited to what the launcher genuinely has to see: ADW and Nova
+      style icon packs. No QUERY_ALL_PACKAGES; the app list itself comes from LauncherApps.
+    -->
+    <queries>
+        <intent>
+            <action android:name="org.adw.launcher.THEMES" />
+        </intent>
+        <intent>
+            <action android:name="com.novalauncher.THEME" />
+        </intent>
+    </queries>
+
     <application
         android:name=".LauncherApplication"
         android:allowBackup="false"

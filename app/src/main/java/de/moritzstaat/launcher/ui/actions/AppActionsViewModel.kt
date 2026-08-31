@@ -113,6 +113,18 @@ class AppActionsViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
+    private val _choosingIcon = MutableStateFlow<AppEntry?>(null)
+    val choosingIcon: StateFlow<AppEntry?> = _choosingIcon.asStateFlow()
+
+    fun startIconChooser() {
+        _choosingIcon.value = _state.value?.entry
+        dismiss()
+    }
+
+    fun cancelIconChooser() {
+        _choosingIcon.value = null
+    }
+
     private val _folderPicking = MutableStateFlow<AppEntry?>(null)
     val folderPicking: StateFlow<AppEntry?> = _folderPicking.asStateFlow()
 

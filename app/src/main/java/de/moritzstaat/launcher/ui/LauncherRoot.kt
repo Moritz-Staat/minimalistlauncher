@@ -32,6 +32,7 @@ import de.moritzstaat.launcher.ui.applist.AppListScrim
 import de.moritzstaat.launcher.ui.applist.rememberAppListSheetState
 import de.moritzstaat.launcher.ui.home.HomeScreen
 import de.moritzstaat.launcher.ui.home.HomeViewModel
+import de.moritzstaat.launcher.ui.icons.IconChooserDialog
 import de.moritzstaat.launcher.ui.popup.AppPopupContent
 import de.moritzstaat.launcher.ui.popup.FolderPopupContent
 import de.moritzstaat.launcher.ui.popup.LauncherPopup
@@ -72,6 +73,7 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
     val actionsState by actionsViewModel.state.collectAsStateWithLifecycle()
     val renaming by actionsViewModel.renaming.collectAsStateWithLifecycle()
     val folderPicking by actionsViewModel.folderPicking.collectAsStateWithLifecycle()
+    val choosingIcon by actionsViewModel.choosingIcon.collectAsStateWithLifecycle()
     val popup by popupViewModel.target.collectAsStateWithLifecycle()
     val popupShortcuts by popupViewModel.shortcuts.collectAsStateWithLifecycle()
 
@@ -249,7 +251,7 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
                 onShortcut = actionsViewModel::startShortcut,
                 onToggleFavorite = actionsViewModel::toggleFavorite,
                 onRename = actionsViewModel::startRename,
-                onChangeIcon = actionsViewModel::dismiss,
+                onChangeIcon = actionsViewModel::startIconChooser,
                 onMoveToFolder = actionsViewModel::startFolderPicking,
                 onToggleNotificationRedaction = actionsViewModel::toggleNotificationRedaction,
                 onHide = actionsViewModel::hide,
@@ -263,6 +265,9 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
                 onDismiss = actionsViewModel::cancelRename,
                 onConfirm = actionsViewModel::confirmRename,
             )
+        }
+        choosingIcon?.let { entry ->
+            IconChooserDialog(entry = entry, onDismiss = actionsViewModel::cancelIconChooser)
         }
         folderPicking?.let { entry ->
             FolderPickerDialog(

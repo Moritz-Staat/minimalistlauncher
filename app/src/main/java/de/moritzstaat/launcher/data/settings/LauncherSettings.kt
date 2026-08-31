@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -39,6 +40,20 @@ class LauncherSettings(context: Context) {
     val mediaAppsOnOutputChange: Flow<Boolean> =
         preferences.map { it[KEY_MEDIA_ON_OUTPUT] ?: true }
 
+    /** Name of the [de.moritzstaat.launcher.data.icon.IconStyle] entry currently in use. */
+    val iconStyle: Flow<String> = preferences.map { it[KEY_ICON_STYLE] ?: "Original" }
+
+    /** Package of the selected icon pack, empty when none is chosen. */
+    val iconPackPackage: Flow<String> = preferences.map { it[KEY_ICON_PACK].orEmpty() }
+
+    suspend fun setIconStyle(style: String) {
+        store.edit { it[KEY_ICON_STYLE] = style }
+    }
+
+    suspend fun setIconPackPackage(packageName: String) {
+        store.edit { it[KEY_ICON_PACK] = packageName }
+    }
+
     suspend fun setMediaApps(appKeys: Set<String>) {
         store.edit { it[KEY_MEDIA_APPS] = appKeys }
     }
@@ -50,5 +65,7 @@ class LauncherSettings(context: Context) {
     private companion object {
         val KEY_MEDIA_APPS = stringSetPreferencesKey("media_apps")
         val KEY_MEDIA_ON_OUTPUT = booleanPreferencesKey("media_apps_on_output_change")
+        val KEY_ICON_STYLE = stringPreferencesKey("icon_style")
+        val KEY_ICON_PACK = stringPreferencesKey("icon_pack")
     }
 }

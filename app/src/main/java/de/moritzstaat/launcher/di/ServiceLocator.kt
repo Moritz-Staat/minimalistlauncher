@@ -9,6 +9,10 @@ import de.moritzstaat.launcher.data.search.ContactSearch
 import de.moritzstaat.launcher.data.search.SearchEngine
 import de.moritzstaat.launcher.data.db.LauncherDatabase
 import de.moritzstaat.launcher.data.icon.IconCache
+import de.moritzstaat.launcher.data.icon.IconConfig
+import de.moritzstaat.launcher.data.icon.IconOverride
+import de.moritzstaat.launcher.data.icon.IconPackRepository
+import de.moritzstaat.launcher.data.icon.IconStyle
 import de.moritzstaat.launcher.data.media.AudioOutputRepository
 import de.moritzstaat.launcher.data.media.MediaRepository
 import de.moritzstaat.launcher.data.settings.LauncherSettings
@@ -18,6 +22,12 @@ import de.moritzstaat.launcher.data.icon.IconLoader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 /**
  * Hand written dependency graph. A launcher has a handful of process wide singletons; a DI
@@ -67,5 +77,32 @@ class ServiceLocator(context: Context) {
 
     val iconCache: IconCache by lazy { IconCache() }
 
-    val iconLoader: IconLoader by lazy { IconLoader(context, appRepository, iconCache) }
+    val iconPackRepository: IconPackRepository by lazy { IconPackRepository(context) }
+
+    /**
+     * Everything that decides how an icon looks, folded into one flow. Loading an icon pack
+     * touches the file system, so this runs on IO and is shared by every consumer.
+     */
+    val iconConfig: StateFlow<IconConfig> by lazy {
+        combine(
+            settings.iconStyle,
+            settings.iconPackPackage,
+            database.iconOverrideDao().observeAll(),
+        ) { style, packName, overrides ->
+            val pack = packName.takeIf { it.isNotBlank() }?.let { iconPackRepository.load(it) }
+            IconConfig(
+                style = IconStyle.fromStorage(style),
+                pack = pack,
+                overrides = overrides.associate {
+                    it.appKey to IconOverride(it.iconPackPackage, it.drawableName)
+                },
+            )
+        }
+            .flowOn(Dispatchers.IO)
+            .stateIn(applicationScope, SharingStarted.Eagerly, IconConfig())
+    }
+
+    val iconLoader: IconLoader by lazy {
+        IconLoader(context, appRepository, iconCache, iconPackRepository, iconConfig)
+    }
 }

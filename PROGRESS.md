@@ -17,7 +17,7 @@ dort weiterarbeiten.
 | 8 | Media-Widget | fertig | MediaSessionManager ueber den Notification-Listener, eigenes Composable, Palette-Akzent mit Kontraktpruefung, 30-s-Nachlauf, Kopfhoerer-Einblendung; 59 Unit-Tests gruen |
 | 9 | Widget-Host | fertig | AppWidgetHost mit fester ID, eigener Waehler mit bindAppWidgetIdIfAllowed/ACTION_APPWIDGET_BIND, Konfigurations-Activity, HorizontalPager-Stapel, deleteAppWidgetId inkl. Orphan-Aufraeumen (DB v3) |
 | 10 | Pop-ups | fertig | Eine Pop-up-Komponente fuer App, Ordner und Widget; Wischen rechts oeffnet, Blur ueber RenderEffect, Ordner alphabetisch in der Liste (DB v4) |
-| 11 | Icons (Icon-Packs, Dots, Monochrom) | offen | - |
+| 11 | Icons (Icon-Packs, Dots, Monochrom) | fertig | ADW/Nova-Erkennung ueber queries, appfilter.xml-Parser (res/xml + assets), Fuzzy-Auto-Replace, Pro-App-Override mit Pack-Bindung, Punkte- und Monochrom-Modus; 73 Unit-Tests gruen |
 | 12 | Theming | offen | - |
 | 13 | Kalender und Wetter | offen | - |
 | 14 | Gesten | offen | - |
