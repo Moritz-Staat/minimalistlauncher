@@ -32,6 +32,7 @@ import de.moritzstaat.launcher.data.app.AppKey
 import de.moritzstaat.launcher.data.icon.IconLoader
 import de.moritzstaat.launcher.data.notification.NotificationSummary
 import de.moritzstaat.launcher.ui.applist.AppListSheetState
+import de.moritzstaat.launcher.ui.media.MediaSlot
 
 /**
  * Home screen body: clock at roughly a quarter of the screen height, date, widget slot,
@@ -54,7 +55,7 @@ fun HomeScreen(
     onNotificationClick: (NotificationSummary) -> Unit = {},
     onNotificationDismiss: (NotificationSummary) -> Unit = {},
     onSheetSettled: (Boolean) -> Unit = {},
-    widgetSlotContent: @Composable () -> Unit = {},
+    widgetSlotContent: @Composable () -> Unit = { MediaSlot() },
 ) {
     val context = LocalContext.current
     val dragTracker = remember { VelocityTracker() }

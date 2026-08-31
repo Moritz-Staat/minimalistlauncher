@@ -120,3 +120,18 @@ Jede selbst getroffene Entscheidung mit einer Zeile Begruendung.
   Handler lassen sich ziehen.
 - **Der Listener-Dienst haelt eine statische Referenz auf sich selbst.** `cancelNotification`
   gibt es nur auf der gebundenen Instanz; alles andere laeuft ueber das Repository.
+
+## 8 — Media-Widget
+- **`AccentPicker` prueft den WCAG-Kontrast und hellt notfalls auf.** Palette liefert bei
+  dunklen Covern regelmaessig Farben, die auf schwarzem Grund unsichtbar sind; das reine
+  Rechnen auf ARGB-Ints ist ohne Bitmap testbar.
+- **Die 30-Sekunden-Regel steckt im ViewModel, nicht im Repository.** Sie ist eine
+  Darstellungsentscheidung; das Repository meldet nur, was das System sagt.
+- **`AudioOutputRepository` registriert zur Laufzeit.** `ACTION_HEADSET_PLUG` und die
+  A2DP-Zustandsaenderung werden nicht an im Manifest deklarierte Empfaenger zugestellt.
+- **Musik-Apps fuer die Einblendung liegen in DataStore.** Das ist eine globale Einstellung
+  des Launchers, keine Angabe pro App.
+- **Transport-Knoepfe als Unicode-Zeichen statt Material-Icons.** `material-icons-extended`
+  waere eine weitere Bibliothek und mehrere MB fuer drei Symbole.
+- **`LauncherSettings` schon jetzt angelegt**, obwohl DataStore erst ab Etappe 12 richtig
+  gebraucht wird — die Musik-App-Liste ist die erste globale Einstellung.

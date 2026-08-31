@@ -92,3 +92,19 @@ Einstellungen > Apps > Standard-Apps > Start-App.
 11. **Heikel:** Nach jedem `adb install -r` ist der Benachrichtigungszugriff weg. Symptom:
     alle Vorschautexte verschwinden nach einem Update. Gegenmassnahme: in den Systemein-
     stellungen erneut erteilen; die Einrichtung zeigt den Status an.
+
+## Etappe 8 — Media-Widget
+1. Ohne Benachrichtigungszugriff Musik abspielen. Erwartung: kein Widget, kein Fehler.
+2. Mit Zugriff Musik abspielen. Erwartung: Cover, Titel, Interpret, Play/Pause und
+   Skip-Knoepfe erscheinen zwischen Uhr und Favoriten.
+3. Pausieren. Erwartung: das Widget bleibt rund 30 Sekunden stehen und verschwindet dann.
+4. Innerhalb dieser 30 Sekunden wieder starten. Erwartung: das Widget bleibt, ohne zu blinken.
+5. Titel mit farbigem Cover. Erwartung: Interpret und Knoepfe nehmen eine Farbe aus dem
+   Cover an, die auf dem Hintergrund lesbar bleibt.
+6. Titel ohne Cover. Erwartung: Platzhalterflaeche, keine leere Luecke.
+7. Auf das Widget tippen. Erwartung: die abspielende App oeffnet sich.
+8. Skip-Knoepfe bei einer App, die kein Skip anbietet. Erwartung: die Knoepfe sind sichtbar
+   abgeblendet und reagieren nicht.
+9. Kopfhoerer einstecken (oder Bluetooth-Box verbinden), nachdem in den Einstellungen
+   Musik-Apps hinterlegt wurden. Erwartung: die Apps erscheinen kurz oben und verschwinden
+   nach rund 20 Sekunden von selbst.

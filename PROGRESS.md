@@ -14,7 +14,7 @@ dort weiterarbeiten.
 | 5 | Wave-Alphabet | fertig | Leiste rechts, Gauss-Skalierung im graphicsLayer, derivedStateOf fuer den aktiven Index, SEGMENT_TICK, Gesten-Ausschluss; 8 Unit-Tests gruen |
 | 6 | Suche und App-Aktionen | fertig | Fuzzy-Matcher mit 6 Rangstufen, Suchfeld unten, Shortcuts/Kontakte/Websuche, Langdruck-Menue, Favoriten-Drag&Drop; 41 Unit-Tests gruen |
 | 7 | Benachrichtigungen | fertig | NotificationListenerService, Vorschau pro Paket mit Zaehler, MessagingStyle, Tippen oeffnet contentIntent, Wischen verwirft, Pro-App-Redaktion (DB v2); 52 Unit-Tests gruen |
-| 8 | Media-Widget | offen | - |
+| 8 | Media-Widget | fertig | MediaSessionManager ueber den Notification-Listener, eigenes Composable, Palette-Akzent mit Kontraktpruefung, 30-s-Nachlauf, Kopfhoerer-Einblendung; 59 Unit-Tests gruen |
 | 9 | Widget-Host | offen | - |
 | 10 | Pop-ups | offen | - |
 | 11 | Icons (Icon-Packs, Dots, Monochrom) | offen | - |
