@@ -23,5 +23,5 @@ dort weiterarbeiten.
 | 14 | Gesten | fertig | Fuenf belegbare Gesten (Doppeltipp, unten/links/rechts, Langdruck) mit Aktionen inkl. App-Start; optionaler Bedienungshilfen-Dienst fuer Benachrichtigungsleiste und Bildschirmsperre; 130 Unit-Tests gruen |
 | 15 | Usage Breaker | fertig | Tageszaehler pro Paket in Room (DB v5), optionaler Nutzungszugriff fuer die Systemzahlen, Pausenseite mit Countdown vor dem Start, Schwelle und Wartezeit einstellbar; 137 Unit-Tests gruen |
 | 16 | Einstellungen, Backup, Onboarding | fertig | Einstellungen als ein Bildschirm mit aufklappbaren Gruppen (SetupOverlay ersetzt), Sicherung aller Einstellungen und Nutzerdaten als JSON ueber SAF, vierstufige Einrichtung beim ersten Start; 144 Unit-Tests gruen |
-| 17 | Alltagstauglichkeit (Baseline Profile, R8) | offen | - |
+| 17 | Alltagstauglichkeit (Baseline Profile, R8) | fertig | R8-Regeln (Enums, Worker) und gruener Release-Build 3,2 MB statt 35 MB, handgeschriebenes Baseline-Profil plus profileinstaller, toter Code entfernt, Medien-Einstellungen nachgezogen; 144 Unit-Tests gruen |
 | 18 | Abschluss (TESTPLAN.md, README.md) | offen | - |

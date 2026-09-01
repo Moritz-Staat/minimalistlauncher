@@ -313,3 +313,22 @@ Jede selbst getroffene Entscheidung mit einer Zeile Begruendung.
   Berechtigung laufen, und ein Setup, das auf Zustimmung besteht, erzieht zum Wegtippen.
 - **Die Einrichtung liegt ueber allem anderen und wird ueber ein Flag in DataStore gesteuert**,
   das sich in den Einstellungen zuruecksetzen laesst.
+
+## 17 — Alltagstauglichkeit
+- **R8 laeuft nur im Release-Build**, der Debug-Build bleibt unverkleinert. Verteilt wird zwar
+  das Debug-APK, aber ein regelmaessig gebauter Release-Build faengt Regeln ab, die spaeter
+  fehlen wuerden: das APK schrumpft von 35 MB auf 3,2 MB.
+- **Es gibt genau zwei Keep-Regeln.** Enum-Konstanten des eigenen Pakets, weil Einstellungen
+  ihren `name` speichern und ein umbenannter Wert die Einstellung stillschweigend
+  zuruecksetzen wuerde, und die WorkManager-Worker, die ueber ihren Klassennamen aus der
+  Datenbank instanziiert werden. Alles Uebrige bringen die Bibliotheken selbst mit.
+- **Das Baseline-Profil ist von Hand geschrieben, nicht gemessen.** Ein Macrobenchmark braucht
+  ein Geraet, das es hier nicht gibt. Aufgenommen ist deshalb der ehrliche Superset: alles aus
+  `de.moritzstaat.launcher`. Fuer einen Launcher ist das vertretbar — er wird per Home-Taste
+  gestartet, muss sofort da sein, und sein eigener Code ist neben Compose klein.
+- **`androidx.profileinstaller` kommt dazu** (neue Bibliothek, deshalb dieser Eintrag). Ohne
+  sie landet das Profil bei einer per `adb` installierten App nicht in ART.
+- **Toter Code raus:** `HomeScaffold` aus Etappe 2 und `HomeViewModel.setFavorite` wurden von
+  nichts mehr aufgerufen; R8s `usage.txt` hat beide gefunden.
+- **Die Medien-Einstellungen waren nie erreichbar.** `setMediaApps` wurde nirgends aufgerufen,
+  die Kopfhoerer-Einblendung aus Etappe 8 war damit tot. Jetzt gibt es die Gruppe "Medien".

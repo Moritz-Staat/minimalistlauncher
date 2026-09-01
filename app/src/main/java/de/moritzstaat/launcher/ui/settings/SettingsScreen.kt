@@ -31,6 +31,7 @@ import de.moritzstaat.launcher.ui.calendar.CalendarSettingsSection
 import de.moritzstaat.launcher.ui.common.SettingsGroup
 import de.moritzstaat.launcher.ui.gesture.GestureSettingsSection
 import de.moritzstaat.launcher.ui.icons.IconSettingsSection
+import de.moritzstaat.launcher.ui.media.MediaSettingsSection
 import de.moritzstaat.launcher.ui.theme.ThemeSettingsSection
 import de.moritzstaat.launcher.ui.usage.UsageSettingsSection
 import de.moritzstaat.launcher.ui.weather.WeatherSettingsSection
@@ -133,6 +134,9 @@ fun SettingsScreen(
         }
         SettingsGroup(title = "Wetter", subtitle = "Open-Meteo, ohne Konto") {
             WeatherSettingsSection()
+        }
+        SettingsGroup(title = "Medien", subtitle = "Musik-Apps beim Verbinden") {
+            MediaSettingsSection()
         }
         SettingsGroup(title = "Gesten", subtitle = "Tippen, Wischen, Langdruck") {
             GestureSettingsSection()

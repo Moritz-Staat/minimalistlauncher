@@ -125,20 +125,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private fun labelOf(appKey: AppKey): String =
         apps.value.firstOrNull { it.key == appKey }?.label ?: appKey.packageName
 
-    fun setFavorite(appKey: AppKey, favorite: Boolean) {
-        viewModelScope.launch {
-            val flat = appKey.flatten()
-            if (favorite) {
-                if (favoriteDao.count() >= MAX_FAVORITES) return@launch
-                favoriteDao.insert(
-                    de.moritzstaat.launcher.data.db.FavoriteEntity(flat, favoriteDao.count()),
-                )
-            } else {
-                favoriteDao.delete(flat)
-            }
-        }
-    }
-
     fun reorderFavorites(appKeys: List<String>) {
         viewModelScope.launch { favoriteDao.replaceOrder(appKeys.take(MAX_FAVORITES)) }
     }

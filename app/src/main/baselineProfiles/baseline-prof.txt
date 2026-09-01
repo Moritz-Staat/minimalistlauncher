@@ -1,0 +1,13 @@
+# Hand written baseline profile.
+#
+# The usual route is a macrobenchmark run on a real device, which this project cannot do: there
+# is no device and no emulator in the build environment. What is listed here is therefore not a
+# measured trace but the honest superset: everything the launcher itself owns.
+#
+# That is defensible for this app in particular. A launcher is started by pressing home, has to
+# be on screen immediately, and its own code is small next to Compose; compiling all of it ahead
+# of time costs a little install time and a little space, and removes the interpreter from the
+# path that matters. The library classes are left out - they arrive through the profiles the
+# AndroidX artifacts ship themselves.
+HSPLde/moritzstaat/launcher/**->**(**)**
+Lde/moritzstaat/launcher/**;

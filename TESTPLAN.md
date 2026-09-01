@@ -307,3 +307,20 @@ Einstellungen > Apps > Standard-Apps > Start-App.
     weiterlaufen — sie sind nicht Teil der Sicherung und duerfen auch nicht verschwinden.
 13. App deinstallieren, neu installieren, Sicherung einspielen. Erwartung: alles ausser
     Widgets, Schrift und Benachrichtigungszugriff ist wieder da.
+
+## Etappe 17 — Alltagstauglichkeit
+1. Release-APK bauen und installieren (`assembleRelease`, danach signieren oder
+   `adb install -t`). Erwartung: der Launcher startet und verhaelt sich wie das Debug-APK.
+2. **Heikel:** Im Release-Build jede Einstellung einmal umstellen, App beenden, neu oeffnen.
+   Erwartung: alles ist noch so eingestellt — der Test fuer die Enum-Keep-Regel.
+3. **Heikel:** Im Release-Build das Wetter einschalten und eine Stunde warten. Erwartung: der
+   WorkManager-Job laeuft (Keep-Regel fuer die Worker).
+4. Kaltstart messen: Geraet neu starten, dann Home druecken. Erwartung: der Homescreen steht
+   ohne sichtbaren Aufbau da; die Uhr ist sofort sichtbar, nicht nach einem Frame Leere.
+5. `adb shell dumpsys package de.moritzstaat.launcher | grep -i profile` bzw.
+   `adb shell cmd package compile -m speed-profile -f de.moritzstaat.launcher`. Erwartung:
+   das Baseline-Profil ist installiert.
+6. Medien: Musik-App in den Einstellungen waehlen, Kopfhoerer verbinden. Erwartung: die App
+   wird kurz auf dem Homescreen eingeblendet. Schalter aus: nichts wird eingeblendet.
+7. Speicher: eine Stunde normal benutzen, dann `adb shell dumpsys meminfo`. Erwartung: kein
+   stetig wachsender Java-Heap.

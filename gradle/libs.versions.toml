@@ -11,6 +11,7 @@ datastore = "1.1.7"
 coil = "3.3.0"
 palette = "1.0.0"
 work = "2.10.5"
+profileinstaller = "1.4.1"
 junit = "4.13.2"
 kotlinxCoroutines = "1.10.2"
 
@@ -37,6 +38,7 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 androidx-palette-ktx = { module = "androidx.palette:palette-ktx", version.ref = "palette" }
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
+androidx-profileinstaller = { module = "androidx.profileinstaller:profileinstaller", version.ref = "profileinstaller" }
 
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 
