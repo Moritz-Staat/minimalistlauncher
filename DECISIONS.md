@@ -219,3 +219,30 @@ Jede selbst getroffene Entscheidung mit einer Zeile Begruendung.
   Installation zeigt hier auf nichts.
 - **`SelectableRow` liegt jetzt in `ui/common`**, weil die Icon- und die Theme-Einstellungen
   dieselbe Zeile brauchen.
+
+## 13 — Kalender und Wetter
+- **Der Kalender wird ueber `CalendarContract.Instances` gelesen, nicht ueber `Events`.** Ein
+  woechentlicher Termin ist ein Event, aber der Homescreen braucht die naechste Wiederholung.
+- **Ganztaegige Termine tragen Mitternacht UTC**, nicht lokale Mitternacht. Ihr Datum wird
+  deshalb in UTC ausgewertet, sonst wird aus "heute" westlich von Greenwich "gestern".
+- **Abgelehnte Einladungen werden weggefiltert** (`SELF_ATTENDEE_STATUS`); sie gehoeren nicht
+  auf den Homescreen.
+- **Die Terminliste wird zusaetzlich im Composable pro Minutentakt gefiltert.** Der
+  ContentObserver merkt nichts davon, dass ein Termin gerade zu Ende gegangen ist.
+- **Leere Kalenderauswahl heisst "alle Kalender".** Beim ersten Abwaehlen wird deshalb von der
+  vollstaendigen Liste ausgegangen, sonst bliebe genau der abgewaehlte Kalender uebrig.
+- **Wetter kommt von Open-Meteo ueber `HttpURLConnection`**, ohne Konto, ohne Schluessel, ohne
+  Play Services — so steht es in der Vorgabe. Eine HTTP-Bibliothek waere fuer eine URL zu viel.
+- **Koordinaten werden mit `Locale.US` formatiert.** Mit deutscher Locale entstuende
+  "latitude=52,5200" und die Anfrage kaeme als Fehler zurueck.
+- **Der Standort kommt aus dem `LocationManager`, zuerst als letzte bekannte Position.** Fuer
+  eine Temperatur reicht grobe Genauigkeit; das GPS dafuer zu wecken waere Verschwendung.
+- **Die letzte Messung liegt als JSON in DataStore**, nicht in Room. Es ist genau ein Wert,
+  und der Homescreen soll ihn sofort zeigen statt auf das Netz zu warten.
+- **Fehlgeschlagene Abrufe aendern nichts.** Ein alter Wert ist besser als eine leere Zeile,
+  und der Worker meldet `success`, statt in einen Retry-Sturm ohne Netz zu laufen.
+- **Der stuendliche WorkManager-Job existiert nur, solange das Wetter eingeschaltet ist.**
+- **Ein Tippen auf die Wetterzeile aktualisiert sie.** Welche Wetter-App gemeint waere, weiss
+  der Launcher nicht; falsch zu raten ist schlechter als das Naheliegende zu tun.
+- **Bei einem Wechsel der Einheit wird neu abgerufen statt umgerechnet.** Open-Meteo liefert
+  die Einheit mit; selbst umzurechnen waere geraten.

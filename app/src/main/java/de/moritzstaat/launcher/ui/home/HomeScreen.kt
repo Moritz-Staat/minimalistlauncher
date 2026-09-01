@@ -33,6 +33,8 @@ import de.moritzstaat.launcher.data.app.AppKey
 import de.moritzstaat.launcher.data.icon.IconLoader
 import de.moritzstaat.launcher.data.notification.NotificationSummary
 import de.moritzstaat.launcher.ui.applist.AppListSheetState
+import de.moritzstaat.launcher.ui.calendar.CalendarSlot
+import de.moritzstaat.launcher.ui.weather.WeatherSlot
 import de.moritzstaat.launcher.data.widget.WidgetSlot
 import de.moritzstaat.launcher.ui.media.MediaSlot
 import de.moritzstaat.launcher.ui.widget.HomeWidgetSlot
@@ -110,6 +112,14 @@ fun HomeScreen(
                     onClockClick = { openClockApp(context) },
                     modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING),
                 )
+            }
+            Box(modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING)) {
+                Column {
+                    // Weather and appointments sit between the clock and the widgets: they
+                    // read as part of "what is going on", not as another widget.
+                    WeatherSlot()
+                    CalendarSlot()
+                }
             }
             Spacer(Modifier.height(16.dp))
             HomeWidgetSlot(

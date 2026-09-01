@@ -11,6 +11,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import de.moritzstaat.launcher.data.weather.TemperatureUnit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -24,7 +25,7 @@ private val Context.settingsStore: DataStore<Preferences> by preferencesDataStor
  * Global launcher settings. Everything that describes one app lives in Room instead; this is
  * for the switches that apply to the whole launcher.
  *
- * Stage 12 fills this out with the theming options; stage 8 only needs the media entries.
+ * The theme is read and written as a whole; everything else is one entry per switch.
  */
 class LauncherSettings(context: Context) {
 
@@ -87,6 +88,43 @@ class LauncherSettings(context: Context) {
         }
     }
 
+    /** Whether the next calendar entries appear on the home screen at all. */
+    val calendarEnabled: Flow<Boolean> = preferences.map { it[KEY_CALENDAR_ENABLED] ?: false }
+
+    /** Ids of the calendars to read. Empty means every visible calendar. */
+    val calendarIds: Flow<Set<String>> = preferences.map { it[KEY_CALENDAR_IDS].orEmpty() }
+
+    val weatherEnabled: Flow<Boolean> = preferences.map { it[KEY_WEATHER_ENABLED] ?: false }
+
+    val temperatureUnit: Flow<TemperatureUnit> = preferences.map { prefs ->
+        prefs[KEY_TEMPERATURE_UNIT]
+            ?.let { name -> TemperatureUnit.entries.firstOrNull { it.name == name } }
+            ?: TemperatureUnit.Celsius
+    }
+
+    /** The last reading, as JSON. Empty until the first successful request. */
+    val weatherCache: Flow<String> = preferences.map { it[KEY_WEATHER_CACHE].orEmpty() }
+
+    suspend fun setCalendarEnabled(enabled: Boolean) {
+        store.edit { it[KEY_CALENDAR_ENABLED] = enabled }
+    }
+
+    suspend fun setCalendarIds(ids: Set<String>) {
+        store.edit { it[KEY_CALENDAR_IDS] = ids }
+    }
+
+    suspend fun setWeatherEnabled(enabled: Boolean) {
+        store.edit { it[KEY_WEATHER_ENABLED] = enabled }
+    }
+
+    suspend fun setTemperatureUnit(unit: TemperatureUnit) {
+        store.edit { it[KEY_TEMPERATURE_UNIT] = unit.name }
+    }
+
+    suspend fun setWeatherCache(json: String) {
+        store.edit { it[KEY_WEATHER_CACHE] = json }
+    }
+
     suspend fun setIconStyle(style: String) {
         store.edit { it[KEY_ICON_STYLE] = style }
     }
@@ -118,5 +156,10 @@ class LauncherSettings(context: Context) {
         val KEY_BLUR = floatPreferencesKey("wallpaper_blur")
         val KEY_HIDE_STATUS_BAR = booleanPreferencesKey("hide_status_bar")
         val KEY_FONT_PATH = stringPreferencesKey("font_path")
+        val KEY_CALENDAR_ENABLED = booleanPreferencesKey("calendar_enabled")
+        val KEY_CALENDAR_IDS = stringSetPreferencesKey("calendar_ids")
+        val KEY_WEATHER_ENABLED = booleanPreferencesKey("weather_enabled")
+        val KEY_TEMPERATURE_UNIT = stringPreferencesKey("temperature_unit")
+        val KEY_WEATHER_CACHE = stringPreferencesKey("weather_cache")
     }
 }

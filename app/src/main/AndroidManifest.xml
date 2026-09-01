@@ -4,6 +4,16 @@
     <!-- Optional: only used to offer contacts in the search. The launcher works without it. -->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
+    <!-- Optional: the next appointments under the clock. -->
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+
+    <!--
+      Optional: the weather line. Coarse accuracy only, and the position never leaves the
+      device except as the coordinates in the Open-Meteo request.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <!--
       Package visibility limited to what the launcher genuinely has to see: ADW and Nova
       style icon packs. No QUERY_ALL_PACKAGES; the app list itself comes from LauncherApps.

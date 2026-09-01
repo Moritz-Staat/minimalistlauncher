@@ -198,3 +198,33 @@ Einstellungen > Apps > Standard-Apps > Start-App.
     zurueck, der Launcher laeuft weiter.
 16. Geraet neu starten. Erwartung: Theme, Uhr-Stil und Schrift sind unveraendert, und der
     erste Frame zeigt schon die eigenen Farben statt kurz die Standardfarben.
+
+## Etappe 13 — Kalender und Wetter
+1. Ohne erteilte Berechtigung "Termine anzeigen" einschalten. Erwartung: der Systemdialog
+   erscheint; bei Ablehnung bleibt der Schalter aus und der Hinweistext steht da.
+2. Zugriff erteilen. Erwartung: die naechsten bis zu drei Termine stehen unter der Uhr.
+3. Einen Termin in der naechsten Stunde anlegen. Erwartung: "in NN Min.", und die Zahl zaehlt
+   im Minutentakt herunter, ohne dass der Launcher neu geoeffnet werden muss.
+4. **Heikel:** Warten, bis dieser Termin zu Ende ist. Erwartung: er verschwindet von selbst;
+   waehrend er laeuft steht "Jetzt bis HH:MM".
+5. **Heikel:** Einen ganztaegigen Termin fuer heute anlegen. Erwartung: "Ganztaegig", nicht
+   "Morgen" und nicht "Gestern" — der UTC-Fall.
+6. Termin fuer uebermorgen anlegen. Erwartung: Wochentag und Uhrzeit ("Do. 09:00").
+7. Einen Termin antippen. Erwartung: die Kalender-App oeffnet genau diesen Termin.
+8. Einen Kalender in den Einstellungen abwaehlen. Erwartung: nur dessen Termine verschwinden,
+   die anderen bleiben. Alle wieder anwaehlen ergibt "Alle Kalender".
+9. Eine Einladung ablehnen. Erwartung: der Termin verschwindet vom Homescreen.
+10. Termin in der Kalender-App verschieben, ohne den Launcher zu oeffnen. Erwartung: beim
+    naechsten Blick auf den Homescreen steht die neue Zeit da.
+11. "Wetter anzeigen" einschalten. Erwartung: Standortdialog, danach binnen weniger Sekunden
+    eine Zeile mit Symbol, Temperatur, Beschreibung und Tageshoch/-tief.
+12. **Heikel:** Flugmodus einschalten und die Wetterzeile antippen. Erwartung: der alte Wert
+    bleibt stehen, nichts stuerzt ab, keine leere Zeile.
+13. Flugmodus aus, Zeile antippen. Erwartung: "Stand" in den Einstellungen springt auf jetzt.
+14. Einheit auf Fahrenheit stellen. Erwartung: neuer Abruf, Anzeige in °F.
+15. **Heikel:** Standortberechtigung in den Systemeinstellungen wieder entziehen. Erwartung:
+    der Schalter zeigt sich beim naechsten Oeffnen der Einstellungen als aus.
+16. **Heikel:** Geraet ueber Nacht liegen lassen. Erwartung: am Morgen ist die Wetterzeile
+    aktuell (stuendlicher WorkManager-Job), und der Akkuverbrauch des Launchers ist unauffaellig.
+17. Wetter ausschalten. Erwartung: die Zeile verschwindet, und in den Entwickleroptionen bzw.
+    per `adb shell dumpsys jobscheduler` ist kein Wetter-Job mehr eingeplant.

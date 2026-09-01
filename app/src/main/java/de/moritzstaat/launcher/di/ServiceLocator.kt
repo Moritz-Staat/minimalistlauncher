@@ -5,6 +5,7 @@ import de.moritzstaat.launcher.data.app.AppActions
 import de.moritzstaat.launcher.data.app.AppIndex
 import de.moritzstaat.launcher.data.app.AppRepository
 import de.moritzstaat.launcher.data.app.ShortcutRepository
+import de.moritzstaat.launcher.data.calendar.CalendarRepository
 import de.moritzstaat.launcher.data.search.ContactSearch
 import de.moritzstaat.launcher.data.search.SearchEngine
 import de.moritzstaat.launcher.data.db.LauncherDatabase
@@ -18,6 +19,9 @@ import de.moritzstaat.launcher.data.media.MediaRepository
 import de.moritzstaat.launcher.data.settings.FontStore
 import de.moritzstaat.launcher.data.settings.LauncherSettings
 import de.moritzstaat.launcher.data.settings.ThemeConfig
+import de.moritzstaat.launcher.data.weather.LocationProvider
+import de.moritzstaat.launcher.data.weather.OpenMeteoClient
+import de.moritzstaat.launcher.data.weather.WeatherRepository
 import de.moritzstaat.launcher.data.widget.WidgetHostController
 import de.moritzstaat.launcher.data.notification.NotificationRepository
 import de.moritzstaat.launcher.data.icon.IconLoader
@@ -76,6 +80,21 @@ class ServiceLocator(context: Context) {
     val settings: LauncherSettings by lazy { LauncherSettings(context) }
 
     val fontStore: FontStore by lazy { FontStore(context) }
+
+    val calendarRepository: CalendarRepository by lazy {
+        CalendarRepository(context, applicationScope)
+    }
+
+    val locationProvider: LocationProvider by lazy { LocationProvider(context) }
+
+    val weatherRepository: WeatherRepository by lazy {
+        WeatherRepository(
+            settings = settings,
+            location = locationProvider,
+            client = OpenMeteoClient(),
+            scope = applicationScope,
+        )
+    }
 
     /**
      * The active theme. Held eagerly so the first frame after a cold start already draws in the

@@ -26,7 +26,9 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import de.moritzstaat.launcher.data.notification.NotificationAccess
 import de.moritzstaat.launcher.data.widget.WidgetSlot
 import de.moritzstaat.launcher.system.HomeRole
+import de.moritzstaat.launcher.ui.calendar.CalendarSettingsSection
 import de.moritzstaat.launcher.ui.icons.IconSettingsSection
+import de.moritzstaat.launcher.ui.weather.WeatherSettingsSection
 import de.moritzstaat.launcher.ui.theme.ThemeSettingsSection
 
 /**
@@ -104,6 +106,8 @@ fun SetupOverlay(
         }
         IconSettingsSection()
         ThemeSettingsSection()
+        CalendarSettingsSection()
+        WeatherSettingsSection()
         Text(text = "Widgets", style = MaterialTheme.typography.titleMedium)
         Button(onClick = { onAddWidget(WidgetSlot.UnderClock) }) {
             Text(text = "Widget unter der Uhr")

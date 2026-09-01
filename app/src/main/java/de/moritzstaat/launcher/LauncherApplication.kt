@@ -2,7 +2,9 @@ package de.moritzstaat.launcher
 
 import android.app.Application
 import android.content.res.Configuration
+import de.moritzstaat.launcher.data.weather.WeatherRefreshWorker
 import de.moritzstaat.launcher.di.ServiceLocator
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 /**
@@ -18,6 +20,23 @@ class LauncherApplication : Application() {
         super.onCreate()
         services = ServiceLocator(this)
         observeNotificationPreferences()
+        observeWeatherSetting()
+    }
+
+    /**
+     * The background refresh exists only while the weather is switched on. Scheduling it for
+     * everyone would wake the device hourly for a row nobody asked for.
+     */
+    private fun observeWeatherSetting() {
+        services.applicationScope.launch {
+            services.settings.weatherEnabled.distinctUntilChanged().collect { enabled ->
+                if (enabled) {
+                    WeatherRefreshWorker.schedule(this@LauncherApplication)
+                } else {
+                    WeatherRefreshWorker.cancel(this@LauncherApplication)
+                }
+            }
+        }
     }
 
     /**
