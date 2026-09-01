@@ -246,3 +246,26 @@ Jede selbst getroffene Entscheidung mit einer Zeile Begruendung.
   der Launcher nicht; falsch zu raten ist schlechter als das Naheliegende zu tun.
 - **Bei einem Wechsel der Einheit wird neu abgerufen statt umgerechnet.** Open-Meteo liefert
   die Einheit mit; selbst umzurechnen waere geraten.
+
+## 14 — Gesten
+- **Fuenf Gesten sind frei belegbar, Wischen nach oben nicht.** Es oeffnet die App-Liste und
+  ist die eine Geste, die der Launcher nicht verschenken kann.
+- **Jede Geste liegt als kurzer String in DataStore** (`none`, `app_list`, `app:<AppKey>` ...).
+  Eine neue Aktion braucht so keine Migration, und Unbekanntes wird zu `None` statt zu einem
+  Absturz.
+- **Benachrichtigungen oeffnen und Bildschirm sperren laufen ueber einen optionalen
+  Bedienungshilfen-Dienst** (`GLOBAL_ACTION_NOTIFICATIONS`, `GLOBAL_ACTION_LOCK_SCREEN`). Die
+  Leiste laesst sich anders gar nicht oeffnen, und fuers Sperren waere die Alternative ein
+  Geraeteadmin — deutlich uebergriffiger. Der Dienst abonniert keine Ereignisse und darf
+  keine Fensterinhalte lesen.
+- **Fehlt der Dienst, sagt ein Toast das.** Eine Geste, die stillschweigend nichts tut, ist
+  der schlechtere Fehler.
+- **Vertikale und horizontale Gesten haengen an zwei getrennten `pointerInput`-Modifiern.**
+  Wer den Touch-Slop zuerst ueberschreitet, bekommt die Geste — genau das gewuenschte
+  Verhalten, und deutlich weniger Code als ein eigener Gestendetektor.
+- **Nach unten wischen zaehlt nur, wenn die App-Liste geschlossen ist.** Sonst waere es der
+  Zug, mit dem die Liste zugemacht wird.
+- **Tippgesten liegen am Wurzel-Modifier des Homescreens.** Uhr, Favoriten und Widgets
+  verbrauchen ihre Tipps selbst, also bleibt genau der leere Hintergrund uebrig.
+- **"Suche oeffnen" oeffnet die Liste und setzt den Fokus ins Suchfeld**, statt ein zweites
+  Such-Overlay zu bauen; das Feld gibt es schon.

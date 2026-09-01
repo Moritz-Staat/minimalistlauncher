@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.provider.AlarmClock
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import de.moritzstaat.launcher.data.app.AppEntry
 import de.moritzstaat.launcher.data.app.AppKey
+import de.moritzstaat.launcher.data.gesture.Gesture
 import de.moritzstaat.launcher.data.icon.IconLoader
 import de.moritzstaat.launcher.data.notification.NotificationSummary
 import de.moritzstaat.launcher.ui.applist.AppListSheetState
@@ -54,7 +56,7 @@ fun HomeScreen(
     sheetState: AppListSheetState,
     onLaunch: (AppKey, Rect?) -> Unit,
     modifier: Modifier = Modifier,
-    onOpenSettings: () -> Unit = {},
+    onGesture: (Gesture) -> Unit = {},
     onLongPressFavorite: (AppEntry, Rect?) -> Unit = { _, _ -> },
     onReorderFavorites: (List<String>) -> Unit = {},
     notifications: Map<String, NotificationSummary> = emptyMap(),
@@ -69,18 +71,56 @@ fun HomeScreen(
     BoxWithConstraints(
         modifier = modifier
             .fillMaxSize()
-            .pointerInput(sheetState) {
+            .pointerInput(sheetState, onGesture) {
+                val thresholdPx = SWIPE_THRESHOLD.toPx()
+                var travelled = 0f
                 detectVerticalDragGestures(
-                    onDragStart = { dragTracker.resetTracking() },
+                    onDragStart = {
+                        dragTracker.resetTracking()
+                        travelled = 0f
+                    },
                     onDragEnd = {
+                        // Pulling down while the list is already closed is a gesture, not a
+                        // drag: the sheet has nowhere further to go.
+                        if (sheetState.progress == 0f && travelled >= thresholdPx) {
+                            onGesture(Gesture.SwipeDown)
+                        }
                         sheetState.settle(dragTracker.calculateVelocity().y, onSheetSettled)
                     },
                     onDragCancel = { sheetState.settle(0f, onSheetSettled) },
                     onVerticalDrag = { change, dragAmount ->
                         dragTracker.addPointerInputChange(change)
                         change.consume()
+                        travelled += dragAmount
                         sheetState.dragBy(dragAmount)
                     },
+                )
+            }
+            // A second detector rather than one combined one: whichever axis crosses the touch
+            // slop first consumes the gesture, which is exactly the wanted behaviour.
+            .pointerInput(onGesture) {
+                val thresholdPx = SWIPE_THRESHOLD.toPx()
+                var travelled = 0f
+                detectHorizontalDragGestures(
+                    onDragStart = { travelled = 0f },
+                    onDragEnd = {
+                        when {
+                            travelled <= -thresholdPx -> onGesture(Gesture.SwipeLeft)
+                            travelled >= thresholdPx -> onGesture(Gesture.SwipeRight)
+                        }
+                    },
+                    onHorizontalDrag = { change, dragAmount ->
+                        change.consume()
+                        travelled += dragAmount
+                    },
+                )
+            }
+            // Taps land here only where nothing else took them: the clock, the favourites and
+            // the widgets consume their own, so this is the empty background.
+            .pointerInput(onGesture) {
+                detectTapGestures(
+                    onDoubleTap = { onGesture(Gesture.DoubleTap) },
+                    onLongPress = { onGesture(Gesture.LongPress) },
                 )
             },
     ) {
@@ -140,15 +180,12 @@ fun HomeScreen(
                 onNotificationClick = onNotificationClick,
                 onNotificationDismiss = onNotificationDismiss,
             )
-            // Everything below stays empty on purpose: the app list slides in here.
-            // Long pressing that empty area is the way into the launcher settings.
+            // Everything below stays empty on purpose: the app list slides in here, and the
+            // gesture detectors on the root pick up whatever happens in it.
             Spacer(
                 Modifier
                     .fillMaxWidth()
-                    .weight(1f)
-                    .pointerInput(onOpenSettings) {
-                        detectTapGestures(onLongPress = { onOpenSettings() })
-                    },
+                    .weight(1f),
             )
         }
     }
@@ -163,6 +200,9 @@ private fun openClockApp(context: Context) {
         // No clock app that answers the alarm intent; silently ignore, nothing to fall back to.
     }
 }
+
+/** How far a finger has to travel before a drag counts as a gesture. */
+private val SWIPE_THRESHOLD = 72.dp
 
 private const val CLOCK_TOP_FRACTION = 0.22f
 private const val MAX_BLUR_PX = 26f

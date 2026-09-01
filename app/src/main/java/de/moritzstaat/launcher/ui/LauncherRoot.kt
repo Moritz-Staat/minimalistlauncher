@@ -17,10 +17,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import android.widget.Toast
 import de.moritzstaat.launcher.data.app.AppSorting
+import de.moritzstaat.launcher.data.gesture.Gesture
+import de.moritzstaat.launcher.data.gesture.GestureAction
 import de.moritzstaat.launcher.data.widget.WidgetSlot
 import de.moritzstaat.launcher.ui.actions.AppActionSheet
 import de.moritzstaat.launcher.ui.actions.AppActionsViewModel
@@ -30,6 +35,7 @@ import de.moritzstaat.launcher.ui.alphabet.AlphabetBar
 import de.moritzstaat.launcher.ui.applist.AppListPanel
 import de.moritzstaat.launcher.ui.applist.AppListScrim
 import de.moritzstaat.launcher.ui.applist.rememberAppListSheetState
+import de.moritzstaat.launcher.ui.gesture.GestureViewModel
 import de.moritzstaat.launcher.ui.home.HomeScreen
 import de.moritzstaat.launcher.ui.home.HomeViewModel
 import de.moritzstaat.launcher.ui.icons.IconChooserDialog
@@ -65,6 +71,7 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
     val actionsViewModel: AppActionsViewModel = viewModel()
     val popupViewModel: PopupViewModel = viewModel()
     val widgetViewModel: WidgetViewModel = viewModel()
+    val gestureViewModel: GestureViewModel = viewModel()
 
     val overlay by shellViewModel.overlay.collectAsStateWithLifecycle()
     val favorites by homeViewModel.favorites.collectAsStateWithLifecycle()
@@ -78,6 +85,7 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
     val renaming by actionsViewModel.renaming.collectAsStateWithLifecycle()
     val folderPicking by actionsViewModel.folderPicking.collectAsStateWithLifecycle()
     val choosingIcon by actionsViewModel.choosingIcon.collectAsStateWithLifecycle()
+    val gestures by gestureViewModel.gestures.collectAsStateWithLifecycle()
     val popup by popupViewModel.target.collectAsStateWithLifecycle()
     val popupShortcuts by popupViewModel.shortcuts.collectAsStateWithLifecycle()
 
@@ -86,6 +94,9 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
     val scope = rememberCoroutineScope()
     val sheetState = rememberAppListSheetState()
     val listState = rememberLazyListState()
+    val searchFocusRequester = remember { FocusRequester() }
+    var focusSearch by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     // First list index of every section. Index 0 is the top inset item of the sheet.
     val sectionStarts = remember(items) {
@@ -104,8 +115,44 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
         }
     }
 
+    // The search field lives inside the app list, so opening the search means opening the
+    // list and then putting the cursor in the field once it is on screen.
+    LaunchedEffect(focusSearch) {
+        if (focusSearch) {
+            runCatching { searchFocusRequester.requestFocus() }
+            focusSearch = false
+        }
+    }
+
     val onSheetSettled: (Boolean) -> Unit = { open ->
         if (open) shellViewModel.open(OverlayTarget.AppList) else shellViewModel.closeOverlays()
+    }
+
+    val runGesture: (Gesture) -> Unit = { gesture ->
+        when (val action = gestures[gesture] ?: gesture.default) {
+            GestureAction.None -> Unit
+
+            GestureAction.OpenAppList -> {
+                shellViewModel.open(OverlayTarget.AppList)
+                sheetState.open(onSheetSettled)
+            }
+
+            GestureAction.OpenSearch -> {
+                shellViewModel.open(OverlayTarget.AppList)
+                sheetState.open(onSheetSettled)
+                focusSearch = true
+            }
+
+            GestureAction.OpenSettings -> shellViewModel.open(OverlayTarget.Settings)
+
+            GestureAction.ExpandNotifications ->
+                if (!gestureViewModel.expandNotifications()) reportMissingService(context)
+
+            GestureAction.LockScreen ->
+                if (!gestureViewModel.lockScreen()) reportMissingService(context)
+
+            is GestureAction.LaunchApp -> gestureViewModel.launchApp(action)
+        }
     }
 
     BackHandler(enabled = true) {
@@ -148,7 +195,7 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
                 onLaunch = homeViewModel::launch,
                 onLongPressFavorite = actionsViewModel::open,
                 onReorderFavorites = homeViewModel::reorderFavorites,
-                onOpenSettings = { shellViewModel.open(OverlayTarget.Settings) },
+                onGesture = runGesture,
                 onSheetSettled = onSheetSettled,
                 notifications = notifications,
                 onNotificationClick = homeViewModel::openNotification,
@@ -185,6 +232,7 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
                         query = query,
                         onQueryChange = searchViewModel::setQuery,
                         onSubmit = { searchViewModel.openWebSearch(query) },
+                        focusRequester = searchFocusRequester,
                         modifier = Modifier.align(Alignment.BottomCenter),
                     )
                 },
@@ -305,6 +353,15 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
             )
         }
     }
+}
+
+/**
+ * The two system actions need the accessibility service. Saying so beats a gesture that
+ * silently does nothing.
+ */
+private fun reportMissingService(context: android.content.Context) {
+    Toast.makeText(context, "Dafuer fehlt der Bedienungshilfen-Dienst.", Toast.LENGTH_SHORT)
+        .show()
 }
 
 private const val POPUP_BLUR_PX = 22f

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The service exists only to run global actions for the launcher's gestures. It asks for no
+  event types and reads nothing from other apps: notificationTimeout and the event mask stay
+  empty, and no canRetrieveWindowContent flag is set.
+-->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityEventTypes="typeWindowStateChanged"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:canRetrieveWindowContent="false"
+    android:description="@string/gesture_service_description"
+    android:notificationTimeout="0" />

@@ -6,6 +6,8 @@ import de.moritzstaat.launcher.data.app.AppIndex
 import de.moritzstaat.launcher.data.app.AppRepository
 import de.moritzstaat.launcher.data.app.ShortcutRepository
 import de.moritzstaat.launcher.data.calendar.CalendarRepository
+import de.moritzstaat.launcher.data.gesture.Gesture
+import de.moritzstaat.launcher.data.gesture.GestureAction
 import de.moritzstaat.launcher.data.search.ContactSearch
 import de.moritzstaat.launcher.data.search.SearchEngine
 import de.moritzstaat.launcher.data.db.LauncherDatabase
@@ -80,6 +82,15 @@ class ServiceLocator(context: Context) {
     val settings: LauncherSettings by lazy { LauncherSettings(context) }
 
     val fontStore: FontStore by lazy { FontStore(context) }
+
+    /** Held eagerly: the home screen asks for it on the very first gesture. */
+    val gestures: StateFlow<Map<Gesture, GestureAction>> by lazy {
+        settings.gestures.stateIn(
+            applicationScope,
+            SharingStarted.Eagerly,
+            Gesture.entries.associateWith { it.default },
+        )
+    }
 
     val calendarRepository: CalendarRepository by lazy {
         CalendarRepository(context, applicationScope)

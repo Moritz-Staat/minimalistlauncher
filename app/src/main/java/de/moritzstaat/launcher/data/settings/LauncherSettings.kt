@@ -11,6 +11,8 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import de.moritzstaat.launcher.data.gesture.Gesture
+import de.moritzstaat.launcher.data.gesture.GestureAction
 import de.moritzstaat.launcher.data.weather.TemperatureUnit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -105,6 +107,17 @@ class LauncherSettings(context: Context) {
     /** The last reading, as JSON. Empty until the first successful request. */
     val weatherCache: Flow<String> = preferences.map { it[KEY_WEATHER_CACHE].orEmpty() }
 
+    /** What every gesture does; a gesture the user never touched keeps its default. */
+    val gestures: Flow<Map<Gesture, GestureAction>> = preferences.map { prefs ->
+        Gesture.entries.associateWith { gesture ->
+            prefs[gestureKey(gesture)]?.let(GestureAction::decode) ?: gesture.default
+        }
+    }
+
+    suspend fun setGesture(gesture: Gesture, action: GestureAction) {
+        store.edit { it[gestureKey(gesture)] = action.encode() }
+    }
+
     suspend fun setCalendarEnabled(enabled: Boolean) {
         store.edit { it[KEY_CALENDAR_ENABLED] = enabled }
     }
@@ -161,5 +174,8 @@ class LauncherSettings(context: Context) {
         val KEY_WEATHER_ENABLED = booleanPreferencesKey("weather_enabled")
         val KEY_TEMPERATURE_UNIT = stringPreferencesKey("temperature_unit")
         val KEY_WEATHER_CACHE = stringPreferencesKey("weather_cache")
+
+        fun gestureKey(gesture: Gesture) =
+            stringPreferencesKey("gesture_" + gesture.storageKey)
     }
 }

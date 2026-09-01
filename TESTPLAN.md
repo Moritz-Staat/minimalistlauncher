@@ -228,3 +228,29 @@ Einstellungen > Apps > Standard-Apps > Start-App.
     aktuell (stuendlicher WorkManager-Job), und der Akkuverbrauch des Launchers ist unauffaellig.
 17. Wetter ausschalten. Erwartung: die Zeile verschwindet, und in den Entwickleroptionen bzw.
     per `adb shell dumpsys jobscheduler` ist kein Wetter-Job mehr eingeplant.
+
+## Etappe 14 — Gesten
+1. Auf den leeren Bereich lange druecken. Erwartung: die Einstellungen oeffnen sich (Standard).
+   Das muss auch ohne jede erteilte Berechtigung funktionieren.
+2. Auf die Uhr, ein Favoriten-Icon und ein Widget lange druecken. Erwartung: deren eigene
+   Reaktion, nicht die Hintergrundgeste.
+3. Doppeltippen auf den Hintergrund ohne Bedienungshilfen-Dienst. Erwartung: der Toast
+   "Dafuer fehlt der Bedienungshilfen-Dienst.", kein Absturz.
+4. **Heikel:** Dienst aktivieren. Bei einer per `adb install` installierten App blendet
+   Android den Schalter aus; er muss erst ueber App-Info → Menue →
+   "Eingeschraenkte Einstellung zulassen" freigegeben werden.
+5. Doppeltippen mit laufendem Dienst. Erwartung: der Bildschirm geht aus.
+6. Nach unten wischen. Erwartung: die Benachrichtigungsleiste faehrt aus.
+7. Nach unten wischen, waehrend die App-Liste offen ist. Erwartung: die Liste geht zu, die
+   Leiste bleibt zu.
+8. Nach links und rechts wischen mit "Nichts" belegt. Erwartung: nichts passiert, besonders
+   kein Zucken der App-Liste.
+9. Nach links "App starten" mit einer App belegen und wischen. Erwartung: die App startet.
+10. Eine Geste auf "Suche oeffnen" legen. Erwartung: die App-Liste faehrt hoch, die Tastatur
+    kommt und der Cursor steht im Suchfeld.
+11. **Heikel:** Kurze, schraege Wischer probieren. Erwartung: entweder App-Liste oder
+    Seitengeste, nie beides gleichzeitig.
+12. Die zur Geste gewaehlte App deinstallieren. Erwartung: die Geste tut nichts, der Launcher
+    laeuft weiter; in den Einstellungen steht wieder "App starten".
+13. Bedienungshilfen-Dienst wieder abschalten und den Launcher neu oeffnen. Erwartung: die
+    Einstellungen zeigen den Hinweistext, die Gesten selbst bleiben eingestellt.
