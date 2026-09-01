@@ -11,12 +11,16 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import de.moritzstaat.launcher.data.backup.JsonValue
+import de.moritzstaat.launcher.data.backup.asString
+import de.moritzstaat.launcher.data.backup.asStringList
 import de.moritzstaat.launcher.data.gesture.Gesture
 import de.moritzstaat.launcher.data.gesture.GestureAction
 import de.moritzstaat.launcher.data.usage.UsageBreaker
 import de.moritzstaat.launcher.data.usage.UsageBreakerConfig
 import de.moritzstaat.launcher.data.weather.TemperatureUnit
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
@@ -109,6 +113,13 @@ class LauncherSettings(context: Context) {
     /** The last reading, as JSON. Empty until the first successful request. */
     val weatherCache: Flow<String> = preferences.map { it[KEY_WEATHER_CACHE].orEmpty() }
 
+    /** False until the user has been through the first run screen once. */
+    val onboardingDone: Flow<Boolean> = preferences.map { it[KEY_ONBOARDING_DONE] ?: false }
+
+    suspend fun setOnboardingDone(done: Boolean) {
+        store.edit { it[KEY_ONBOARDING_DONE] = done }
+    }
+
     /** What every gesture does; a gesture the user never touched keeps its default. */
     val gestures: Flow<Map<Gesture, GestureAction>> = preferences.map { prefs ->
         Gesture.entries.associateWith { gesture ->
@@ -179,6 +190,56 @@ class LauncherSettings(context: Context) {
         store.edit { it[KEY_MEDIA_ON_OUTPUT] = enabled }
     }
 
+    /**
+     * Every entry worth backing up, as JSON: sets become arrays, everything else a string.
+     *
+     * The font path is left out on purpose — it points into this install's files and would be
+     * a dead path everywhere else.
+     */
+    suspend fun exportPreferences(): Map<String, JsonValue> {
+        val stored = store.data.first().asMap()
+        return buildMap {
+            stored.forEach { (key, value) ->
+                if (key.name == KEY_FONT_PATH.name) return@forEach
+                if (key.name !in BACKED_UP_NAMES) return@forEach
+                put(
+                    key.name,
+                    when (value) {
+                        is Set<*> -> JsonValue.Arr(
+                            value.filterIsInstance<String>().map(JsonValue::Str),
+                        )
+
+                        else -> JsonValue.Str(value.toString())
+                    },
+                )
+            }
+        }
+    }
+
+    /** Writes back what [exportPreferences] wrote out; unknown names are ignored. */
+    suspend fun importPreferences(entries: Map<String, JsonValue>) {
+        store.edit { prefs ->
+            entries.forEach { (name, value) ->
+                when (name) {
+                    in BOOLEAN_NAMES -> value.asString()?.toBooleanStrictOrNull()
+                        ?.let { prefs[booleanPreferencesKey(name)] = it }
+
+                    in INT_NAMES -> value.asString()?.toIntOrNull()
+                        ?.let { prefs[intPreferencesKey(name)] = it }
+
+                    in FLOAT_NAMES -> value.asString()?.toFloatOrNull()
+                        ?.let { prefs[floatPreferencesKey(name)] = it }
+
+                    in SET_NAMES -> prefs[stringSetPreferencesKey(name)] =
+                        value.asStringList().toSet()
+
+                    in STRING_NAMES -> value.asString()
+                        ?.let { prefs[stringPreferencesKey(name)] = it }
+                }
+            }
+        }
+    }
+
     private companion object {
         val KEY_MEDIA_APPS = stringSetPreferencesKey("media_apps")
         val KEY_MEDIA_ON_OUTPUT = booleanPreferencesKey("media_apps_on_output_change")
@@ -200,6 +261,7 @@ class LauncherSettings(context: Context) {
         val KEY_TEMPERATURE_UNIT = stringPreferencesKey("temperature_unit")
         val KEY_WEATHER_CACHE = stringPreferencesKey("weather_cache")
 
+        val KEY_ONBOARDING_DONE = booleanPreferencesKey("onboarding_done")
         val KEY_BREAKER_ENABLED = booleanPreferencesKey("usage_breaker_enabled")
         val KEY_BREAKER_PACKAGES = stringSetPreferencesKey("usage_breaker_packages")
         val KEY_BREAKER_THRESHOLD = intPreferencesKey("usage_breaker_threshold")
@@ -207,5 +269,42 @@ class LauncherSettings(context: Context) {
 
         fun gestureKey(gesture: Gesture) =
             stringPreferencesKey("gesture_" + gesture.storageKey)
+
+        val BOOLEAN_NAMES = setOf(
+            KEY_MEDIA_ON_OUTPUT.name,
+            KEY_SHOW_DATE.name,
+            KEY_DARK.name,
+            KEY_HIDE_STATUS_BAR.name,
+            KEY_CALENDAR_ENABLED.name,
+            KEY_WEATHER_ENABLED.name,
+            KEY_BREAKER_ENABLED.name,
+        )
+
+        val INT_NAMES = setOf(
+            KEY_ACCENT.name,
+            KEY_BREAKER_THRESHOLD.name,
+            KEY_BREAKER_PAUSE.name,
+        )
+
+        val FLOAT_NAMES = setOf(KEY_DIM.name, KEY_BLUR.name)
+
+        val SET_NAMES = setOf(
+            KEY_MEDIA_APPS.name,
+            KEY_CALENDAR_IDS.name,
+            KEY_BREAKER_PACKAGES.name,
+        )
+
+        val STRING_NAMES: Set<String> = setOf(
+            KEY_ICON_STYLE.name,
+            KEY_ICON_PACK.name,
+            KEY_CLOCK_STYLE.name,
+            KEY_HOUR_FORMAT.name,
+            KEY_COLOR_MODE.name,
+            KEY_TEMPERATURE_UNIT.name,
+        ) + Gesture.entries.map { gestureKey(it).name }
+
+        /** The weather cache is state, not a setting, and stays out of the backup. */
+        val BACKED_UP_NAMES: Set<String> =
+            BOOLEAN_NAMES + INT_NAMES + FLOAT_NAMES + SET_NAMES + STRING_NAMES
     }
 }

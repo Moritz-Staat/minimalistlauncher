@@ -279,3 +279,31 @@ Einstellungen > Apps > Standard-Apps > Start-App.
     die Pause, nie ein Durchrutschen, und die Datenbank waechst nicht sichtbar.
 13. Nach einer Woche pruefen, dass alte Tageszeilen verschwunden sind
     (`adb shell run-as` bzw. Backup der launcher.db).
+
+## Etappe 16 — Einstellungen, Sicherung, Einrichtung
+1. Frisch installieren. Erwartung: die Einrichtung erscheint vor allem anderen, vier Schritte,
+   jeder ueberspringbar.
+2. "Ueberspringen" auf Schritt 1. Erwartung: der Homescreen ist bedienbar, ohne dass eine
+   einzige Berechtigung erteilt wurde.
+3. Launcher neu starten. Erwartung: die Einrichtung kommt nicht wieder.
+4. In den Einstellungen "Einrichtung erneut zeigen", Launcher neu oeffnen. Erwartung: sie
+   erscheint wieder.
+5. Einstellungen oeffnen. Erwartung: alle Gruppen zugeklappt bis auf "System", solange der
+   Launcher nicht Standard ist.
+6. Jede Gruppe auf- und zuklappen. Erwartung: der Inhalt ist derselbe wie vorher, nichts
+   springt, der Scrollzustand bleibt brauchbar.
+7. "Sichern" und eine Datei anlegen. Erwartung: Meldung "Sicherung geschrieben"; die Datei ist
+   im Texteditor lesbar und enthaelt Favoriten, Ordner und Einstellungen.
+8. **Heikel:** Alles umstellen (Theme, Favoriten, Ordner, eigene Namen, Icons, versteckte
+   Apps), dann die Sicherung einspielen. Erwartung: der alte Stand ist zurueck, und die
+   Meldung nennt die Zahl der Eintraege.
+9. **Heikel:** Nach dem Einspielen pruefen, dass die Favoritenreihenfolge stimmt und kein
+   Ordner doppelt existiert.
+10. Eine fremde JSON-Datei einspielen. Erwartung: "Datei ist keine Sicherung.", nichts aendert
+    sich.
+11. Eine Sicherung eines anderen Geraets einspielen, auf dem Apps fehlen. Erwartung: die
+    fehlenden Eintraege werden einfach nicht angezeigt, kein Absturz.
+12. **Heikel:** Nach dem Einspielen pruefen, dass platzierte Widgets unveraendert
+    weiterlaufen — sie sind nicht Teil der Sicherung und duerfen auch nicht verschwinden.
+13. App deinstallieren, neu installieren, Sicherung einspielen. Erwartung: alles ausser
+    Widgets, Schrift und Benachrichtigungszugriff ist wieder da.

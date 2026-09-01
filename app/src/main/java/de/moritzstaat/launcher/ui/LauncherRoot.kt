@@ -48,6 +48,9 @@ import de.moritzstaat.launcher.ui.popup.PopupViewModel
 import de.moritzstaat.launcher.ui.search.SearchBar
 import de.moritzstaat.launcher.ui.search.SearchResultsList
 import de.moritzstaat.launcher.ui.search.SearchViewModel
+import de.moritzstaat.launcher.ui.onboarding.OnboardingScreen
+import de.moritzstaat.launcher.ui.settings.SettingsScreen
+import de.moritzstaat.launcher.ui.settings.SettingsViewModel
 import de.moritzstaat.launcher.ui.shell.OverlayTarget
 import de.moritzstaat.launcher.ui.shell.ShellViewModel
 import de.moritzstaat.launcher.ui.usage.UsagePauseOverlay
@@ -74,6 +77,7 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
     val popupViewModel: PopupViewModel = viewModel()
     val widgetViewModel: WidgetViewModel = viewModel()
     val gestureViewModel: GestureViewModel = viewModel()
+    val settingsViewModel: SettingsViewModel = viewModel()
 
     val overlay by shellViewModel.overlay.collectAsStateWithLifecycle()
     val favorites by homeViewModel.favorites.collectAsStateWithLifecycle()
@@ -89,6 +93,7 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
     val choosingIcon by actionsViewModel.choosingIcon.collectAsStateWithLifecycle()
     val gestures by gestureViewModel.gestures.collectAsStateWithLifecycle()
     val pause by homeViewModel.pause.collectAsStateWithLifecycle()
+    val onboardingDone by settingsViewModel.onboardingDone.collectAsStateWithLifecycle()
     val popup by popupViewModel.target.collectAsStateWithLifecycle()
     val popupShortcuts by popupViewModel.shortcuts.collectAsStateWithLifecycle()
 
@@ -347,7 +352,7 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
             )
         }
         if (overlay == OverlayTarget.Settings) {
-            SetupOverlay(
+            SettingsScreen(
                 onDismiss = { shellViewModel.closeOverlays() },
                 onAddWidget = { slot -> widgetPickerSlot = slot },
             )
@@ -358,6 +363,10 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
                 onConfirm = homeViewModel::confirmPause,
                 onDismiss = homeViewModel::dismissPause,
             )
+        }
+        if (!onboardingDone) {
+            // Above everything: the first run comes before anything else can be operated.
+            OnboardingScreen(onFinish = { settingsViewModel.setOnboardingDone(true) })
         }
         widgetPickerSlot?.let { slot ->
             WidgetPicker(

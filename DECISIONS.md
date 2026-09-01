@@ -292,3 +292,24 @@ Jede selbst getroffene Entscheidung mit einer Zeile Begruendung.
   nicht ueber einen Timer um Mitternacht.
 - **Schwelle und Wartezeit werden beim Lesen und Schreiben geklemmt.** Ein kaputter Wert darf
   nicht dazu fuehren, dass eine App gar nicht mehr aufgeht.
+
+## 16 — Einstellungen, Sicherung, Einrichtung
+- **Die Einstellungen bleiben ein Bildschirm mit aufklappbaren Gruppen**, kein Navigationsbaum.
+  Ein zweiter Back-Stack wuerde mit der Regel kollidieren, dass Zurueck nie aus dem Launcher
+  fuehrt.
+- **Die Sicherung ist eine JSON-Datei ueber SAF**, mit demselben Leser und Schreiber wie das
+  Theme. Kein Auto-Backup von Android: `allowBackup` ist aus, und eine Datei kann der Nutzer
+  selbst ablegen, weitergeben und lesen.
+- **Einspielen ersetzt, es fuehrt nicht zusammen.** Zwei zusammengemischte Sicherungen ergaeben
+  einen Zustand, den es auf keinem Geraet je gab.
+- **Nicht gesichert werden platzierte Widgets, die Schriftdatei und die Zaehler der
+  Nutzungsbremse.** Widget-IDs gehoeren dem `AppWidgetHost` genau dieser Installation, der
+  Schriftpfad zeigt in deren Dateien, und die Zaehler beschreiben heute, nicht die Einrichtung.
+- **Ordner werden beim Einspielen neu angelegt statt unter alten IDs wiederhergestellt.** Die
+  IDs vergibt die Datenbank.
+- **Die gesicherten Einstellungsschluessel stehen als Namensliste im Code**, nach Typ getrennt.
+  So kann eine fremde Datei nichts in den Store schreiben, was der Launcher nicht kennt.
+- **Die Einrichtung laesst sich in jedem Schritt ueberspringen.** Der Launcher muss ohne jede
+  Berechtigung laufen, und ein Setup, das auf Zustimmung besteht, erzieht zum Wegtippen.
+- **Die Einrichtung liegt ueber allem anderen und wird ueber ein Flag in DataStore gesteuert**,
+  das sich in den Einstellungen zuruecksetzen laesst.

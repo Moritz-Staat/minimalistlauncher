@@ -52,6 +52,9 @@ interface HiddenAppDao {
     @Query("DELETE FROM hidden_apps WHERE appKey = :appKey")
     suspend fun delete(appKey: String)
 
+    @Query("DELETE FROM hidden_apps")
+    suspend fun clear()
+
     @Query("SELECT appKey FROM hidden_apps")
     suspend fun getAll(): List<String>
 }
@@ -70,6 +73,9 @@ interface CustomLabelDao {
 
     @Query("DELETE FROM custom_labels WHERE appKey = :appKey")
     suspend fun delete(appKey: String)
+
+    @Query("DELETE FROM custom_labels")
+    suspend fun clear()
 }
 
 @Dao
@@ -105,6 +111,9 @@ interface NotificationPrefDao {
 
     @Query("DELETE FROM notification_prefs WHERE packageName = :packageName")
     suspend fun delete(packageName: String)
+
+    @Query("DELETE FROM notification_prefs")
+    suspend fun clear()
 }
 
 @Dao
@@ -155,6 +164,12 @@ interface FolderDao {
 
     @Query("DELETE FROM folders WHERE id = :folderId")
     suspend fun deleteFolder(folderId: Long)
+
+    @Query("DELETE FROM folders")
+    suspend fun clearFolders()
+
+    @Query("DELETE FROM folder_items")
+    suspend fun clearItems()
 
     @Query("DELETE FROM folder_items WHERE folderId = :folderId")
     suspend fun clearFolder(folderId: Long)

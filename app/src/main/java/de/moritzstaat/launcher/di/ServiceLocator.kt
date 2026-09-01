@@ -5,6 +5,7 @@ import de.moritzstaat.launcher.data.app.AppActions
 import de.moritzstaat.launcher.data.app.AppIndex
 import de.moritzstaat.launcher.data.app.AppRepository
 import de.moritzstaat.launcher.data.app.ShortcutRepository
+import de.moritzstaat.launcher.data.backup.BackupRepository
 import de.moritzstaat.launcher.data.calendar.CalendarRepository
 import de.moritzstaat.launcher.data.gesture.Gesture
 import de.moritzstaat.launcher.data.gesture.GestureAction
@@ -92,6 +93,8 @@ class ServiceLocator(context: Context) {
             Gesture.entries.associateWith { it.default },
         )
     }
+
+    val backupRepository: BackupRepository by lazy { BackupRepository(database, settings) }
 
     val usageRepository: UsageRepository by lazy {
         UsageRepository(context, database, settings, applicationScope)
