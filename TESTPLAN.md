@@ -1,7 +1,15 @@
 # TESTPLAN
 
 Alles, was nur am echten Geraet (Nothing Phone (2), Nothing OS 4.x, Android 16) pruefbar ist.
-Wird bis Etappe 18 fortgeschrieben.
+Vollstaendig: Etappen 2 bis 17 sind erfasst.
+
+Waehrend der Entwicklung gab es weder Geraet noch Emulator. Gruener Build und gruene Unit-Tests
+sagen nichts ueber Gesten, Rendering, Berechtigungsdialoge und Akkuverhalten — dafuer ist diese
+Liste da. Punkte mit **Heikel** sind die, bei denen ein Fehler wahrscheinlich oder besonders
+aergerlich ist; wer wenig Zeit hat, nimmt zuerst die.
+
+Reihenfolge fuer den ersten Durchlauf auf einem frischen Geraet: Etappe 2, dann 16
+(Einrichtung), dann 4 bis 6, danach der Rest in beliebiger Folge.
 
 Installation:
 ```
@@ -324,3 +332,25 @@ Einstellungen > Apps > Standard-Apps > Start-App.
    wird kurz auf dem Homescreen eingeblendet. Schalter aus: nichts wird eingeblendet.
 7. Speicher: eine Stunde normal benutzen, dann `adb shell dumpsys meminfo`. Erwartung: kein
    stetig wachsender Java-Heap.
+
+## Gesamtdurchlauf — der Tag danach
+
+Nach den Etappenpunkten einmal einen normalen Tag lang benutzen und dabei auf das achten, was
+sich nur so zeigt:
+
+1. Akku ueber 24 Stunden. Erwartung: der Launcher taucht in der Akkunutzung nicht auffaellig
+   auf. Verdaechtig waeren der stuendliche Wetter-Job und der Benachrichtigungs-Listener.
+2. Speicher nach einem Tag (`adb shell dumpsys meminfo de.moritzstaat.launcher`). Erwartung:
+   kein stetig wachsender Java-Heap; der Icon-Cache wird bei Speicherdruck geleert.
+3. Zwanzig Mal Home druecken, jedes Mal aus einer anderen App. Erwartung: immer derselbe
+   Zustand — Liste zu, Overlays zu, kein Aufblitzen.
+4. Alle Berechtigungen entziehen und den Launcher benutzen. Erwartung: nichts stuerzt ab,
+   jede betroffene Zeile verschwindet einfach.
+5. Geraet neu starten. Erwartung: Home fuehrt sofort hierher, Widgets leben, Theme und Icons
+   stimmen, das Wetter zeigt den letzten bekannten Wert.
+6. Eine App installieren und eine deinstallieren, ohne den Launcher zu oeffnen. Erwartung:
+   beim naechsten Blick stimmt die Liste.
+7. Zweites Nutzerprofil oder Arbeitsprofil, falls vorhanden. Erwartung: dessen Apps tauchen
+   auf und starten.
+8. Sicherung schreiben, App deinstallieren, neu installieren, Sicherung einspielen.
+   Erwartung: der Stand ist wieder da (ausser Widgets, Schrift, Benachrichtigungszugriff).
