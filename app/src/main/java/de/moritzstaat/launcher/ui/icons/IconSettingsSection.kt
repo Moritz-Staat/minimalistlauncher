@@ -59,4 +59,5 @@ private fun styleLabel(style: IconStyle): String = when (style) {
     IconStyle.IconPack -> "Icon-Pack"
     IconStyle.Dots -> "Punkte"
     IconStyle.Monochrome -> "Monochrom"
+    IconStyle.None -> "Keine"
 }

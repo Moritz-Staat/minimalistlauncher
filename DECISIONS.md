@@ -398,3 +398,28 @@ Jede selbst getroffene Entscheidung mit einer Zeile Begründung.
 - **Der Ausgabename kommt aus der Rangfolge der verbundenen Geräte.** Android nennt für eine
   fremde Session keine aktive Route; ein verbundener Kopfhörer ist die belastbare Annahme, und
   fehlt einer, steht dort nichts statt „Telefon".
+
+## Nach v0.2.0 — Ruhezustand, Textliste, Enter in der Suche
+- **`collapseAll` ersetzt `closeOverlays` als Weg in den Ruhezustand.** Der alte Aufruf schloss
+  nur das Overlay, das `ShellViewModel` selbst besitzt. Pop-ups, das Aktionsmenü mit seinen
+  Dialogen, der Widget-Wähler und die Pausenseite liegen als lokaler Zustand im Wurzel-Composable
+  und blieben offen — beim Home-Druck genauso wie nach dem Entsperren.
+- **Das Ereignis ist ein Zähler, kein Schalter.** Zwei Home-Drücke hintereinander müssen als
+  zwei Ereignisse ankommen.
+- **`ACTION_SCREEN_OFF` statt `onStop`.** `onStop` feuert auch beim Öffnen einer App und würde
+  mitten im Widget-Bindungsablauf zuschlagen, der über `startActivityForResult` läuft. Der
+  Bildschirm, der ausgeht, ist eindeutig.
+- **Der Empfänger lebt von `onCreate` bis `onDestroy`**, nicht zwischen `onStart` und `onStop`:
+  Broadcast und Lebenszyklus laufen gegeneinander, und in `onStop` abzumelden würde genau das
+  Ereignis verschlucken, für das er existiert.
+- **Ein offener Widget-Wähler wird beim Zusammenfahren geschlossen und hinterlässt womöglich
+  eine verwaiste Widget-ID.** Der Host räumt Waisen beim nächsten Start auf; den Ablauf offen zu
+  lassen wäre der schlechtere Handel.
+- **`IconStyle.None` kurzschließt den `IconLoader`.** Der Stil dekodiert nichts, und die Zeilen
+  lassen Icon und Abstand ganz weg statt eine leere Fläche einzurücken — sonst sähe es aus wie
+  ein Fehler.
+- **Enter in der Suche startet nur bei genau einem Treffer.** Bei zwei Kandidaten wäre der beste
+  geraten, und ein Tippfehler, der die falsche App öffnet, ist schlimmer als ein Tipp mehr. Die
+  Websuche-Zeile zählt dabei nicht als Treffer.
+- **Der Start über Enter läuft durch `HomeViewModel.launch`**, nicht direkt über das
+  Repository — sonst umgeht die Suche die Nutzungsbremse.

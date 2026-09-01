@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,7 +23,9 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import de.moritzstaat.launcher.data.app.AppFolder
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.moritzstaat.launcher.data.icon.IconLoader
+import de.moritzstaat.launcher.data.icon.IconStyle
 import de.moritzstaat.launcher.ui.common.AppIcon
 import de.moritzstaat.launcher.ui.common.SwipeableRow
 
@@ -39,6 +42,8 @@ fun FolderRow(
     onLongClick: ((Rect?) -> Unit)? = null,
 ) {
     val bounds = remember { FolderBounds() }
+    val iconConfig by iconLoader.config.collectAsStateWithLifecycle()
+    val showIcon = iconConfig.style != IconStyle.None
 
     SwipeableRow(
         modifier = modifier.fillMaxWidth(),
@@ -64,8 +69,10 @@ fun FolderRow(
                 .padding(horizontal = AppRowDefaults.HorizontalPadding),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            FolderIcon(folder, iconLoader)
-            Spacer(Modifier.width(AppRowDefaults.IconGap))
+            if (showIcon) {
+                FolderIcon(folder, iconLoader)
+                Spacer(Modifier.width(AppRowDefaults.IconGap))
+            }
             Text(
                 text = folder.name,
                 style = MaterialTheme.typography.bodyLarge,

@@ -32,7 +32,7 @@ zeigen, und nennt pro Widget Vorschaubild, Größe in Zellen und Beschreibung.
 Benachrichtigung und Ordnerinhalten, der Rest unscharf dahinter.
 
 **Icons.** ADW- und Nova-Icon-Packs, automatische Zuordnung über `appfilter.xml`, Icon pro App
-von Hand setzbar, dazu ein Punkte- und ein Monochrom-Modus.
+von Hand setzbar, dazu ein Punkte-, ein Monochrom- und ein reiner Textmodus ohne Icons.
 
 **Darstellung.** Fünf Uhr-Stile — von groß über die Wortuhr ("viertel nach drei") bis zum
 gezeichneten Punktraster —, Material You oder
@@ -70,7 +70,7 @@ Vorausgesetzt werden JDK 21 und ein Android SDK; der Pfad zum SDK steht in `loca
 export JAVA_HOME="C:\Program Files\Eclipse Adoptium\jdk-21.0.5.11-hotspot"
 
 ./gradlew assembleDebug       # das APK, das auf dem Gerät landet
-./gradlew testDebugUnitTest   # 177 Unit-Tests, framework-frei
+./gradlew testDebugUnitTest   # 183 Unit-Tests, framework-frei
 ./gradlew assembleRelease     # R8-Durchlauf, fängt fehlende Keep-Regeln
 ```
 

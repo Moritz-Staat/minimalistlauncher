@@ -15,6 +15,28 @@ class ShellViewModel : ViewModel() {
     private val _overlay = MutableStateFlow(OverlayTarget.None)
     val overlay: StateFlow<OverlayTarget> = _overlay.asStateFlow()
 
+    private val _collapse = MutableStateFlow(0)
+
+    /**
+     * Counts requests to return to the resting state.
+     *
+     * A counter rather than a flag: two home presses in a row have to arrive as two events, and
+     * the root screen holds state this view model knows nothing about - pop-ups, dialogs, the
+     * open pause screen - so it has to be told rather than asked.
+     */
+    val collapse: StateFlow<Int> = _collapse.asStateFlow()
+
+    /**
+     * Everything shut, back to the home screen.
+     *
+     * Sent on the home press and when the screen turns off; [closeOverlays] alone only ever
+     * dealt with the overlay this view model owns.
+     */
+    fun collapseAll() {
+        _overlay.value = OverlayTarget.None
+        _collapse.value += 1
+    }
+
     fun open(target: OverlayTarget) {
         _overlay.value = target
     }

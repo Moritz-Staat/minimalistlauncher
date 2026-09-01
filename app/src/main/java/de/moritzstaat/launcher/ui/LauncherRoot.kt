@@ -27,6 +27,7 @@ import android.widget.Toast
 import de.moritzstaat.launcher.data.app.AppSorting
 import de.moritzstaat.launcher.data.gesture.Gesture
 import de.moritzstaat.launcher.data.gesture.GestureAction
+import de.moritzstaat.launcher.data.search.SearchResult
 import de.moritzstaat.launcher.data.widget.WidgetSlot
 import de.moritzstaat.launcher.ui.actions.AppActionSheet
 import de.moritzstaat.launcher.ui.actions.AppActionsViewModel
@@ -94,6 +95,7 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
     val gestures by gestureViewModel.gestures.collectAsStateWithLifecycle()
     val pause by homeViewModel.pause.collectAsStateWithLifecycle()
     val onboardingDone by settingsViewModel.onboardingDone.collectAsStateWithLifecycle()
+    val collapse by shellViewModel.collapse.collectAsStateWithLifecycle()
     val popup by popupViewModel.target.collectAsStateWithLifecycle()
     val popupShortcuts by popupViewModel.shortcuts.collectAsStateWithLifecycle()
 
@@ -134,6 +136,28 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
 
     val onSheetSettled: (Boolean) -> Unit = { open ->
         if (open) shellViewModel.open(OverlayTarget.AppList) else shellViewModel.closeOverlays()
+    }
+
+    /**
+     * Back to the resting state: home press or the screen turning off.
+     *
+     * Everything here lives outside the shell view model - pop-ups, the action sheet and its
+     * dialogs, the widget picker, the pause screen - so it has to be cleared explicitly. The
+     * first composition is skipped; the counter starts at zero and nothing is open yet.
+     */
+    LaunchedEffect(collapse) {
+        if (collapse == 0) return@LaunchedEffect
+        popupViewModel.dismiss()
+        actionsViewModel.dismiss()
+        actionsViewModel.cancelRename()
+        actionsViewModel.cancelFolderPicking()
+        actionsViewModel.cancelIconChooser()
+        homeViewModel.dismissPause()
+        searchViewModel.clear()
+        // The picker's own dismiss releases the allocated widget id; going away without it
+        // leaves an orphan, which the host prunes on the next start.
+        widgetPickerSlot = null
+        sheetState.close()
     }
 
     // The open counters roll over at midnight and grow while other apps are in front.
@@ -246,7 +270,19 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
                     SearchBar(
                         query = query,
                         onQueryChange = searchViewModel::setQuery,
-                        onSubmit = { searchViewModel.openWebSearch(query) },
+                        onSubmit = {
+                            // Exactly one match: open it. Anything else stays the web search.
+                            when (val single = searchViewModel.submitTarget()) {
+                                is SearchResult.App -> homeViewModel.launch(single.entry.key)
+                                is SearchResult.Shortcut ->
+                                    searchViewModel.startShortcut(single, null)
+
+                                is SearchResult.Contact ->
+                                    searchViewModel.openContact(single.hit)
+
+                                else -> searchViewModel.openWebSearch(query)
+                            }
+                        },
                         focusRequester = searchFocusRequester,
                         modifier = Modifier.align(Alignment.BottomCenter),
                     )

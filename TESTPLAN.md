@@ -421,3 +421,28 @@ sich nur so zeigt:
     und Tasten funktionieren.
 14. **Heikel:** Ein Hörbuch mit über einer Stunde Länge. Erwartung: die Zeitangabe hat ein
     Stundenfeld ("1:02:03").
+
+## Nach v0.2.0 — Ruhezustand, Textliste, Enter in der Suche
+1. App-Liste aufziehen, Bildschirm sperren, entsperren. Erwartung: der Homescreen steht da, die
+   Liste ist zu.
+2. **Heikel:** Pop-up öffnen (Zeile nach rechts wischen), sperren, entsperren. Erwartung: das
+   Pop-up ist weg. Dasselbe mit dem Langdruck-Menü, dem Umbenennen-Dialog und der Ordnerauswahl.
+3. Einstellungen öffnen, sperren, entsperren. Erwartung: Homescreen.
+4. Suchen, sperren, entsperren. Erwartung: das Suchfeld ist leer.
+5. Dieselben vier Fälle mit dem Home-Druck statt dem Sperren. Erwartung: identisch — das war
+   vorher auch schon falsch, nicht nur nach dem Entsperren.
+6. **Heikel:** Widget-Wähler öffnen, sperren, entsperren. Erwartung: Homescreen, und beim
+   nächsten Start des Launchers kein Geister-Widget in den Slots.
+7. **Heikel:** Nutzungsbremse auslösen, auf der Pausenseite sperren, entsperren. Erwartung:
+   Homescreen, und die App wurde nicht gestartet.
+8. Icon-Stil „Keine" wählen. Erwartung: reine Textliste, kein Einzug, wo vorher das Icon war —
+   auch bei Favoriten, Suchtreffern und Ordnerzeilen.
+9. Von „Keine" zurück auf „Original". Erwartung: die Icons sind sofort wieder da.
+10. „wh" tippen, sodass nur eine App übrig ist, Enter drücken. Erwartung: die App startet.
+11. **Heikel:** Etwas tippen, das zwei Apps trifft, Enter drücken. Erwartung: die Websuche
+    öffnet, **nicht** eine der beiden Apps.
+12. Etwas tippen, das nichts trifft, Enter drücken. Erwartung: Websuche.
+13. Einen Kontakt so eingrenzen, dass er der einzige Treffer ist, Enter. Erwartung: der Kontakt
+    öffnet.
+14. **Heikel:** Eine App mit Nutzungsbremse als einzigen Treffer suchen, Enter. Erwartung: die
+    Pausenseite kommt — die Suche darf die Bremse nicht umgehen.

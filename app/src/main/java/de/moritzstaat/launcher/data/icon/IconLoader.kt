@@ -55,6 +55,9 @@ class IconLoader(
 
     suspend fun load(key: AppKey, sizePx: Int = defaultSizePx): Bitmap? {
         val current = config.value
+        // Nothing to draw, and nothing to decode: the text only style short circuits here so
+        // switching to it costs no work at all.
+        if (current.style == IconStyle.None) return null
         val cacheKey = "${key.flatten()}|$sizePx|${current.signature}"
         cache[cacheKey]?.let { return it }
 

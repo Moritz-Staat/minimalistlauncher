@@ -27,6 +27,9 @@ enum class IconStyle {
 
     /** The monochrome layer of the adaptive icon, greyscale where there is none. */
     Monochrome,
+
+    /** No icons at all: a plain list of names, which is the most minimal the launcher gets. */
+    None,
     ;
 
     companion object {
@@ -58,6 +61,10 @@ object IconRenderer {
             pack != null -> applyPackRecipe(source, sizePx, pack)
             else -> source.rasterise(sizePx)
         }
+
+        // Not reached: IconLoader answers null for this style and the rows leave the slot out
+        // entirely, so nothing ever asks for a bitmap.
+        IconStyle.None -> source.rasterise(sizePx)
     }
 
     /** A filled circle in the icon's dominant tone. Works for every app, including new ones. */

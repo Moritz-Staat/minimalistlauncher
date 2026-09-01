@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,7 +29,9 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import de.moritzstaat.launcher.data.app.AppEntry
 import de.moritzstaat.launcher.data.notification.NotificationSummary
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.moritzstaat.launcher.data.icon.IconLoader
+import de.moritzstaat.launcher.data.icon.IconStyle
 import de.moritzstaat.launcher.ui.common.AppIcon
 import de.moritzstaat.launcher.ui.common.SwipeableRow
 
@@ -62,6 +65,8 @@ fun AppRow(
     onSwipeRight: ((Rect?) -> Unit)? = null,
 ) {
     val boundsHolder = remember { BoundsHolder() }
+    val iconConfig by iconLoader.config.collectAsStateWithLifecycle()
+    val showIcon = iconConfig.style != IconStyle.None
 
     SwipeableRow(
         modifier = modifier.fillMaxWidth(),
@@ -89,13 +94,15 @@ fun AppRow(
                 .padding(horizontal = AppRowDefaults.HorizontalPadding),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            AppIcon(
-                appKey = entry.key,
-                iconLoader = iconLoader,
-                size = AppRowDefaults.IconSize,
-                contentDescription = entry.label,
-            )
-            Spacer(Modifier.width(AppRowDefaults.IconGap))
+            if (showIcon) {
+                AppIcon(
+                    appKey = entry.key,
+                    iconLoader = iconLoader,
+                    size = AppRowDefaults.IconSize,
+                    contentDescription = entry.label,
+                )
+                Spacer(Modifier.width(AppRowDefaults.IconGap))
+            }
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.Center,

@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import de.moritzstaat.launcher.LauncherApplication
 import de.moritzstaat.launcher.data.search.ContactHit
 import de.moritzstaat.launcher.data.search.SearchResult
+import de.moritzstaat.launcher.data.search.SearchSubmit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -51,6 +52,14 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
     fun clear() {
         _query.value = ""
     }
+
+    /**
+     * The one result enter should act on, or null when the query is ambiguous.
+     *
+     * Only reports the target; starting an app has to go through the home screen so the usage
+     * breaker still gets its say.
+     */
+    fun submitTarget(): SearchResult? = SearchSubmit.singleMatch(results.value)
 
     fun openContact(hit: ContactHit) {
         start(Intent(Intent.ACTION_VIEW, hit.contentUri()))

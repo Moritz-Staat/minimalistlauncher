@@ -1,6 +1,9 @@
 package de.moritzstaat.launcher
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -22,12 +25,30 @@ class MainActivity : ComponentActivity() {
 
     private val shellViewModel: ShellViewModel by viewModels()
 
+    /**
+     * The screen going off ends the session as far as the launcher is concerned.
+     *
+     * Registered for the whole life of the activity rather than between onStart and onStop: the
+     * broadcast and the lifecycle callbacks race, and unregistering in onStop would sometimes
+     * drop the very event this exists for.
+     */
+    private val screenOffReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == Intent.ACTION_SCREEN_OFF) shellViewModel.collapseAll()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
             navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
         )
         super.onCreate(savedInstanceState)
+        registerReceiver(
+            screenOffReceiver,
+            IntentFilter(Intent.ACTION_SCREEN_OFF),
+            RECEIVER_NOT_EXPORTED,
+        )
         val themes = (application as LauncherApplication).services.theme
         setContent {
             val theme by themes.collectAsStateWithLifecycle()
@@ -48,6 +69,11 @@ class MainActivity : ComponentActivity() {
         super.onStop()
     }
 
+    override fun onDestroy() {
+        runCatching { unregisterReceiver(screenOffReceiver) }
+        super.onDestroy()
+    }
+
     /**
      * Pressing home collapses the launcher back to its resting state. Without this the user
      * would press home and stare at whatever overlay was open before.
@@ -55,6 +81,6 @@ class MainActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
-        shellViewModel.closeOverlays()
+        shellViewModel.collapseAll()
     }
 }
