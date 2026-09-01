@@ -32,6 +32,23 @@ data class MediaState(
     val isPlaying: Boolean,
     val canSkipNext: Boolean,
     val canSkipPrevious: Boolean,
+    val positionMs: Long,
+    val durationMs: Long,
+    val positionUpdatedAtMs: Long,
+    val playbackSpeed: Float,
+    val customActions: List<MediaCustomAction>,
+)
+
+/**
+ * An action the app added beyond play and skip - shuffle, "save to library" and the like.
+ *
+ * [iconResId] points into the session app's own resources, so the icon has to be loaded from
+ * there; there is no way to know in advance what the action means.
+ */
+data class MediaCustomAction(
+    val action: String,
+    val name: String,
+    val iconResId: Int,
 )
 
 /**
@@ -124,6 +141,16 @@ class MediaRepository(
         controller?.transportControls?.skipToPrevious()
     }
 
+    /** Runs one of the session's own actions, e.g. Spotify's shuffle or "save". */
+    fun sendCustomAction(action: String) {
+        runCatching { controller?.transportControls?.sendCustomAction(action, null) }
+    }
+
+    /** Jumps within the track; ignored by sessions that do not allow seeking. */
+    fun seekTo(positionMs: Long) {
+        runCatching { controller?.transportControls?.seekTo(positionMs) }
+    }
+
     /** Opens the app the session belongs to. */
     fun sessionPackage(): String? = controller?.packageName
 
@@ -144,15 +171,31 @@ private fun MediaController.toState(): MediaState? {
     val artwork = metadata.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART)
         ?: metadata.getBitmap(MediaMetadata.METADATA_KEY_ART)
         ?: metadata.getBitmap(MediaMetadata.METADATA_KEY_DISPLAY_ICON)
-    val actions = playbackState?.actions ?: 0L
+    val state = playbackState
+    val actions = state?.actions ?: 0L
 
     return MediaState(
         packageName = packageName,
         title = title,
         artist = artist,
         artwork = artwork,
-        isPlaying = playbackState?.state == PlaybackState.STATE_PLAYING,
+        isPlaying = state?.state == PlaybackState.STATE_PLAYING,
         canSkipNext = actions and PlaybackState.ACTION_SKIP_TO_NEXT != 0L,
         canSkipPrevious = actions and PlaybackState.ACTION_SKIP_TO_PREVIOUS != 0L,
+        positionMs = state?.position ?: 0L,
+        durationMs = metadata.getLong(MediaMetadata.METADATA_KEY_DURATION),
+        // Measured against elapsedRealtime, which is also what PlaybackState uses.
+        positionUpdatedAtMs = state?.lastPositionUpdateTime ?: 0L,
+        playbackSpeed = state?.playbackSpeed ?: 1f,
+        customActions = state?.customActions.orEmpty().mapNotNull { it.toCustomAction() },
+    )
+}
+
+private fun PlaybackState.CustomAction.toCustomAction(): MediaCustomAction? {
+    if (icon == 0) return null
+    return MediaCustomAction(
+        action = action,
+        name = name?.toString().orEmpty(),
+        iconResId = icon,
     )
 }

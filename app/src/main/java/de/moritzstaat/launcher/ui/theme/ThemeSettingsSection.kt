@@ -203,6 +203,7 @@ private fun clockStyleLabel(style: ClockStyle): String = when (style) {
     ClockStyle.Narrow -> "Schmal"
     ClockStyle.TwoLine -> "Zweizeilig"
     ClockStyle.Text -> "Als Text"
+    ClockStyle.DotMatrix -> "Punktraster"
 }
 
 private fun hourFormatLabel(format: HourFormat): String = when (format) {

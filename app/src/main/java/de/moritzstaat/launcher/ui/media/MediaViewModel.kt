@@ -1,12 +1,16 @@
 package de.moritzstaat.launcher.ui.media
 
 import android.app.Application
+import android.graphics.Bitmap
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import de.moritzstaat.launcher.LauncherApplication
 import de.moritzstaat.launcher.data.app.AppEntry
 import de.moritzstaat.launcher.data.app.AppKey
 import de.moritzstaat.launcher.data.media.MediaState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +20,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.transformLatest
 
 /** Media widget and the short-lived music app suggestions after an audio output connects. */
@@ -80,6 +86,34 @@ class MediaViewModel(application: Application) : AndroidViewModel(application) {
         state ?: return@combine null
         apps.firstOrNull { it.key.packageName == state.packageName }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), null)
+
+    /**
+     * Name of the audio output, re-read on every connect event and whenever the session
+     * changes: switching headphones does not touch the media session at all.
+     */
+    val outputName: StateFlow<String?> = combine(
+        services.audioOutputRepository.outputConnected.onStart { emit(Unit) },
+        mediaRepository.state,
+    ) { _, _ -> services.audioOutputRepository.currentOutputName() }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), null)
+
+    /**
+     * Icon of one of the session's own actions, loaded from that app's resources.
+     *
+     * The same route the icon packs take. A failure simply yields null and the action is then
+     * not offered, rather than drawing a blank button.
+     */
+    suspend fun customActionIcon(packageName: String, iconResId: Int): Bitmap? =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val resources = getApplication<Application>().packageManager
+                    .getResourcesForApplication(packageName)
+                val drawable = ResourcesCompat.getDrawable(resources, iconResId, null)
+                drawable?.toBitmap()
+            }.getOrNull()
+        }
+
+    fun sendCustomAction(action: String) = mediaRepository.sendCustomAction(action)
 
     fun playOrPause() = mediaRepository.playOrPause()
 

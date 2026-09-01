@@ -392,3 +392,32 @@ sich nur so zeigt:
    Erwartung: der Dialog kommt, und bei Abbruch bleibt kein leerer Platz zurück.
 10. **Heikel:** Ein Widget wählen, dessen Anbieter keine Vorschau mitbringt. Erwartung: das
     App-Icon steht an der Stelle, keine leere Fläche und kein Absturz.
+
+## Nach v0.1.2 — Punktraster-Uhr und Media-Karte
+1. Uhr-Stil „Punktraster" wählen. Erwartung: große Blockziffern, zentriert, Datum klein
+   darüber, Lücke zwischen Stunde und Minute statt Doppelpunkt.
+2. Alle Ziffern sehen: über eine Stunde hinweg oder Systemzeit umstellen. Erwartung: 0 bis 9
+   sind sauber lesbar und unterscheidbar, besonders 6/8, 3/9 und 1.
+3. Auf 12-Stunden-Format stellen. Erwartung: um 9:05 steht „9 05" ohne führende Null, um
+   Mitternacht „12 00".
+4. **Heikel:** Gerät drehen bzw. Schriftgröße im System ändern. Erwartung: das Raster skaliert
+   mit der Breite und bleibt quadratisch, die Ziffern werden nicht verzerrt.
+5. Datum abschalten. Erwartung: nur das Raster, weiter zentriert.
+6. Eigene Schrift wählen. Erwartung: das Punktraster ändert sich nicht — es ist gezeichnet,
+   keine Schrift. Die anderen vier Stile folgen der Schrift weiter.
+7. Musik starten. Erwartung: die Karte zeigt Cover, Titel, Interpret, große Play-Taste,
+   Fortschrittsbalken mit Zeit links und Gesamtlänge rechts.
+8. **Heikel:** Eine Minute laufen lassen, ohne die App zu berühren. Erwartung: der Balken
+   wandert gleichmäßig, die Zeit links zählt mit.
+9. Pausieren. Erwartung: der Balken bleibt stehen und läuft nicht weiter.
+10. **Heikel:** Innerhalb der Musik-App spulen, dann zum Launcher zurück. Erwartung: der
+    Balken sitzt an der neuen Stelle, nicht an der alten.
+11. Kopfhörer verbinden. Erwartung: rechts oben erscheint der Gerätename. Trennen: die
+    Kennzeichnung verschwindet.
+12. **Heikel:** Spotify-eigene Tasten (Shuffle, Herz/Speichern) prüfen. Erwartung: sie
+    erscheinen mit Spotifys eigenen Symbolen und tun beim Antippen das Richtige. Bei einer App
+    ohne solche Aktionen ist die Zeile einfach kürzer.
+13. Podcast oder Livestream abspielen. Erwartung: ohne bekannte Länge kein Balken, aber Titel
+    und Tasten funktionieren.
+14. **Heikel:** Ein Hörbuch mit über einer Stunde Länge. Erwartung: die Zeitangabe hat ein
+    Stundenfeld ("1:02:03").

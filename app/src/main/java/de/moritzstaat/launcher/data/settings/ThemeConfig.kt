@@ -8,7 +8,15 @@ import de.moritzstaat.launcher.data.backup.asString
 import de.moritzstaat.launcher.data.backup.toJson
 
 /** How the clock is drawn. */
-enum class ClockStyle { Large, Narrow, TwoLine, Text }
+enum class ClockStyle {
+    Large,
+    Narrow,
+    TwoLine,
+    Text,
+
+    /** Digits painted as a block grid, centred, with the date above them. */
+    DotMatrix,
+}
 
 /** Where the colours come from. */
 enum class ColorMode {

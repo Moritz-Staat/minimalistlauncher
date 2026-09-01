@@ -1,17 +1,25 @@
 package de.moritzstaat.launcher.ui.home
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import de.moritzstaat.launcher.data.settings.ClockStyle
@@ -46,6 +54,17 @@ fun ClockBlock(
         DateTimeFormatter.ofPattern("EEEE, d. MMMM", Locale.GERMANY)
     }
 
+    if (config.clockStyle == ClockStyle.DotMatrix) {
+        DotMatrixClock(
+            now = now,
+            is24Hour = is24Hour,
+            dateText = now.format(dateFormatter).takeIf { config.showDate },
+            onClick = onClockClick,
+            modifier = modifier,
+        )
+        return
+    }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -56,6 +75,7 @@ fun ClockBlock(
             ClockStyle.Narrow -> TimeText(now, is24Hour, narrowStyle())
             ClockStyle.TwoLine -> TwoLineTime(now, is24Hour)
             ClockStyle.Text -> WordTime(now)
+            ClockStyle.DotMatrix -> Unit
         }
         if (config.showDate) {
             Text(
@@ -104,6 +124,73 @@ private fun TwoLineTime(now: LocalDateTime, is24Hour: Boolean) {
     }
 }
 
+/**
+ * The block clock: date above, digits centred, both filling the width.
+ *
+ * This style breaks the launcher's left aligned rule on purpose - centred with the date on top
+ * is what makes it read as the lock screen clock it imitates, and splitting that into two more
+ * settings would only invite half-combinations that look wrong.
+ */
+@Composable
+private fun DotMatrixClock(
+    now: LocalDateTime,
+    is24Hour: Boolean,
+    dateText: String?,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val digits = DotMatrixDigits.digitsFor(now.hour, now.minute, is24Hour)
+    val grid = remember(digits) { DotMatrixDigits.grid(digits) }
+    val columns = DotMatrixDigits.columnsFor(digits)
+    val blockColor = MaterialTheme.colorScheme.onSurface
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        if (dateText != null) {
+            Text(
+                text = dateText,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Canvas(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp)
+                // The grid is square-celled, so the box has to carry the glyph proportions.
+                .aspectRatio(columns.toFloat() / DotMatrixDigits.HEIGHT),
+        ) {
+            drawDotMatrix(grid, columns, blockColor)
+        }
+    }
+}
+
+/** One filled square per set cell, with a hairline gap so the grid stays visible. */
+private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawDotMatrix(
+    grid: List<BooleanArray>,
+    columns: Int,
+    color: Color,
+) {
+    val cell = size.width / columns
+    val block = cell * BLOCK_FILL
+    val inset = (cell - block) / 2f
+
+    grid.forEachIndexed { row, cells ->
+        for (column in 0 until columns) {
+            if (!cells[column]) continue
+            drawRect(
+                color = color,
+                topLeft = Offset(column * cell + inset, row * cell + inset),
+                size = Size(block, block),
+            )
+        }
+    }
+}
+
 /** The time spelled out the way it is said, e.g. "viertel nach drei". */
 @Composable
 private fun WordTime(now: LocalDateTime) {
@@ -115,7 +202,10 @@ private fun WordTime(now: LocalDateTime) {
     )
 }
 
-// All four styles start from displayLarge, so a font the user picked reaches the clock too.
+/** Fraction of a cell that is painted; the rest is the gap that makes it a grid. */
+private const val BLOCK_FILL = 0.82f
+
+// The text styles all start from displayLarge, so a font the user picked reaches the clock too.
 @Composable
 private fun clockBase(): TextStyle = MaterialTheme.typography.displayLarge
 

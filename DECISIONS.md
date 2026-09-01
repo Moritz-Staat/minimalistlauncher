@@ -371,3 +371,30 @@ Jede selbst getroffene Entscheidung mit einer Zeile Begründung.
   die man aus anderen Launchern kennt. Ein 70-dp-Widget braucht deshalb zwei Zellen.
 - **Bleibt bei der Suche genau eine App übrig, klappt sie von selbst auf.** Ein Tipp, der
   nichts entscheidet, ist ein Tipp zu viel.
+
+## Nach v0.1.2 — Punktraster-Uhr und Media-Karte
+- **Die Punktraster-Uhr ist gezeichnet, keine Schrift.** Nothings Uhr benutzt deren Ndot-Font.
+  Die Datei mitzuliefern wäre eine Lizenzfrage, und auf jedem anderen Telefon fehlte sie. Die
+  zehn Ziffern liegen deshalb als 5×7-Muster im Code und werden als Quadrate gemalt — testbar
+  und überall lauffähig.
+- **Kein Doppelpunkt.** Der Sperrbildschirm, den der Stil aufgreift, trennt Stunde und Minute
+  durch eine breitere Lücke; ein Doppelpunkt liest sich in einer Blockschrift als zwei
+  verirrte Punkte.
+- **Im 12-Stunden-Format wird die führende Null zum Leerzeichen.** „9:05" ist neun, nicht „09".
+- **Dieser Stil bringt seine eigene Anordnung mit** — zentriert, Datum darüber — und bricht
+  damit absichtlich die linksbündige Regel. Genau das macht ihn erkennbar; als zwei zusätzliche
+  Einstellungen wären nur halbe Kombinationen möglich, die falsch aussehen.
+- **Die Media-Karte folgt der System-Medienkarte**, weil das die Form ist, die man ohne
+  Nachdenken liest: Ausgabe oben, Titel, große Taste rechts, Transportzeile über dem
+  Fortschrittsbalken.
+- **Der Fortschritt wird lokal weitergerechnet.** Eine Session meldet ihre Position genau
+  einmal und schweigt dann; ohne Extrapolation aus `lastPositionUpdateTime` und
+  `playbackSpeed` stünde der Balken still. Die Rechnung liegt in `MediaProgress` und ist
+  getestet, inklusive Uhrensprüngen und unbekannter Länge.
+- **Eigene Aktionen der App (Shuffle, „Speichern") werden mit deren eigenen Icons gezeichnet**,
+  geladen über `getResourcesForApplication` wie bei den Icon-Packs. Lässt sich ein Icon nicht
+  laden, entfällt die Aktion — eine leere Taste ist schlechter als keine.
+- **Höchstens zwei eigene Aktionen.** Spotify liefert mehr, als in eine Zeile passt.
+- **Der Ausgabename kommt aus der Rangfolge der verbundenen Geräte.** Android nennt für eine
+  fremde Session keine aktive Route; ein verbundener Kopfhörer ist die belastbare Annahme, und
+  fehlt einer, steht dort nichts statt „Telefon".

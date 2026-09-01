@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -23,6 +24,37 @@ class AudioOutputRepository(context: Context) {
 
     private val appContext = context.applicationContext
 
+    private val audioManager = appContext.getSystemService(AudioManager::class.java)
+
+    /**
+     * Name of the audio output music would go to right now, or null when that is the phone
+     * itself.
+     *
+     * Android exposes no "current media route" for another app's session, so the connected
+     * devices are ranked instead: a Bluetooth or wired output is where the sound is going if one
+     * is attached. Good enough for a label, and it never lies about the phone speaker.
+     */
+    fun currentOutputName(): String? {
+        val devices = runCatching {
+            audioManager?.getDevices(AudioManager.GET_DEVICES_OUTPUTS)?.toList()
+        }.getOrNull().orEmpty()
+
+        val device = RANKED_TYPES.firstNotNullOfOrNull { type ->
+            devices.firstOrNull { it.type == type }
+        } ?: return null
+
+        val name = device.productName?.toString()?.trim()
+        return name?.takeIf { it.isNotBlank() && !it.equals(android.os.Build.MODEL, true) }
+            ?: fallbackName(device.type)
+    }
+
+    private fun fallbackName(type: Int): String? = when (type) {
+        AudioDeviceInfo.TYPE_BLUETOOTH_A2DP, AudioDeviceInfo.TYPE_BLE_HEADSET -> "Bluetooth"
+        AudioDeviceInfo.TYPE_WIRED_HEADSET, AudioDeviceInfo.TYPE_WIRED_HEADPHONES -> "Kabel"
+        AudioDeviceInfo.TYPE_USB_HEADSET, AudioDeviceInfo.TYPE_USB_DEVICE -> "USB"
+        else -> null
+    }
+
     /** Emits once per connect event. Disconnects are ignored. */
     val outputConnected: Flow<Unit> = callbackFlow {
         val receiver = object : BroadcastReceiver() {
@@ -37,6 +69,17 @@ class AudioOutputRepository(context: Context) {
         appContext.registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED)
         awaitClose { runCatching { appContext.unregisterReceiver(receiver) } }
     }.conflate()
+
+    private companion object {
+        /** Most specific first: a headset beats a speaker when both are attached. */
+        val RANKED_TYPES = listOf(
+            AudioDeviceInfo.TYPE_BLE_HEADSET,
+            AudioDeviceInfo.TYPE_BLUETOOTH_A2DP,
+            AudioDeviceInfo.TYPE_USB_HEADSET,
+            AudioDeviceInfo.TYPE_WIRED_HEADSET,
+            AudioDeviceInfo.TYPE_WIRED_HEADPHONES,
+        )
+    }
 }
 
 private fun Intent.isConnectEvent(): Boolean = when (action) {

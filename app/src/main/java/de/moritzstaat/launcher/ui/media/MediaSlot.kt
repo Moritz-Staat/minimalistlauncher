@@ -26,6 +26,7 @@ fun MediaSlot(modifier: Modifier = Modifier) {
     val viewModel: MediaViewModel = viewModel()
     val media by viewModel.media.collectAsStateWithLifecycle()
     val suggestions by viewModel.suggestedMediaApps.collectAsStateWithLifecycle()
+    val outputName by viewModel.outputName.collectAsStateWithLifecycle()
 
     Column(modifier = modifier.fillMaxWidth()) {
         AnimatedVisibility(
@@ -40,6 +41,9 @@ fun MediaSlot(modifier: Modifier = Modifier) {
                     onSkipNext = viewModel::skipNext,
                     onSkipPrevious = viewModel::skipPrevious,
                     onOpenApp = viewModel::openSessionApp,
+                    outputName = outputName,
+                    customActionIcon = viewModel::customActionIcon,
+                    onCustomAction = viewModel::sendCustomAction,
                 )
             }
         }
