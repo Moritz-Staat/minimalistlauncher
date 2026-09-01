@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import de.moritzstaat.launcher.data.usage.FrequentApps
 import de.moritzstaat.launcher.data.usage.UsageAccess
 import de.moritzstaat.launcher.data.usage.UsageBreakerConfig
 import de.moritzstaat.launcher.ui.common.ToggleRow
@@ -45,8 +46,28 @@ fun UsageSettingsSection(modifier: Modifier = Modifier) {
         onPauseOrDispose { }
     }
 
+    val frequentEnabled by viewModel.frequentEnabled.collectAsStateWithLifecycle()
+
     Column(modifier = modifier.fillMaxWidth()) {
-        Text(text = "Nutzungsbremse", style = MaterialTheme.typography.titleMedium)
+        Text(text = "Häufig genutzt", style = MaterialTheme.typography.titleMedium)
+        Text(
+            text = "Die " + FrequentApps.LIMIT + " am häufigsten geöffneten Apps der letzten " +
+                FrequentApps.WINDOW_DAYS + " Tage stehen oben in der App-Liste. Der Homescreen " +
+                "bleibt leer.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        ToggleRow(
+            label = "Häufig genutzte oben zeigen",
+            checked = frequentEnabled,
+            onCheckedChange = viewModel::setFrequentEnabled,
+        )
+
+        Text(
+            text = "Nutzungsbremse",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(top = 16.dp),
+        )
         Text(
             text = "Ab einer eingestellten Zahl von Öffnungen fragt der Launcher nach, statt " +
                 "die App sofort zu starten. Blockiert wird nie.",

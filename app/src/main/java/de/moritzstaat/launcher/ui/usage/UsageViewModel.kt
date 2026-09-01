@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import de.moritzstaat.launcher.LauncherApplication
 import de.moritzstaat.launcher.data.app.AppEntry
 import de.moritzstaat.launcher.data.usage.UsageBreakerConfig
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 /** The usage breaker settings, plus the counts they are about. */
@@ -20,6 +22,13 @@ class UsageViewModel(application: Application) : AndroidViewModel(application) {
     val apps: StateFlow<List<AppEntry>> = services.appIndex.visibleApps
 
     val usageAccessGranted: StateFlow<Boolean> = repository.usageAccessGranted
+
+    val frequentEnabled: StateFlow<Boolean> = services.settings.frequentAppsEnabled
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), true)
+
+    fun setFrequentEnabled(enabled: Boolean) {
+        viewModelScope.launch { services.settings.setFrequentAppsEnabled(enabled) }
+    }
 
     /** Today's number for one app, so the settings can show what the threshold means. */
     fun opensToday(packageName: String): Int = repository.opensToday(packageName)
@@ -45,5 +54,9 @@ class UsageViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun update(transform: (UsageBreakerConfig) -> UsageBreakerConfig) {
         viewModelScope.launch { services.settings.setUsageBreaker(transform(config.value)) }
+    }
+
+    private companion object {
+        const val STOP_TIMEOUT_MS = 5_000L
     }
 }

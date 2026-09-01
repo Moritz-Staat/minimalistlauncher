@@ -113,6 +113,19 @@ class LauncherSettings(context: Context) {
     /** The last reading, as JSON. Empty until the first successful request. */
     val weatherCache: Flow<String> = preferences.map { it[KEY_WEATHER_CACHE].orEmpty() }
 
+    /**
+     * Whether the frequently used block sits above the alphabet.
+     *
+     * On by default: with no history it shows nothing, so it appears by itself once there is
+     * something to show instead of having to be discovered in the settings.
+     */
+    val frequentAppsEnabled: Flow<Boolean> =
+        preferences.map { it[KEY_FREQUENT_APPS] ?: true }
+
+    suspend fun setFrequentAppsEnabled(enabled: Boolean) {
+        store.edit { it[KEY_FREQUENT_APPS] = enabled }
+    }
+
     /** False until the user has been through the first run screen once. */
     val onboardingDone: Flow<Boolean> = preferences.map { it[KEY_ONBOARDING_DONE] ?: false }
 
@@ -262,6 +275,7 @@ class LauncherSettings(context: Context) {
         val KEY_WEATHER_CACHE = stringPreferencesKey("weather_cache")
 
         val KEY_ONBOARDING_DONE = booleanPreferencesKey("onboarding_done")
+        val KEY_FREQUENT_APPS = booleanPreferencesKey("frequent_apps_enabled")
         val KEY_BREAKER_ENABLED = booleanPreferencesKey("usage_breaker_enabled")
         val KEY_BREAKER_PACKAGES = stringSetPreferencesKey("usage_breaker_packages")
         val KEY_BREAKER_THRESHOLD = intPreferencesKey("usage_breaker_threshold")
@@ -272,6 +286,7 @@ class LauncherSettings(context: Context) {
 
         val BOOLEAN_NAMES = setOf(
             KEY_MEDIA_ON_OUTPUT.name,
+            KEY_FREQUENT_APPS.name,
             KEY_SHOW_DATE.name,
             KEY_DARK.name,
             KEY_HIDE_STATUS_BAR.name,

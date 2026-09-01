@@ -58,6 +58,21 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             .toList()
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), emptyList())
 
+    /**
+     * The frequently used block above the alphabet.
+     *
+     * Resolved against the visible apps, so a hidden or uninstalled app drops out on its own.
+     * One entry per package: an app with several launcher entries should take one line, not
+     * three.
+     */
+    val frequentApps: StateFlow<List<AppEntry>> = combine(
+        services.usageRepository.frequentPackages,
+        services.appIndex.visibleApps,
+    ) { packages, apps ->
+        val byPackage = apps.groupBy { it.key.packageName }
+        packages.mapNotNull { packageName -> byPackage[packageName]?.firstOrNull() }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), emptyList())
+
     /** Notification previews, keyed by package. Empty while the access is not granted. */
     val notifications: StateFlow<Map<String, NotificationSummary>> =
         services.notificationRepository.summaries

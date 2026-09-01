@@ -4,11 +4,15 @@ import android.content.Context
 import de.moritzstaat.launcher.data.db.LauncherDatabase
 import de.moritzstaat.launcher.data.settings.LauncherSettings
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -22,6 +26,7 @@ import java.time.LocalDate
  * The configuration and today's counts are held as state, so the check at launch time is a map
  * lookup and not a database round trip — nothing may sit between the tap and the app.
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class UsageRepository(
     private val context: Context,
     private val database: LauncherDatabase,
@@ -31,6 +36,23 @@ class UsageRepository(
 
     val config: StateFlow<UsageBreakerConfig> =
         settings.usageBreaker.stateIn(scope, SharingStarted.Eagerly, UsageBreakerConfig())
+
+    /**
+     * Packages for the frequently used block, most used first.
+     *
+     * Counted from the launcher's own tally rather than from usage access: this is about what
+     * the user opens *here*, and it works without any permission at all.
+     */
+    val frequentPackages: StateFlow<List<String>> = settings.frequentAppsEnabled
+        .flatMapLatest { enabled ->
+            if (!enabled) {
+                flowOf(emptyList())
+            } else {
+                val since = LocalDate.now().toEpochDay() - FrequentApps.WINDOW_DAYS
+                database.appOpenDao().observeTallies(since).map { FrequentApps.rank(it) }
+            }
+        }
+        .stateIn(scope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), emptyList())
 
     private val _ownCounts = MutableStateFlow<Map<String, Int>>(emptyMap())
 
@@ -84,7 +106,8 @@ class UsageRepository(
     }
 
     private companion object {
-        /** A week is enough history for a counter that only ever reports today. */
-        const val KEEP_DAYS = 7L
+        /** Exactly the window the ranking looks at; older rows would never be read. */
+        const val KEEP_DAYS = FrequentApps.WINDOW_DAYS
+        const val STOP_TIMEOUT_MS = 5_000L
     }
 }

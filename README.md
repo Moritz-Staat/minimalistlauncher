@@ -12,7 +12,8 @@ Der Nothing-Launcher bleibt dabei installiert. Der Rückweg geht jederzeit über
 nächsten Termine, ein Widget-Slot und die Favoriten. Alles linksbündig, eine Spalte, darunter
 absichtlich Leere — dort fährt die App-Liste hoch.
 
-**App-Liste.** Nach oben wischen. Rechts liegt der Wellen-Alphabetbalken: der Finger fährt
+**App-Liste.** Nach oben wischen. Oben stehen die Apps, die in der letzten Woche am häufigsten
+geöffnet wurden — der Homescreen bleibt trotzdem leer. Rechts liegt der Wellen-Alphabetbalken: der Finger fährt
 daran entlang, die Buchstaben unter ihm werden größer, die Liste springt mit. Suchfeld unten,
 wo der Daumen ist, mit Fuzzy-Treffern über Apps, Shortcuts und Kontakte und der Websuche als
 letzter Zeile.
@@ -70,7 +71,7 @@ Vorausgesetzt werden JDK 21 und ein Android SDK; der Pfad zum SDK steht in `loca
 export JAVA_HOME="C:\Program Files\Eclipse Adoptium\jdk-21.0.5.11-hotspot"
 
 ./gradlew assembleDebug       # das APK, das auf dem Gerät landet
-./gradlew testDebugUnitTest   # 183 Unit-Tests, framework-frei
+./gradlew testDebugUnitTest   # 192 Unit-Tests, framework-frei
 ./gradlew assembleRelease     # R8-Durchlauf, fängt fehlende Keep-Regeln
 ```
 

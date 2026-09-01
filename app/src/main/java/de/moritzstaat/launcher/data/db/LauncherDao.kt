@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
+import de.moritzstaat.launcher.data.usage.OpenTally
 
 @Dao
 interface FavoriteDao {
@@ -200,4 +201,17 @@ interface AppOpenDao {
 
     @Query("DELETE FROM app_opens WHERE dayEpoch < :dayEpoch")
     suspend fun deleteBefore(dayEpoch: Long)
+
+    /**
+     * Totals per app over a window of days, for the frequently used block.
+     *
+     * Summed in SQL rather than in Kotlin: it is one row per app instead of one per app and
+     * day, and the flow re-emits on every single launch.
+     */
+    @Query(
+        "SELECT packageName, SUM(count) AS opens, MAX(dayEpoch) AS lastDayEpoch " +
+            "FROM app_opens WHERE dayEpoch >= :sinceDayEpoch " +
+            "GROUP BY packageName ORDER BY opens DESC",
+    )
+    fun observeTallies(sinceDayEpoch: Long): Flow<List<OpenTally>>
 }

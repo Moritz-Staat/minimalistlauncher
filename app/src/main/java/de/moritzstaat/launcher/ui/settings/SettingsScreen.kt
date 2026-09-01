@@ -141,7 +141,7 @@ fun SettingsScreen(
         SettingsGroup(title = "Gesten", subtitle = "Tippen, Wischen, Langdruck") {
             GestureSettingsSection()
         }
-        SettingsGroup(title = "Nutzungsbremse", subtitle = "Nachfragen statt sperren") {
+        SettingsGroup(title = "Nutzung", subtitle = "Häufig genutzte, Nutzungsbremse") {
             UsageSettingsSection()
         }
         SettingsGroup(title = "Widgets", subtitle = "Unter der Uhr oder statt der Uhr") {

@@ -83,6 +83,7 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
     val overlay by shellViewModel.overlay.collectAsStateWithLifecycle()
     val favorites by homeViewModel.favorites.collectAsStateWithLifecycle()
     val items by homeViewModel.items.collectAsStateWithLifecycle()
+    val frequent by homeViewModel.frequentApps.collectAsStateWithLifecycle()
     val sections by homeViewModel.sections.collectAsStateWithLifecycle()
     val folders by homeViewModel.folders.collectAsStateWithLifecycle()
     val query by searchViewModel.query.collectAsStateWithLifecycle()
@@ -108,11 +109,18 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
     var focusSearch by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
-    // First list index of every section. Index 0 is the top inset item of the sheet.
-    val sectionStarts = remember(items) {
+    /**
+     * First list index of every section.
+     *
+     * The offset counts every row that sits above the alphabet: the sheet's top inset item, and
+     * the frequently used block with its label. Forgetting those makes the alphabet bar scroll
+     * to the wrong place by exactly the number of rows added.
+     */
+    val sectionStarts = remember(items, frequent.size) {
+        val offset = 1 + if (frequent.isEmpty()) 0 else frequent.size + 1
         buildMap {
             items.forEachIndexed { index, item ->
-                putIfAbsent(AppSorting.sectionFor(item.label), index + 1)
+                putIfAbsent(AppSorting.sectionFor(item.label), index + offset)
             }
         }
     }
@@ -251,6 +259,7 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
                 onLongPress = actionsViewModel::open,
                 onOpenPopup = popupViewModel::openApp,
                 onSettled = onSheetSettled,
+                frequent = frequent,
                 notifications = notifications,
                 onNotificationClick = homeViewModel::openNotification,
                 onNotificationDismiss = homeViewModel::dismissNotification,

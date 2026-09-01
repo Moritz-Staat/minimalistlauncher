@@ -423,3 +423,28 @@ Jede selbst getroffene Entscheidung mit einer Zeile Begründung.
   Websuche-Zeile zählt dabei nicht als Treffer.
 - **Der Start über Enter läuft durch `HomeViewModel.launch`**, nicht direkt über das
   Repository — sonst umgeht die Suche die Nutzungsbremse.
+
+## 19 — Häufig genutzte Apps
+- **Der Block steht oben in der App-Liste, nicht auf dem Homescreen.** Häufig genutzte Apps
+  hervorzuheben macht Gewohnheit leichter — die Nutzungsbremse aus Etappe 15 kämpft dagegen.
+  Auf dem Homescreen wäre das ein Widerspruch: man müsste nichts mehr tun. So bleibt der
+  Homescreen leer und man wischt weiter aktiv hoch.
+- **Gezählt wird die eigene Tabelle `app_opens`, nicht der Nutzungszugriff.** Es geht darum, was
+  man *hier* öffnet, und es funktioniert ohne jede Berechtigung. Preis: Starts aus
+  Benachrichtigungen oder den letzten Apps zählen nicht mit.
+- **Das Fenster ist genau die Aufbewahrungsdauer der Zähler (7 Tage).** Ein längeres Fenster
+  würde Zeilen lesen, die es nicht mehr gibt; ein Test hält beide Werte zusammen.
+- **Erst ab zwei Öffnungen.** Ein einzelner Tipp ist ein Versehen und darf eine App nicht für
+  eine Woche nach oben setzen.
+- **Höchstens vier Einträge.** Mehr ist eine zweite App-Liste.
+- **Summiert wird in SQL, nicht in Kotlin.** Es ist eine Zeile pro App statt eine pro App und
+  Tag, und der Flow feuert bei jedem Start neu.
+- **Die Apps bleiben zusätzlich im Alphabet stehen.** Sie aus der alphabetischen Liste zu
+  entfernen würde sie dort verschwinden lassen, wo man sie sucht. Die Zeilen im Block tragen
+  deshalb einen Schlüssel mit Präfix — zwei Zeilen mit demselben Schlüssel sind in einer
+  LazyColumn ein Absturz, kein Duplikat.
+- **Der Alphabetbalken rechnet den Block mit.** Sein Sprungziel ist ein Listenindex; ohne den
+  Offset für Label und Blockzeilen springt er um genau diese Anzahl Zeilen zu weit.
+- **Eine App mit mehreren Launcher-Einträgen belegt eine Zeile**, nicht drei.
+- **Standardmäßig an.** Ohne Verlauf zeigt der Block nichts, erscheint also von selbst, sobald
+  es etwas zu zeigen gibt, statt in den Einstellungen gefunden werden zu müssen.

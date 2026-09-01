@@ -446,3 +446,29 @@ sich nur so zeigt:
     öffnet.
 14. **Heikel:** Eine App mit Nutzungsbremse als einzigen Treffer suchen, Enter. Erwartung: die
     Pausenseite kommt — die Suche darf die Bremse nicht umgehen.
+
+## Etappe 19 — Häufig genutzte Apps
+1. App-Liste aufziehen. Erwartung: oben die Überschrift „Häufig" mit bis zu vier Apps, darunter
+   unverändert das Alphabet.
+2. Eine App zweimal öffnen, die vorher nicht im Block stand. Erwartung: sie erscheint dort.
+3. **Heikel:** Eine App genau einmal öffnen. Erwartung: sie erscheint **nicht** — die Schwelle
+   liegt bei zwei.
+4. **Heikel:** Alphabetbalken benutzen, während der Block sichtbar ist. Erwartung: der Sprung
+   landet exakt auf dem Buchstaben, nicht vier Zeilen daneben. Das ist der wahrscheinlichste
+   Fehler dieser Etappe.
+5. Denselben Test mit ausgeschaltetem Block (Einstellungen → Nutzung). Erwartung: der Sprung
+   stimmt auch dann.
+6. Eine App im Block prüfen: sie muss zusätzlich an ihrer alphabetischen Stelle stehen.
+7. Eine App aus dem Block starten. Erwartung: sie startet normal, und der Zähler steigt.
+8. **Heikel:** Eine App aus dem Block mit aktiver Nutzungsbremse starten. Erwartung: die
+   Pausenseite kommt auch hier.
+9. Langdruck und Rechtswischen auf einer Zeile im Block. Erwartung: Menü bzw. Pop-up wie in der
+   normalen Liste.
+10. Eine App im Block ausblenden. Erwartung: sie verschwindet aus dem Block.
+11. Eine App im Block deinstallieren. Erwartung: der Block wird kürzer, kein Absturz.
+12. Block abschalten. Erwartung: Überschrift und Zeilen verschwinden, die Liste beginnt direkt
+    mit dem Alphabet.
+13. Icon-Stil „Keine" zusammen mit dem Block. Erwartung: auch im Block keine Icons und kein
+    Einzug.
+14. **Heikel:** Eine Woche später nachsehen. Erwartung: der Block spiegelt die letzten sieben
+    Tage, alte Gewohnheiten fallen heraus.

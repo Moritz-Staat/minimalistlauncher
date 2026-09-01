@@ -10,9 +10,12 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -54,6 +57,7 @@ fun AppListPanel(
     onNotificationClick: (NotificationSummary) -> Unit = {},
     onNotificationDismiss: (NotificationSummary) -> Unit = {},
     onSettled: (Boolean) -> Unit = {},
+    frequent: List<AppEntry> = emptyList(),
     // Derived rather than defaulted to zero: a caller that forgets it puts the first row
     // under the status bar, which is exactly what happened in v0.1.0.
     topInset: Dp = WindowInsets.statusBars.asPaddingValues().calculateTopPadding() + LIST_TOP_GAP,
@@ -81,6 +85,28 @@ fun AppListPanel(
             } else {
                 LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
                     item(key = KEY_TOP_INSET) { Spacer(Modifier.height(topInset)) }
+                    if (frequent.isNotEmpty()) {
+                        item(key = KEY_FREQUENT_LABEL) { SectionLabel("Häufig") }
+                        // Prefixed keys: these apps also stand in the alphabet below, and two
+                        // rows sharing a key is a crash rather than a duplicate.
+                        items(
+                            count = frequent.size,
+                            key = { "frequent:" + frequent[it].key.flatten() },
+                        ) { index ->
+                            val entry = frequent[index]
+                            val summary = notifications[entry.key.packageName]
+                            AppRow(
+                                entry = entry,
+                                iconLoader = iconLoader,
+                                notification = summary,
+                                onClick = { bounds -> onLaunch(entry.key, bounds) },
+                                onLongClick = { bounds -> onLongPress(entry, bounds) },
+                                onNotificationClick = summary?.let { { onNotificationClick(it) } },
+                                onNotificationDismiss = summary?.let { { onNotificationDismiss(it) } },
+                                onSwipeRight = { bounds -> onOpenPopup(entry, bounds) },
+                            )
+                        }
+                    }
                     items(count = items.size, key = { items[it].id }) { index ->
                         when (val item = items[index]) {
                             is AppListItem.App -> {
@@ -110,6 +136,21 @@ fun AppListPanel(
             overlayContent()
         }
     }
+}
+
+/** Marks the frequently used block, so its apps do not read as a broken alphabet. */
+@Composable
+private fun SectionLabel(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.labelMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(
+            start = AppRowDefaults.HorizontalPadding,
+            top = 4.dp,
+            bottom = 4.dp,
+        ),
+    )
 }
 
 /** Darkens whatever the sheet covers; the blur itself sits on the home screen's layer. */
@@ -158,6 +199,7 @@ private class SheetNestedScrollConnection(
 
 private const val SCRIM_ALPHA = 0.55f
 private const val KEY_TOP_INSET = "app-list-top-inset"
+private const val KEY_FREQUENT_LABEL = "app-list-frequent-label"
 private const val KEY_BOTTOM_SPACE = "app-list-bottom-space"
 private val BOTTOM_SPACE = 96.dp
 
