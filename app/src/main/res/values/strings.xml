@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Minimalist</string>
-    <string name="gesture_service_description">Erlaubt dem Launcher, per Geste die Benachrichtigungen zu oeffnen und den Bildschirm zu sperren. Es werden keine Inhalte anderer Apps gelesen.</string>
+    <string name="gesture_service_description">Erlaubt dem Launcher, per Geste die Benachrichtigungen zu öffnen und den Bildschirm zu sperren. Es werden keine Inhalte anderer Apps gelesen.</string>
 </resources>

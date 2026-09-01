@@ -34,12 +34,12 @@ fun BackupSection(modifier: Modifier = Modifier) {
         Text(
             text = "Gesichert werden Einstellungen, Favoriten, Ordner, eigene Namen und Icons " +
                 "sowie ausgeblendete Apps. Nicht gesichert werden platzierte Widgets, die " +
-                "Schriftdatei und die Zaehler der Nutzungsbremse.",
+                "Schriftdatei und die Zähler der Nutzungsbremse.",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(
-            text = "Einspielen ersetzt den aktuellen Stand, es wird nicht zusammengefuehrt.",
+            text = "Einspielen ersetzt den aktuellen Stand, es wird nicht zusammengeführt.",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

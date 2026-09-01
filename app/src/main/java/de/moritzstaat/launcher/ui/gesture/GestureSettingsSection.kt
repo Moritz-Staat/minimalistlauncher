@@ -70,18 +70,18 @@ fun GestureSettingsSection(modifier: Modifier = Modifier) {
 
         Text(
             text = if (serviceRunning) {
-                "Bedienungshilfen-Dienst laeuft."
+                "Bedienungshilfen-Dienst läuft."
             } else {
-                "Benachrichtigungen oeffnen und Bildschirm sperren brauchen den " +
+                "Benachrichtigungen öffnen und Bildschirm sperren brauchen den " +
                     "Bedienungshilfen-Dienst. Bei einer selbst installierten App muss die " +
-                    "Einstellung erst ueber das Menue der App-Info freigegeben werden."
+                    "Einstellung erst über das Menü der App-Info freigegeben werden."
             },
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 12.dp),
         )
         TextButton(onClick = { context.startActivity(GestureAccess.settingsIntent()) }) {
-            Text(text = "Bedienungshilfen oeffnen")
+            Text(text = "Bedienungshilfen öffnen")
         }
     }
 
@@ -143,7 +143,7 @@ private fun GestureActionDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) { Text(text = "Schliessen") }
+            TextButton(onClick = onDismiss) { Text(text = "Schließen") }
         },
     )
 }
@@ -156,7 +156,7 @@ private fun AppPickerDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(text = "App waehlen") },
+        title = { Text(text = "App wählen") },
         text = {
             LazyColumn(modifier = Modifier.heightIn(max = LIST_MAX_HEIGHT)) {
                 items(apps, key = { it.key.flatten() }) { entry ->

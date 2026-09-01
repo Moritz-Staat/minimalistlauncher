@@ -88,7 +88,7 @@ fun AppActionSheet(
                 onClick = onToggleFavorite,
             )
             ActionRow(label = "Umbenennen", onClick = onRename)
-            ActionRow(label = "Icon aendern", onClick = onChangeIcon)
+            ActionRow(label = "Icon ändern", onClick = onChangeIcon)
             ActionRow(label = "In Ordner legen", onClick = onMoveToFolder)
             ActionRow(
                 label = if (state.notificationsRedacted) {

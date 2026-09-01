@@ -29,9 +29,9 @@ object EventFormatter {
 
         if (event.allDay) {
             return when (startsInDays) {
-                0L -> "Ganztaegig"
-                1L -> "Morgen, ganztaegig"
-                else -> weekdayOf(event, zone) + ", ganztaegig"
+                0L -> "Ganztägig"
+                1L -> "Morgen, ganztägig"
+                else -> weekdayOf(event, zone) + ", ganztägig"
             }
         }
 

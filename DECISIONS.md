@@ -351,3 +351,23 @@ Jede selbst getroffene Entscheidung mit einer Zeile Begruendung.
 - **Die Suchergebnisliste bekommt dasselbe Inset plus Platz unten.** Sie ersetzt die App-Liste
   im selben Sheet, hatte aber weder das eine noch das andere; die letzte Zeile lag hinter dem
   Suchfeld.
+
+## Nach v0.1.1 — Umlaute und Widget-Wähler
+- **Umlaute stehen jetzt als Umlaute im Code.** Die Transkription („oeffnen", „Ueberspringen")
+  war reine Vorsicht meinerseits vor der Werkzeugkette und in der App schlicht falsch. Ersetzt
+  wurde mit einem expliziten Wörterbuch, nicht mit einer ae/oe/ue-Regel: eine solche Regel
+  frisst englische Bezeichner (`query`, `session`, `request`), korrektes Deutsch („aktuellen",
+  „Neue", „Schauer", „muss") und vor allem `TextNormalizer`, der Umlaute absichtlich auf
+  Digraphen abbildet, damit die Suche beides findet.
+- **Der Widget-Wähler gruppiert nach App und ist zugeklappt.** Die Liste, die das System
+  liefert, ist flach: ein paar hundert Zeilen mit Labels wie „1×1" oder „Shortcut", und nichts
+  sagt, von welcher App eine Zeile kommt.
+- **Jede Widget-Zeile zeigt die Vorschau des Anbieters, die Größe in Zellen und die
+  Beschreibung.** Die Vorschau ist die eigentliche Antwort auf „was ist das".
+- **Vorschauen werden pro Zeile geladen, nicht mit dem Katalog.** Es sind vollwertige Bitmaps,
+  teils Screenshots; nur was auf dem Schirm ist, wird dekodiert und dabei auf 480 px begrenzt.
+- **Die Größe wird in 70-dp-Zellen mit 30 dp Rand gerechnet.** Der Homescreen hat kein festes
+  Raster, aber jedes Widget wurde gegen dieses Raster entworfen, und „4 × 1" ist die Angabe,
+  die man aus anderen Launchern kennt. Ein 70-dp-Widget braucht deshalb zwei Zellen.
+- **Bleibt bei der Suche genau eine App übrig, klappt sie von selbst auf.** Ein Tipp, der
+  nichts entscheidet, ist ein Tipp zu viel.

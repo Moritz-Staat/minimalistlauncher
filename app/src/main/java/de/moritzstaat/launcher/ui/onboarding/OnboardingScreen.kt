@@ -78,9 +78,9 @@ fun OnboardingScreen(onFinish: () -> Unit, modifier: Modifier = Modifier) {
                 0 -> {
                     Title("Minimalist")
                     Body(
-                        "Eine Liste, eine Uhr, sonst nichts. Nach oben wischen oeffnet die " +
+                        "Eine Liste, eine Uhr, sonst nichts. Nach oben wischen öffnet die " +
                             "Apps, der Buchstabenbalken rechts springt in die Liste, " +
-                            "langes Druecken auf den Hintergrund oeffnet die Einstellungen.",
+                            "langes Drücken auf den Hintergrund öffnet die Einstellungen.",
                     )
                 }
 
@@ -89,10 +89,10 @@ fun OnboardingScreen(onFinish: () -> Unit, modifier: Modifier = Modifier) {
                     Body(
                         if (isDefaultHome) {
                             "Erledigt. Der bisherige Launcher bleibt installiert und kann " +
-                                "jederzeit wieder gewaehlt werden."
+                                "jederzeit wieder gewählt werden."
                         } else {
                             "Damit die Home-Taste hier landet. Der bisherige Launcher bleibt " +
-                                "installiert; die Auswahl laesst sich jederzeit zuruecknehmen."
+                                "installiert; die Auswahl lässt sich jederzeit zurücknehmen."
                         },
                     )
                     Button(
@@ -111,10 +111,10 @@ fun OnboardingScreen(onFinish: () -> Unit, modifier: Modifier = Modifier) {
                 2 -> {
                     Title("Was optional dazukommt")
                     Body(
-                        "Benachrichtigungen fuer Vorschautexte und das Media-Widget, " +
-                            "Kontakte fuer die Suche, Kalender fuer Termine unter der Uhr und " +
-                            "der grobe Standort fuer das Wetter. Alles einzeln, alles spaeter " +
-                            "in den Einstellungen aenderbar.",
+                        "Benachrichtigungen für Vorschautexte und das Media-Widget, " +
+                            "Kontakte für die Suche, Kalender für Termine unter der Uhr und " +
+                            "der grobe Standort für das Wetter. Alles einzeln, alles später " +
+                            "in den Einstellungen änderbar.",
                     )
                     Button(
                         onClick = {
@@ -147,7 +147,7 @@ fun OnboardingScreen(onFinish: () -> Unit, modifier: Modifier = Modifier) {
                     Title("Fertig")
                     Body(
                         "Alles Weitere steht in den Einstellungen: Uhr, Farben, Icons, Gesten " +
-                            "und die Nutzungsbremse. Lange auf den leeren Hintergrund druecken.",
+                            "und die Nutzungsbremse. Lange auf den leeren Hintergrund drücken.",
                     )
                 }
             }
@@ -159,7 +159,7 @@ fun OnboardingScreen(onFinish: () -> Unit, modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             TextButton(onClick = onFinish) {
-                Text(text = "Ueberspringen")
+                Text(text = "Überspringen")
             }
             Button(onClick = { if (step >= LAST_STEP) onFinish() else step += 1 }) {
                 Text(text = if (step >= LAST_STEP) "Los" else "Weiter")

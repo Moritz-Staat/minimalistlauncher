@@ -386,7 +386,7 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
  * silently does nothing.
  */
 private fun reportMissingService(context: android.content.Context) {
-    Toast.makeText(context, "Dafuer fehlt der Bedienungshilfen-Dienst.", Toast.LENGTH_SHORT)
+    Toast.makeText(context, "Dafür fehlt der Bedienungshilfen-Dienst.", Toast.LENGTH_SHORT)
         .show()
 }
 

@@ -54,7 +54,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 return@launch
             }
             val restored = services.backupRepository.restore(backup)
-            _message.value = "Sicherung eingespielt: " + restored + " Eintraege."
+            _message.value = "Sicherung eingespielt: " + restored + " Einträge."
         }
     }
 

@@ -48,7 +48,7 @@ fun UsageSettingsSection(modifier: Modifier = Modifier) {
     Column(modifier = modifier.fillMaxWidth()) {
         Text(text = "Nutzungsbremse", style = MaterialTheme.typography.titleMedium)
         Text(
-            text = "Ab einer eingestellten Zahl von Oeffnungen fragt der Launcher nach, statt " +
+            text = "Ab einer eingestellten Zahl von Öffnungen fragt der Launcher nach, statt " +
                 "die App sofort zu starten. Blockiert wird nie.",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -60,7 +60,7 @@ fun UsageSettingsSection(modifier: Modifier = Modifier) {
         )
 
         SliderRow(
-            label = "Ab " + config.threshold + " Oeffnungen am Tag",
+            label = "Ab " + config.threshold + " Öffnungen am Tag",
             value = config.threshold.toFloat(),
             range = UsageBreakerConfig.THRESHOLD_RANGE,
             onValueChange = { viewModel.setThreshold(it) },
@@ -78,21 +78,21 @@ fun UsageSettingsSection(modifier: Modifier = Modifier) {
 
         Text(
             text = if (config.packages.isEmpty()) {
-                "Noch keine App gewaehlt."
+                "Noch keine App gewählt."
             } else {
-                config.packages.size.toString() + " App(s) gewaehlt."
+                config.packages.size.toString() + " App(s) gewählt."
             },
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(top = 8.dp),
         )
         TextButton(onClick = { picking = true }) {
-            Text(text = "Apps waehlen")
+            Text(text = "Apps wählen")
         }
 
         if (!hasAccess) {
             Text(
-                text = "Ohne Nutzungszugriff zaehlt nur, was ueber den Launcher geoeffnet " +
-                    "wird. Mit Zugriff zaehlt jedes Oeffnen.",
+                text = "Ohne Nutzungszugriff zählt nur, was über den Launcher geöffnet " +
+                    "wird. Mit Zugriff zählt jedes Öffnen.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

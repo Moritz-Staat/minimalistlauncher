@@ -81,5 +81,5 @@ enum class Gesture(val storageKey: String, val label: String, val default: Gestu
     SwipeDown("swipe_down", "Nach unten wischen", GestureAction.ExpandNotifications),
     SwipeLeft("swipe_left", "Nach links wischen", GestureAction.None),
     SwipeRight("swipe_right", "Nach rechts wischen", GestureAction.None),
-    LongPress("long_press", "Lange auf den Hintergrund druecken", GestureAction.OpenSettings),
+    LongPress("long_press", "Lange auf den Hintergrund drücken", GestureAction.OpenSettings),
 }

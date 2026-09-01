@@ -10,8 +10,8 @@ object WeatherCodes {
 
     fun description(code: Int): String = when (code) {
         0 -> "Klar"
-        1 -> "Ueberwiegend klar"
-        2 -> "Teils bewoelkt"
+        1 -> "Überwiegend klar"
+        2 -> "Teils bewölkt"
         3 -> "Bedeckt"
         45, 48 -> "Nebel"
         in 51..57 -> "Niesel"

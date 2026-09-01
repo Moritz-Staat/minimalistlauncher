@@ -105,7 +105,7 @@ fun SettingsScreen(
                 text = if (hasNotificationAccess) {
                     "Benachrichtigungszugriff ist erteilt."
                 } else {
-                    "Ohne Benachrichtigungszugriff laeuft alles ausser Vorschautexten und " +
+                    "Ohne Benachrichtigungszugriff läuft alles außer Vorschautexten und " +
                         "Media-Widget."
                 },
                 style = MaterialTheme.typography.bodyMedium,
@@ -157,7 +157,7 @@ fun SettingsScreen(
         }
         SettingsGroup(title = "Erste Schritte", subtitle = "Einrichtung erneut anzeigen") {
             Text(
-                text = "Zeigt die Einrichtung beim naechsten Oeffnen des Launchers noch einmal.",
+                text = "Zeigt die Einrichtung beim nächsten Öffnen des Launchers noch einmal.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -167,7 +167,7 @@ fun SettingsScreen(
         }
 
         TextButton(onClick = onDismiss) {
-            Text(text = "Schliessen")
+            Text(text = "Schließen")
         }
     }
 }

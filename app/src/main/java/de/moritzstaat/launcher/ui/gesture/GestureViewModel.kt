@@ -42,10 +42,10 @@ class GestureViewModel(application: Application) : AndroidViewModel(application)
     /** Label for the settings list; an app action shows the app's name, not its package. */
     fun labelOf(action: GestureAction): String = when (action) {
         GestureAction.None -> "Nichts"
-        GestureAction.OpenAppList -> "App-Liste oeffnen"
-        GestureAction.OpenSearch -> "Suche oeffnen"
-        GestureAction.OpenSettings -> "Einstellungen oeffnen"
-        GestureAction.ExpandNotifications -> "Benachrichtigungen oeffnen"
+        GestureAction.OpenAppList -> "App-Liste öffnen"
+        GestureAction.OpenSearch -> "Suche öffnen"
+        GestureAction.OpenSettings -> "Einstellungen öffnen"
+        GestureAction.ExpandNotifications -> "Benachrichtigungen öffnen"
         GestureAction.LockScreen -> "Bildschirm sperren"
         is GestureAction.LaunchApp -> apps.value
             .firstOrNull { it.key.flatten() == action.appKey }

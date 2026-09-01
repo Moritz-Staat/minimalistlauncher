@@ -370,3 +370,25 @@ sich nur so zeigt:
    oben bleibt frei.
 8. Suchen, bis die Trefferliste laenger als der Bildschirm ist. Erwartung: der oberste Treffer
    liegt unter der Statusleiste, der unterste ueber dem Suchfeld.
+
+## Nach v0.1.1 — Umlaute und Widget-Wähler
+1. Einrichtung, Einstellungen und Gestenmenü durchsehen. Erwartung: überall echte Umlaute,
+   kein „oe", „ae", „ue" und kein „ss" statt „ß".
+2. Wortuhr auf „Als Text" stellen. Erwartung: „fünf", „zwölf" korrekt — die waren schon immer
+   richtig, dürfen aber nicht mit umgestellt worden sein.
+3. Suche nach einer App mit Umlaut im Namen. Erwartung: sie wird sowohl mit „ä" als auch mit
+   „ae" gefunden. Das ist der Test dafür, dass `TextNormalizer` unangetastet blieb.
+4. Widget hinzufügen. Erwartung: eine kurze Liste von App-Namen mit Widget-Anzahl, nicht
+   hunderte Einzelzeilen.
+5. Eine App aufklappen. Erwartung: pro Widget eine Vorschau, der Name, die Größe als „4 × 1"
+   und, falls die App eine mitliefert, eine Beschreibung.
+6. **Heikel:** Eine App mit vielen Widgets aufklappen und scrollen. Erwartung: die Vorschauen
+   erscheinen zügig, das Scrollen ruckelt nicht.
+7. Im Suchfeld „uhr" tippen. Erwartung: nur passende Widgets, und bleibt eine App übrig, ist
+   sie schon aufgeklappt.
+8. Nach dem Namen einer App suchen. Erwartung: alle Widgets dieser App bleiben sichtbar, nicht
+   nur die namensgleichen.
+9. Ein Widget mit Konfigurations-Dialog wählen (z. B. eine Uhr oder ein Kalender-Widget).
+   Erwartung: der Dialog kommt, und bei Abbruch bleibt kein leerer Platz zurück.
+10. **Heikel:** Ein Widget wählen, dessen Anbieter keine Vorschau mitbringt. Erwartung: das
+    App-Icon steht an der Stelle, keine leere Fläche und kein Absturz.

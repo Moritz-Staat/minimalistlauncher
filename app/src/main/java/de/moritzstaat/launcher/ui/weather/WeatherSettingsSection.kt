@@ -57,7 +57,7 @@ fun WeatherSettingsSection(modifier: Modifier = Modifier) {
         )
         if (!granted) {
             Text(
-                text = "Ohne ungefaehren Standort gibt es kein Wetter. " +
+                text = "Ohne ungefähren Standort gibt es kein Wetter. " +
                     "Die Daten kommen von Open-Meteo, ohne Konto und ohne Werbe-IDs.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,

@@ -58,7 +58,7 @@ class ThemeViewModel(application: Application) : AndroidViewModel(application) {
                 return@launch
             }
             services.settings.setTheme(theme.value.copy(fontPath = path))
-            _message.value = "Schrift uebernommen."
+            _message.value = "Schrift übernommen."
         }
     }
 

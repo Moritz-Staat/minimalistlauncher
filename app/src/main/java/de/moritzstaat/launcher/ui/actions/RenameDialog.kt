@@ -38,7 +38,7 @@ fun RenameDialog(
         },
         dismissButton = {
             TextButton(onClick = { onConfirm(null) }) {
-                Text(text = "Zuruecksetzen")
+                Text(text = "Zurücksetzen")
             }
         },
     )

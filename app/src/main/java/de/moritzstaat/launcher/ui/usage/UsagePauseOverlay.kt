@@ -70,7 +70,7 @@ fun UsagePauseOverlay(
             color = MaterialTheme.colorScheme.onSurface,
         )
         Text(
-            text = "Heute schon " + request.opensToday + " mal geoeffnet.",
+            text = "Heute schon " + request.opensToday + " mal geöffnet.",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 8.dp),
@@ -90,7 +90,7 @@ fun UsagePauseOverlay(
             enabled = remaining == 0,
             modifier = Modifier.padding(top = 24.dp),
         ) {
-            Text(text = "Trotzdem oeffnen")
+            Text(text = "Trotzdem öffnen")
         }
         TextButton(onClick = onDismiss) {
             Text(text = "Lieber nicht")

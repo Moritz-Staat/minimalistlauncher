@@ -74,7 +74,7 @@ fun MediaSettingsSection(modifier: Modifier = Modifier) {
 
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
-            text = "Nach dem Verbinden von Kopfhoerern oder einem Lautsprecher blendet der " +
+            text = "Nach dem Verbinden von Kopfhörern oder einem Lautsprecher blendet der " +
                 "Homescreen diese Apps kurz ein.",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -86,14 +86,14 @@ fun MediaSettingsSection(modifier: Modifier = Modifier) {
         )
         Text(
             text = if (selected.isEmpty()) {
-                "Noch keine App gewaehlt."
+                "Noch keine App gewählt."
             } else {
-                selected.size.toString() + " App(s) gewaehlt."
+                selected.size.toString() + " App(s) gewählt."
             },
             style = MaterialTheme.typography.bodyMedium,
         )
         TextButton(onClick = { picking = true }) {
-            Text(text = "Musik-Apps waehlen")
+            Text(text = "Musik-Apps wählen")
         }
     }
 

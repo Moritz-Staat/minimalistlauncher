@@ -61,7 +61,7 @@ fun CalendarSettingsSection(modifier: Modifier = Modifier) {
         }
 
         Text(
-            text = if (selected.isEmpty()) "Alle Kalender" else "Ausgewaehlte Kalender",
+            text = if (selected.isEmpty()) "Alle Kalender" else "Ausgewählte Kalender",
             style = MaterialTheme.typography.titleSmall,
             modifier = Modifier.padding(top = 12.dp),
         )

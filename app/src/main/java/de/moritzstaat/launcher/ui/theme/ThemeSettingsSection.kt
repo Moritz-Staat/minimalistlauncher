@@ -124,13 +124,13 @@ fun ThemeSettingsSection(modifier: Modifier = Modifier) {
         )
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             TextButton(onClick = { fontPicker.launch(FONT_MIME_TYPES) }) {
-                Text(text = "Schrift waehlen")
+                Text(text = "Schrift wählen")
             }
             TextButton(
                 onClick = viewModel::clearFont,
                 enabled = theme.fontPath.isNotBlank(),
             ) {
-                Text(text = "Zuruecksetzen")
+                Text(text = "Zurücksetzen")
             }
         }
 
@@ -199,7 +199,7 @@ private fun SubTitle(text: String) {
 }
 
 private fun clockStyleLabel(style: ClockStyle): String = when (style) {
-    ClockStyle.Large -> "Gross"
+    ClockStyle.Large -> "Groß"
     ClockStyle.Narrow -> "Schmal"
     ClockStyle.TwoLine -> "Zweizeilig"
     ClockStyle.Text -> "Als Text"

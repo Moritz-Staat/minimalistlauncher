@@ -39,7 +39,7 @@ fun IconChooserDialog(
             Column {
                 if (names.isEmpty()) {
                     Text(
-                        text = "Kein Icon-Pack aktiv. Erst in den Einstellungen eines waehlen.",
+                        text = "Kein Icon-Pack aktiv. Erst in den Einstellungen eines wählen.",
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 } else {
@@ -71,7 +71,7 @@ fun IconChooserDialog(
                     onDismiss()
                 },
             ) {
-                Text(text = "Zuruecksetzen")
+                Text(text = "Zurücksetzen")
             }
         },
         dismissButton = {

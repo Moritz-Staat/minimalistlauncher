@@ -71,11 +71,11 @@ class EventFormatterTest {
     fun `all day events are read in utc, not in the local zone`() {
         // Instances reports midnight UTC for an all day event; in Berlin that is 02:00 local,
         // and reading it locally would still land on the right day - so check the day before,
-        // where a naive local reading would say "morgen" instead of "ganztaegig".
+        // where a naive local reading would say "morgen" instead of "ganztägig".
         val utcMidnight = LocalDateTime.of(2026, 9, 1, 0, 0).atZone(ZoneOffset.UTC)
         val allDay = event(utcMidnight, utcMidnight.plusDays(1), allDay = true)
 
-        assertEquals("Ganztaegig", EventFormatter.label(allDay, now))
+        assertEquals("Ganztägig", EventFormatter.label(allDay, now))
         assertEquals(0L, EventFormatter.daysUntil(allDay, now))
     }
 
@@ -84,7 +84,7 @@ class EventFormatterTest {
         val utcMidnight = LocalDateTime.of(2026, 9, 2, 0, 0).atZone(ZoneOffset.UTC)
         val allDay = event(utcMidnight, utcMidnight.plusDays(1), allDay = true)
 
-        assertEquals("Morgen, ganztaegig", EventFormatter.label(allDay, now))
+        assertEquals("Morgen, ganztägig", EventFormatter.label(allDay, now))
     }
 
     @Test
