@@ -169,3 +169,20 @@ interface FolderDao {
         if (countItems(folderId) == 0) deleteFolder(folderId)
     }
 }
+
+@Dao
+interface AppOpenDao {
+
+    @Query("SELECT * FROM app_opens WHERE dayEpoch = :dayEpoch")
+    suspend fun forDay(dayEpoch: Long): List<AppOpenEntity>
+
+    /** One statement, so two launches in the same second cannot lose a count. */
+    @Query(
+        "INSERT INTO app_opens (packageName, dayEpoch, count) VALUES (:packageName, :dayEpoch, 1) " +
+            "ON CONFLICT(packageName, dayEpoch) DO UPDATE SET count = count + 1",
+    )
+    suspend fun increment(packageName: String, dayEpoch: Long)
+
+    @Query("DELETE FROM app_opens WHERE dayEpoch < :dayEpoch")
+    suspend fun deleteBefore(dayEpoch: Long)
+}

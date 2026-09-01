@@ -13,6 +13,8 @@ import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import de.moritzstaat.launcher.data.gesture.Gesture
 import de.moritzstaat.launcher.data.gesture.GestureAction
+import de.moritzstaat.launcher.data.usage.UsageBreaker
+import de.moritzstaat.launcher.data.usage.UsageBreakerConfig
 import de.moritzstaat.launcher.data.weather.TemperatureUnit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -114,6 +116,29 @@ class LauncherSettings(context: Context) {
         }
     }
 
+    /** The usage breaker, assembled from its four entries and clamped to sane values. */
+    val usageBreaker: Flow<UsageBreakerConfig> = preferences.map { prefs ->
+        val defaults = UsageBreakerConfig()
+        UsageBreaker.sanitise(
+            UsageBreakerConfig(
+                enabled = prefs[KEY_BREAKER_ENABLED] ?: defaults.enabled,
+                packages = prefs[KEY_BREAKER_PACKAGES] ?: defaults.packages,
+                threshold = prefs[KEY_BREAKER_THRESHOLD] ?: defaults.threshold,
+                pauseSeconds = prefs[KEY_BREAKER_PAUSE] ?: defaults.pauseSeconds,
+            ),
+        )
+    }
+
+    suspend fun setUsageBreaker(config: UsageBreakerConfig) {
+        val sane = UsageBreaker.sanitise(config)
+        store.edit { prefs ->
+            prefs[KEY_BREAKER_ENABLED] = sane.enabled
+            prefs[KEY_BREAKER_PACKAGES] = sane.packages
+            prefs[KEY_BREAKER_THRESHOLD] = sane.threshold
+            prefs[KEY_BREAKER_PAUSE] = sane.pauseSeconds
+        }
+    }
+
     suspend fun setGesture(gesture: Gesture, action: GestureAction) {
         store.edit { it[gestureKey(gesture)] = action.encode() }
     }
@@ -174,6 +199,11 @@ class LauncherSettings(context: Context) {
         val KEY_WEATHER_ENABLED = booleanPreferencesKey("weather_enabled")
         val KEY_TEMPERATURE_UNIT = stringPreferencesKey("temperature_unit")
         val KEY_WEATHER_CACHE = stringPreferencesKey("weather_cache")
+
+        val KEY_BREAKER_ENABLED = booleanPreferencesKey("usage_breaker_enabled")
+        val KEY_BREAKER_PACKAGES = stringSetPreferencesKey("usage_breaker_packages")
+        val KEY_BREAKER_THRESHOLD = intPreferencesKey("usage_breaker_threshold")
+        val KEY_BREAKER_PAUSE = intPreferencesKey("usage_breaker_pause_seconds")
 
         fun gestureKey(gesture: Gesture) =
             stringPreferencesKey("gesture_" + gesture.storageKey)

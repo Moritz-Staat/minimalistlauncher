@@ -20,6 +20,7 @@ import de.moritzstaat.launcher.data.media.AudioOutputRepository
 import de.moritzstaat.launcher.data.media.MediaRepository
 import de.moritzstaat.launcher.data.settings.FontStore
 import de.moritzstaat.launcher.data.settings.LauncherSettings
+import de.moritzstaat.launcher.data.usage.UsageRepository
 import de.moritzstaat.launcher.data.settings.ThemeConfig
 import de.moritzstaat.launcher.data.weather.LocationProvider
 import de.moritzstaat.launcher.data.weather.OpenMeteoClient
@@ -90,6 +91,10 @@ class ServiceLocator(context: Context) {
             SharingStarted.Eagerly,
             Gesture.entries.associateWith { it.default },
         )
+    }
+
+    val usageRepository: UsageRepository by lazy {
+        UsageRepository(context, database, settings, applicationScope)
     }
 
     val calendarRepository: CalendarRepository by lazy {

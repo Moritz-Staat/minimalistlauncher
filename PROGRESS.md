@@ -21,7 +21,7 @@ dort weiterarbeiten.
 | 12 | Theming | fertig | ThemeConfig in DataStore, vier Uhr-Stile inkl. Wortuhr, Material You/eigener Akzent/extra dunkel, Wallpaper-Dimmen und System-Blur, Statusleiste, eigene Schrift, Vorlagen und Theme-Export/Import; 102 Unit-Tests gruen |
 | 13 | Kalender und Wetter | fertig | CalendarContract.Instances mit ContentObserver, UTC-Regel fuer ganztaegige Termine, Kalenderauswahl; Open-Meteo ueber HttpURLConnection, LocationManager ohne Play Services, JSON-Cache in DataStore, stuendlicher WorkManager-Job; 123 Unit-Tests gruen |
 | 14 | Gesten | fertig | Fuenf belegbare Gesten (Doppeltipp, unten/links/rechts, Langdruck) mit Aktionen inkl. App-Start; optionaler Bedienungshilfen-Dienst fuer Benachrichtigungsleiste und Bildschirmsperre; 130 Unit-Tests gruen |
-| 15 | Usage Breaker | offen | - |
+| 15 | Usage Breaker | fertig | Tageszaehler pro Paket in Room (DB v5), optionaler Nutzungszugriff fuer die Systemzahlen, Pausenseite mit Countdown vor dem Start, Schwelle und Wartezeit einstellbar; 137 Unit-Tests gruen |
 | 16 | Einstellungen, Backup, Onboarding | offen | - |
 | 17 | Alltagstauglichkeit (Baseline Profile, R8) | offen | - |
 | 18 | Abschluss (TESTPLAN.md, README.md) | offen | - |

@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import android.widget.Toast
@@ -49,6 +50,7 @@ import de.moritzstaat.launcher.ui.search.SearchResultsList
 import de.moritzstaat.launcher.ui.search.SearchViewModel
 import de.moritzstaat.launcher.ui.shell.OverlayTarget
 import de.moritzstaat.launcher.ui.shell.ShellViewModel
+import de.moritzstaat.launcher.ui.usage.UsagePauseOverlay
 import de.moritzstaat.launcher.ui.theme.LocalThemeConfig
 import de.moritzstaat.launcher.ui.theme.SystemBarsEffect
 import de.moritzstaat.launcher.ui.theme.WallpaperBlurEffect
@@ -86,6 +88,7 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
     val folderPicking by actionsViewModel.folderPicking.collectAsStateWithLifecycle()
     val choosingIcon by actionsViewModel.choosingIcon.collectAsStateWithLifecycle()
     val gestures by gestureViewModel.gestures.collectAsStateWithLifecycle()
+    val pause by homeViewModel.pause.collectAsStateWithLifecycle()
     val popup by popupViewModel.target.collectAsStateWithLifecycle()
     val popupShortcuts by popupViewModel.shortcuts.collectAsStateWithLifecycle()
 
@@ -128,6 +131,12 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
         if (open) shellViewModel.open(OverlayTarget.AppList) else shellViewModel.closeOverlays()
     }
 
+    // The open counters roll over at midnight and grow while other apps are in front.
+    LifecycleResumeEffect(Unit) {
+        homeViewModel.refreshUsage()
+        onPauseOrDispose { }
+    }
+
     val runGesture: (Gesture) -> Unit = { gesture ->
         when (val action = gestures[gesture] ?: gesture.default) {
             GestureAction.None -> Unit
@@ -157,6 +166,7 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
 
     BackHandler(enabled = true) {
         when {
+            pause != null -> homeViewModel.dismissPause()
             widgetPickerSlot != null -> widgetPickerSlot = null
             actionsState != null -> actionsViewModel.dismiss()
             popup != null -> popupViewModel.dismiss()
@@ -340,6 +350,13 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
             SetupOverlay(
                 onDismiss = { shellViewModel.closeOverlays() },
                 onAddWidget = { slot -> widgetPickerSlot = slot },
+            )
+        }
+        pause?.let { request ->
+            UsagePauseOverlay(
+                request = request,
+                onConfirm = homeViewModel::confirmPause,
+                onDismiss = homeViewModel::dismissPause,
             )
         }
         widgetPickerSlot?.let { slot ->

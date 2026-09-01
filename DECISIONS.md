@@ -269,3 +269,26 @@ Jede selbst getroffene Entscheidung mit einer Zeile Begruendung.
   verbrauchen ihre Tipps selbst, also bleibt genau der leere Hintergrund uebrig.
 - **"Suche oeffnen" oeffnet die Liste und setzt den Fokus ins Suchfeld**, statt ein zweites
   Such-Overlay zu bauen; das Feld gibt es schon.
+
+## 15 — Nutzungsbremse
+- **Die Bremse blockiert nie, sie fragt.** Sie zeigt die Zahl des Tages, wartet ein paar
+  Sekunden und laesst dann oeffnen. Eine Sperre wuerde nur umgangen.
+- **Gezaehlt wird pro Paket, nicht pro AppKey.** Zwei Profile derselben App sind dieselbe
+  Gewohnheit.
+- **Alle Starts laufen ueber `HomeViewModel.launch`.** Das ist der einzige Punkt, an dem die
+  Bremse haengen muss — Homescreen, Liste, Suche und Pop-ups gehen alle dort durch.
+- **Die Pruefung ist ein Lookup im Speicher** (Konfiguration und Tageszaehler als StateFlow).
+  Zwischen Tippen und App darf keine Datenbankabfrage liegen.
+- **Mit Nutzungszugriff zaehlt das System, ohne ihn zaehlt der Launcher selbst.** Ohne den
+  Zugriff bleiben Starts aus Benachrichtigungen oder aus den letzten Apps unsichtbar; das ist
+  ein schlechterer, aber ehrlicher Wert.
+- **Ob der Nutzungszugriff erteilt ist, wird an der Abfrage selbst erkannt.** Saemtliche
+  `AppOpsManager`-Pruefungen sind auf dem aktuellen SDK deprecated; ohne Zugriff kommt die
+  Ereignisliste leer zurueck, mit Zugriff enthaelt sie mindestens den eigenen Start.
+- **Aufeinanderfolgende `ACTIVITY_RESUMED`-Ereignisse desselben Pakets zaehlen als eines.**
+  Hin- und Herwechseln innerhalb einer App ist ein Oeffnen, nicht fuenf.
+- **Die Zaehler stehen in Room mit dem lokalen Tag als Schluessel** (DB v5) und werden nach
+  sieben Tagen geloescht. Der Tageswechsel passiert beim naechsten Blick auf den Homescreen,
+  nicht ueber einen Timer um Mitternacht.
+- **Schwelle und Wartezeit werden beim Lesen und Schreiben geklemmt.** Ein kaputter Wert darf
+  nicht dazu fuehren, dass eine App gar nicht mehr aufgeht.

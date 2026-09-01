@@ -18,8 +18,9 @@ import androidx.sqlite.execSQL
         WidgetEntity::class,
         FolderEntity::class,
         FolderItemEntity::class,
+        AppOpenEntity::class,
     ],
-    version = 4,
+    version = 5,
     exportSchema = true,
 )
 abstract class LauncherDatabase : RoomDatabase() {
@@ -31,6 +32,7 @@ abstract class LauncherDatabase : RoomDatabase() {
     abstract fun notificationPrefDao(): NotificationPrefDao
     abstract fun widgetDao(): WidgetDao
     abstract fun folderDao(): FolderDao
+    abstract fun appOpenDao(): AppOpenDao
 
     companion object {
         fun create(context: Context): LauncherDatabase =
@@ -38,7 +40,7 @@ abstract class LauncherDatabase : RoomDatabase() {
                 context.applicationContext,
                 LauncherDatabase::class.java,
                 "launcher.db",
-            ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4).build()
+            ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5).build()
 
         /** Stage 7 added the per app notification preference. */
         private val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -62,6 +64,19 @@ abstract class LauncherDatabase : RoomDatabase() {
                         "`ownerKey` TEXT, " +
                         "`position` INTEGER NOT NULL, " +
                         "PRIMARY KEY(`appWidgetId`))",
+                )
+            }
+        }
+
+        /** Stage 15 added the per day open counter behind the usage breaker. */
+        private val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(connection: SQLiteConnection) {
+                connection.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `app_opens` (" +
+                        "`packageName` TEXT NOT NULL, " +
+                        "`dayEpoch` INTEGER NOT NULL, " +
+                        "`count` INTEGER NOT NULL, " +
+                        "PRIMARY KEY(`packageName`, `dayEpoch`))",
                 )
             }
         }

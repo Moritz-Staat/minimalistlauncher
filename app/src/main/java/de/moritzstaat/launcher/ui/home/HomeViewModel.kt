@@ -12,8 +12,11 @@ import de.moritzstaat.launcher.data.app.AppKey
 import de.moritzstaat.launcher.data.app.AppListItem
 import de.moritzstaat.launcher.data.notification.NotificationSummary
 import de.moritzstaat.launcher.service.LauncherNotificationListener
+import de.moritzstaat.launcher.ui.usage.PauseRequest
 import android.app.PendingIntent
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
@@ -24,6 +27,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val services = (application as LauncherApplication).services
     private val favoriteDao = services.database.favoriteDao()
+
+    private val _pause = MutableStateFlow<PauseRequest?>(null)
 
     val iconLoader = services.iconLoader
 
@@ -77,9 +82,48 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         LauncherNotificationListener.dismissAll(summary.keys)
     }
 
+    /**
+     * Every launch the launcher makes goes through here, which is also where the usage breaker
+     * gets its one chance to ask. The check is a lookup in memory: nothing may delay a tap.
+     */
     fun launch(appKey: AppKey, sourceBounds: Rect? = null) {
+        val usage = services.usageRepository
+        if (usage.shouldPause(appKey.packageName)) {
+            _pause.value = PauseRequest(
+                appKey = appKey,
+                label = labelOf(appKey),
+                opensToday = usage.opensToday(appKey.packageName),
+                pauseSeconds = usage.config.value.pauseSeconds,
+                sourceBounds = sourceBounds,
+            )
+            return
+        }
+        start(appKey, sourceBounds)
+    }
+
+    /** Set while the pause screen is up; null the rest of the time. */
+    val pause: StateFlow<PauseRequest?> get() = _pause.asStateFlow()
+
+    fun confirmPause() {
+        val request = _pause.value ?: return
+        _pause.value = null
+        start(request.appKey, request.sourceBounds)
+    }
+
+    fun dismissPause() {
+        _pause.value = null
+    }
+
+    /** Re-reads the open counters; called whenever the launcher comes back to the front. */
+    fun refreshUsage() = services.usageRepository.refresh()
+
+    private fun start(appKey: AppKey, sourceBounds: Rect?) {
+        services.usageRepository.registerOpen(appKey.packageName)
         services.appRepository.launch(appKey, sourceBounds)
     }
+
+    private fun labelOf(appKey: AppKey): String =
+        apps.value.firstOrNull { it.key == appKey }?.label ?: appKey.packageName
 
     fun setFavorite(appKey: AppKey, favorite: Boolean) {
         viewModelScope.launch {

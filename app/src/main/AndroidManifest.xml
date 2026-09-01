@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Optional: only used to offer contacts in the search. The launcher works without it. -->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -13,6 +14,15 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!--
+      Optional: only declared so that the launcher appears in the usage access list. It is
+      granted by hand in the system settings, never by a dialog, and drives nothing but the
+      open counter of the usage breaker.
+    -->
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
 
     <!--
       Package visibility limited to what the launcher genuinely has to see: ADW and Nova

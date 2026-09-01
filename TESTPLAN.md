@@ -254,3 +254,28 @@ Einstellungen > Apps > Standard-Apps > Start-App.
     laeuft weiter; in den Einstellungen steht wieder "App starten".
 13. Bedienungshilfen-Dienst wieder abschalten und den Launcher neu oeffnen. Erwartung: die
     Einstellungen zeigen den Hinweistext, die Gesten selbst bleiben eingestellt.
+
+## Etappe 15 — Nutzungsbremse
+1. Bremse ausgeschaltet lassen und Apps oeffnen. Erwartung: nichts aendert sich, kein
+   Zwischenschritt, kein spuerbarer Verzoegerung beim Start.
+2. Bremse einschalten, eine App waehlen, Schwelle auf 1 stellen. Erwartung: beim naechsten
+   Start kommt die Pausenseite mit dem Namen der App und der Zahl des Tages.
+3. Wartezeit auf 5 Sekunden stellen. Erwartung: "Trotzdem oeffnen" ist erst nach dem
+   Herunterzaehlen anwaehlbar.
+4. "Lieber nicht" antippen. Erwartung: zurueck auf den Homescreen, die App startet nicht, und
+   der Zaehler steigt nicht.
+5. "Trotzdem oeffnen" antippen. Erwartung: die App startet, und beim naechsten Start ist die
+   Zahl um eins hoeher.
+6. Zurueck-Geste auf der Pausenseite. Erwartung: sie schliesst sich wie "Lieber nicht".
+7. Dieselbe App aus der Suche und aus dem Pop-up starten. Erwartung: die Pause kommt auch da.
+8. Wartezeit auf 0 stellen. Erwartung: die Seite erscheint, "Trotzdem oeffnen" ist sofort da.
+9. **Heikel:** Ohne Nutzungszugriff die App aus den letzten Apps oeffnen und danach ueber den
+   Launcher. Erwartung: nur der Start ueber den Launcher wurde gezaehlt.
+10. Nutzungszugriff erteilen und die Einstellungen erneut oeffnen. Erwartung: der Hinweis
+    verschwindet, und die Zahlen in der App-Auswahl sind hoeher als vorher.
+11. **Heikel:** Ueber Mitternacht hinweg pruefen. Erwartung: die Zahl faengt wieder bei null
+    an, sobald der Launcher wieder in den Vordergrund kommt.
+12. **Heikel:** Eine gebremste App zwanzig Mal hintereinander oeffnen. Erwartung: jedes Mal
+    die Pause, nie ein Durchrutschen, und die Datenbank waechst nicht sichtbar.
+13. Nach einer Woche pruefen, dass alte Tageszeilen verschwunden sind
+    (`adb shell run-as` bzw. Backup der launcher.db).

@@ -74,3 +74,17 @@ data class FolderItemEntity(
     val appKey: String,
     val position: Int,
 )
+
+/**
+ * How often one app was opened on one day. [dayEpoch] is the local date as an epoch day, so a
+ * day rolls over at local midnight and not at UTC midnight.
+ *
+ * Only the launcher's own launches land here; with usage access granted the system's own count
+ * is the better number and takes precedence.
+ */
+@Entity(tableName = "app_opens", primaryKeys = ["packageName", "dayEpoch"])
+data class AppOpenEntity(
+    val packageName: String,
+    val dayEpoch: Long,
+    val count: Int,
+)
