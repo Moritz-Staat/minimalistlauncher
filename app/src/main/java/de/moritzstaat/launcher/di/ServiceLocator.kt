@@ -15,7 +15,9 @@ import de.moritzstaat.launcher.data.icon.IconPackRepository
 import de.moritzstaat.launcher.data.icon.IconStyle
 import de.moritzstaat.launcher.data.media.AudioOutputRepository
 import de.moritzstaat.launcher.data.media.MediaRepository
+import de.moritzstaat.launcher.data.settings.FontStore
 import de.moritzstaat.launcher.data.settings.LauncherSettings
+import de.moritzstaat.launcher.data.settings.ThemeConfig
 import de.moritzstaat.launcher.data.widget.WidgetHostController
 import de.moritzstaat.launcher.data.notification.NotificationRepository
 import de.moritzstaat.launcher.data.icon.IconLoader
@@ -72,6 +74,16 @@ class ServiceLocator(context: Context) {
     val audioOutputRepository: AudioOutputRepository by lazy { AudioOutputRepository(context) }
 
     val settings: LauncherSettings by lazy { LauncherSettings(context) }
+
+    val fontStore: FontStore by lazy { FontStore(context) }
+
+    /**
+     * The active theme. Held eagerly so the first frame after a cold start already draws in the
+     * user's colours instead of flashing the defaults.
+     */
+    val theme: StateFlow<ThemeConfig> by lazy {
+        settings.theme.stateIn(applicationScope, SharingStarted.Eagerly, ThemeConfig())
+    }
 
     val widgetHost: WidgetHostController by lazy { WidgetHostController(context) }
 

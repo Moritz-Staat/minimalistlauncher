@@ -18,7 +18,7 @@ dort weiterarbeiten.
 | 9 | Widget-Host | fertig | AppWidgetHost mit fester ID, eigener Waehler mit bindAppWidgetIdIfAllowed/ACTION_APPWIDGET_BIND, Konfigurations-Activity, HorizontalPager-Stapel, deleteAppWidgetId inkl. Orphan-Aufraeumen (DB v3) |
 | 10 | Pop-ups | fertig | Eine Pop-up-Komponente fuer App, Ordner und Widget; Wischen rechts oeffnet, Blur ueber RenderEffect, Ordner alphabetisch in der Liste (DB v4) |
 | 11 | Icons (Icon-Packs, Dots, Monochrom) | fertig | ADW/Nova-Erkennung ueber queries, appfilter.xml-Parser (res/xml + assets), Fuzzy-Auto-Replace, Pro-App-Override mit Pack-Bindung, Punkte- und Monochrom-Modus; 73 Unit-Tests gruen |
-| 12 | Theming | offen | - |
+| 12 | Theming | fertig | ThemeConfig in DataStore, vier Uhr-Stile inkl. Wortuhr, Material You/eigener Akzent/extra dunkel, Wallpaper-Dimmen und System-Blur, Statusleiste, eigene Schrift, Vorlagen und Theme-Export/Import; 102 Unit-Tests gruen |
 | 13 | Kalender und Wetter | offen | - |
 | 14 | Gesten | offen | - |
 | 15 | Usage Breaker | offen | - |

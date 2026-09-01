@@ -43,6 +43,10 @@ import de.moritzstaat.launcher.ui.search.SearchResultsList
 import de.moritzstaat.launcher.ui.search.SearchViewModel
 import de.moritzstaat.launcher.ui.shell.OverlayTarget
 import de.moritzstaat.launcher.ui.shell.ShellViewModel
+import de.moritzstaat.launcher.ui.theme.LocalThemeConfig
+import de.moritzstaat.launcher.ui.theme.SystemBarsEffect
+import de.moritzstaat.launcher.ui.theme.WallpaperBlurEffect
+import de.moritzstaat.launcher.ui.theme.WallpaperScrim
 import de.moritzstaat.launcher.ui.widget.WidgetPicker
 import de.moritzstaat.launcher.ui.widget.WidgetViewModel
 import kotlinx.coroutines.launch
@@ -120,7 +124,12 @@ fun LauncherRoot(shellViewModel: ShellViewModel) {
         label = "popupBlur",
     )
 
+    val theme = LocalThemeConfig.current
+    WallpaperBlurEffect(theme.wallpaperBlur)
+    SystemBarsEffect(hidden = theme.hideStatusBar, darkTheme = theme.isDark)
+
     Box(modifier = Modifier.fillMaxSize()) {
+        WallpaperScrim(dim = theme.wallpaperDim)
         Box(
             modifier = Modifier
                 .fillMaxSize()

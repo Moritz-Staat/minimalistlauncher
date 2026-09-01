@@ -1,6 +1,5 @@
 package de.moritzstaat.launcher.ui.icons
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -9,11 +8,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import de.moritzstaat.launcher.data.icon.IconStyle
+import de.moritzstaat.launcher.ui.common.SelectableRow
 
 /** Icon style and icon pack, as a block inside the settings. */
 @Composable
@@ -60,28 +59,4 @@ private fun styleLabel(style: IconStyle): String = when (style) {
     IconStyle.IconPack -> "Icon-Pack"
     IconStyle.Dots -> "Punkte"
     IconStyle.Monochrome -> "Monochrom"
-}
-
-@Composable
-private fun SelectableRow(
-    label: String,
-    selected: Boolean,
-    onClick: () -> Unit,
-    enabled: Boolean = true,
-) {
-    Text(
-        text = if (selected) "$label ✓" else label,
-        style = MaterialTheme.typography.bodyLarge,
-        color = if (enabled) {
-            MaterialTheme.colorScheme.onSurface
-        } else {
-            MaterialTheme.colorScheme.onSurfaceVariant
-        },
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis,
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(enabled = enabled, onClick = onClick)
-            .padding(vertical = 10.dp),
-    )
 }

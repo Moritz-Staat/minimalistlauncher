@@ -162,3 +162,39 @@ Einstellungen > Apps > Standard-Apps > Start-App.
    in Graustufen statt zu fehlen.
 10. Nach einem Pack-Wechsel Geraet drehen. Erwartung: Icons bleiben korrekt (Cache wird bei
     Konfigurationswechsel geleert).
+
+## Etappe 12 — Theming
+1. Vorlagen der Reihe nach antippen. Erwartung: Uhr, Farben und Abdunklung wechseln sofort,
+   eine gewaehlte eigene Schrift bleibt dabei erhalten.
+2. Uhr-Stile durchgehen. Erwartung: Gross, Schmal, Zweizeilig (Stunde ueber Minute) und
+   "Als Text" ("viertel nach drei"); die Uhr bleibt immer linksbuendig an derselben Hoehe.
+3. Zeitformat auf 12 Stunden stellen, obwohl das System auf 24 steht. Erwartung: die Uhr
+   folgt der App-Einstellung, "Wie im System" folgt wieder dem Geraet.
+4. Wortuhr eine Minute lang beobachten. Erwartung: der Text wechselt zur vollen Fuenf-Minuten-
+   Stufe, ohne dass die Zeile umbricht oder springt.
+5. **Heikel:** Material You waehlen und das Hintergrundbild wechseln. Erwartung: die Akzente
+   folgen dem neuen Bild, spaetestens nach dem naechsten Oeffnen des Launchers.
+6. Eigene Akzentfarbe waehlen. Erwartung: der Modus springt auf "Eigene Akzentfarbe", Texte
+   auf farbigen Flaechen bleiben lesbar (heller Text auf dunklem Akzent und umgekehrt).
+7. "Extra dunkel" auf dem OLED-Panel. Erwartung: Flaechen sind wirklich schwarz, nicht
+   dunkelgrau; im Dunkeln gegen den ausgeschalteten Bildschirm pruefen.
+8. Regler "Abdunkeln" von 0 auf 100 %. Erwartung: das Hintergrundbild wird stufenlos dunkler,
+   die Schrift bleibt gleich hell.
+9. **Heikel:** Regler "Weichzeichnen" hochziehen. Erwartung: das Hintergrundbild wird
+   unscharf. Bei aktivem Energiesparmodus oder abgeschalteten Systemblurs passiert nichts —
+   dann nur die Abdunklung pruefen (`isCrossWindowBlurEnabled`).
+10. "Statusleiste ausblenden" ein- und ausschalten. Erwartung: die Leiste verschwindet, die
+    Navigationsleiste bleibt, und von oben wischen holt die Statusleiste kurz zurueck.
+11. Helles Theme einschalten. Erwartung: die Symbole in Status- und Navigationsleiste werden
+    dunkel, bleiben also sichtbar.
+12. Schrift waehlen (.ttf oder .otf). Erwartung: Uhr, Liste und Einstellungen nutzen die neue
+    Schrift. Danach dieselbe Datei durch eine andere ersetzen und erneut waehlen — es muss die
+    neue Schrift erscheinen, nicht die alte aus dem Cache.
+13. **Heikel:** Gewaehlte Schriftdatei im Dateimanager loeschen, Launcher neu starten.
+    Erwartung: Systemschrift, kein Absturz.
+14. Theme exportieren, Theme aendern, Datei wieder importieren. Erwartung: alles ausser der
+    Schrift ist zurueck; die Schrift bleibt die des Geraets.
+15. Beschaedigte JSON-Datei importieren. Erwartung: die Einstellung faellt auf Standardwerte
+    zurueck, der Launcher laeuft weiter.
+16. Geraet neu starten. Erwartung: Theme, Uhr-Stil und Schrift sind unveraendert, und der
+    erste Frame zeigt schon die eigenen Farben statt kurz die Standardfarben.

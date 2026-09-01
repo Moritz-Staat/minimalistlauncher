@@ -187,3 +187,35 @@ Jede selbst getroffene Entscheidung mit einer Zeile Begruendung.
   abgedeckt ist.
 - **Monochrom bevorzugt `AdaptiveIconDrawable.getMonochrome()` (API 33+)** und faellt sonst
   auf eine Saettigung von 0 zurueck — auf minSdk 31 gibt es die Ebene noch nicht.
+
+## 12 — Theming
+- **`ThemeConfig` ist ein einziges Datenobjekt in DataStore**, nicht zehn lose Schluessel im
+  UI. Export, Import und die Vorlagen schreiben damit denselben Weg wie jede Einstellung.
+- **Zahlen und Wahrheitswerte werden im Theme-JSON als Strings abgelegt**, passend zum
+  bestehenden `JsonWriter`. Ein Zahlentyp im Parser waere mehr Code fuer keinen Gewinn.
+- **Unbekannte Werte beim Import fallen auf den Standard zurueck**, nie auf eine Ausnahme.
+  Eine kaputte Datei darf den Launcher nicht am Starten hindern.
+- **Material You kommt aus `dynamicDarkColorScheme`/`dynamicLightColorScheme`.** Ab API 31
+  liefert das System die Wallpaper-Palette; eine eigene waere schlechter und groesser.
+- **Fuer die eigene Akzentfarbe rechnet `AccentPalette` die Stufen selbst** (HSL auf gepacktem
+  ARGB). Material stellt ausserhalb der dynamischen Schemata keine Tonpalette bereit, und so
+  ist die Regel ohne Geraet testbar.
+- **Der Kontrast wird mit `AccentPicker.contrastRatio` geprueft** statt mit einer zweiten
+  Implementierung derselben WCAG-Formel.
+- **Extra dunkel ist der manuelle Modus mit schwarzen Flaechen**, keine dritte Farblogik.
+- **Das Abdunkeln ist eine schwarze Ebene im Compose-Baum**, das Weichzeichnen dagegen
+  `FLAG_BLUR_BEHIND` am Fenster: an das Hintergrundbild selbst kommt eine App ohne
+  Speicherzugriff nicht heran. Ist der System-Blur aus, bleibt die Abdunklung.
+- **Nur die Statusleiste laesst sich ausblenden.** Die Navigationsleiste mitzunehmen wuerde
+  den Gestenbereich verschlucken.
+- **Die vier Uhr-Stile leiten sich alle von `displayLarge` ab**, damit eine gewaehlte Schrift
+  auch in der Uhr ankommt.
+- **Die Wortuhr rundet auf fuenf Minuten und wechselt ab "fuenf vor halb" auf die kommende
+  Stunde** — so wird die Zeit im Deutschen gesprochen.
+- **Die Schriftdatei wird in den App-Speicher kopiert und traegt einen Zeitstempel im Namen.**
+  Die SAF-Berechtigung ueberlebt den Neustart nicht, und Compose merkt sich geladene Schriften
+  pro Datei — gleicher Name waere gleich die alte Schrift.
+- **Vorlagen und Import lassen den Schriftpfad in Ruhe.** Ein Pfad aus einer fremden
+  Installation zeigt hier auf nichts.
+- **`SelectableRow` liegt jetzt in `ui/common`**, weil die Icon- und die Theme-Einstellungen
+  dieselbe Zeile brauchen.

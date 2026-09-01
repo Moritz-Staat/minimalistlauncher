@@ -8,6 +8,8 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.moritzstaat.launcher.ui.LauncherRoot
 import de.moritzstaat.launcher.ui.shell.ShellViewModel
 import de.moritzstaat.launcher.ui.theme.LauncherTheme
@@ -26,8 +28,10 @@ class MainActivity : ComponentActivity() {
             navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
         )
         super.onCreate(savedInstanceState)
+        val themes = (application as LauncherApplication).services.theme
         setContent {
-            LauncherTheme {
+            val theme by themes.collectAsStateWithLifecycle()
+            LauncherTheme(config = theme) {
                 LauncherRoot(shellViewModel = shellViewModel)
             }
         }
