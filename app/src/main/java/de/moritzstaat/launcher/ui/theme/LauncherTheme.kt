@@ -1,6 +1,7 @@
 package de.moritzstaat.launcher.ui.theme
 
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -47,7 +48,13 @@ fun LauncherTheme(
     }
     val typography = rememberLauncherTypography(config.fontPath)
 
-    CompositionLocalProvider(LocalThemeConfig provides config) {
+    // MaterialTheme does not touch LocalContentColor - only Surface does, and the launcher
+    // draws on the wallpaper instead of one. Without this every Text that does not name a
+    // colour renders in the composition local's default, which is opaque black.
+    CompositionLocalProvider(
+        LocalThemeConfig provides config,
+        LocalContentColor provides colorScheme.onSurface,
+    ) {
         MaterialTheme(
             colorScheme = colorScheme,
             typography = typography,

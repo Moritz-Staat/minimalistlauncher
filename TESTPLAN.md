@@ -354,3 +354,19 @@ sich nur so zeigt:
    auf und starten.
 8. Sicherung schreiben, App deinstallieren, neu installieren, Sicherung einspielen.
    Erwartung: der Stand ist wieder da (ausser Widgets, Schrift, Benachrichtigungszugriff).
+
+## Nach v0.1.0 — Nachpruefung der Geraetefunde
+1. **Heikel:** App-Liste oeffnen und mit der App-Liste des Nothing-Launchers vergleichen.
+   Erwartung: dieselben Apps, insbesondere alle selbst installierten. In v0.1.0 fehlte alles
+   ausser System-Apps und Icon-Packs.
+2. Alphabetbalken pruefen. Erwartung: viele Buchstaben, nicht nur vier.
+3. Eine App neu installieren, ohne den Launcher zu oeffnen. Erwartung: sie steht anschliessend
+   in der Liste.
+4. Arbeitsprofil, falls vorhanden. Erwartung: dessen Apps sind ebenfalls da.
+5. Einrichtung durchklicken. Erwartung: die Ueberschriften sind lesbar, nicht schwarz auf
+   schwarz.
+6. Einstellungen oeffnen und durchscrollen. Erwartung: kein Text unsichtbar.
+7. App-Liste aufziehen. Erwartung: die erste Zeile beginnt unter der Statusleiste, die Uhrzeit
+   oben bleibt frei.
+8. Suchen, bis die Trefferliste laenger als der Bildschirm ist. Erwartung: der oberste Treffer
+   liegt unter der Statusleiste, der unterste ueber dem Suchfeld.

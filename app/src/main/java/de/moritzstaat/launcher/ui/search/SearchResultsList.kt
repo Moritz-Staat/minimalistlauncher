@@ -5,7 +5,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -37,7 +41,14 @@ fun SearchResultsList(
     onWebSearch: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    LazyColumn(modifier = modifier.fillMaxWidth()) {
+    // The results replace the app list inside the same sheet, so they need the same inset at
+    // the top and room at the bottom for the search field that sits over them.
+    val insets = PaddingValues(
+        top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding() + TOP_GAP,
+        bottom = BOTTOM_SPACE,
+    )
+
+    LazyColumn(modifier = modifier.fillMaxWidth(), contentPadding = insets) {
         items(count = results.size, key = { results[it].id }) { index ->
             when (val result = results[index]) {
                 is SearchResult.App -> AppRow(
@@ -109,3 +120,8 @@ private fun SecondaryRow(
         }
     }
 }
+
+private val TOP_GAP = 12.dp
+
+/** Enough that the last result clears the search field. */
+private val BOTTOM_SPACE = 96.dp

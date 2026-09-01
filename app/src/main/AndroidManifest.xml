@@ -25,10 +25,19 @@
         tools:ignore="ProtectedPermissions" />
 
     <!--
-      Package visibility limited to what the launcher genuinely has to see: ADW and Nova
-      style icon packs. No QUERY_ALL_PACKAGES; the app list itself comes from LauncherApps.
+      Package visibility. Still no QUERY_ALL_PACKAGES: the launcher declares the intents it
+      genuinely has to resolve and gets exactly the matching apps.
+
+      MAIN + LAUNCHER is what makes the app list complete. Without it Android 11+ filtering
+      hides every app the launcher has no declared interest in, and `LauncherApps` returns
+      only the preinstalled ones plus the icon packs below - which is what shipped in v0.1.0.
+      The list itself still comes from LauncherApps, never from queryIntentActivities.
     -->
     <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
         <intent>
             <action android:name="org.adw.launcher.THEMES" />
         </intent>

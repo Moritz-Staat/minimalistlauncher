@@ -332,3 +332,22 @@ Jede selbst getroffene Entscheidung mit einer Zeile Begruendung.
   nichts mehr aufgerufen; R8s `usage.txt` hat beide gefunden.
 - **Die Medien-Einstellungen waren nie erreichbar.** `setMediaApps` wurde nirgends aufgerufen,
   die Kopfhoerer-Einblendung aus Etappe 8 war damit tot. Jetzt gibt es die Gruppe "Medien".
+
+## Nach v0.1.0 — Funde vom Geraet
+- **`<queries>` bekommt MAIN + LAUNCHER.** In v0.1.0 zeigte die Liste nur sieben Apps: alle
+  vorinstallierten plus die zwei Icon-Packs. Der Grund war nicht die Abfrage — die ueber
+  `LauncherApps` war richtig — sondern die Package-Visibility-Filterung ab Android 11. Ohne
+  passenden `<intent>`-Eintrag sieht eine App nur System-Apps und was sie ausdruecklich
+  deklariert hat. `QUERY_ALL_PACKAGES` bleibt trotzdem draussen: der deklarierte Launcher-Intent
+  liefert genau die startbaren Apps, und die Liste selbst kommt weiter aus `LauncherApps`.
+- **`LauncherTheme` setzt jetzt `LocalContentColor`.** `MaterialTheme` tut das nicht, nur
+  `Surface` — und der Launcher zeichnet aufs Hintergrundbild statt auf eine Surface. Jeder
+  `Text` ohne eigene Farbe lief damit auf den Standardwert des Composition Locals, und der ist
+  deckendes Schwarz. In der Einrichtung war die Ueberschrift schwarz auf schwarz.
+- **`topInset` der App-Liste wird abgeleitet statt auf 0 zu stehen.** Der Parameter existierte,
+  wurde aber von keinem Aufrufer gesetzt, also lag die erste Zeile unter der Statusleiste. Der
+  Standardwert liest die Statusleisten-Inset jetzt selbst; ein vergessener Aufrufer kann den
+  Fehler nicht mehr ausloesen.
+- **Die Suchergebnisliste bekommt dasselbe Inset plus Platz unten.** Sie ersetzt die App-Liste
+  im selben Sheet, hatte aber weder das eine noch das andere; die letzte Zeile lag hinter dem
+  Suchfeld.

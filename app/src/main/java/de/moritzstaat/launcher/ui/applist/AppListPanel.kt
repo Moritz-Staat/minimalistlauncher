@@ -6,8 +6,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
@@ -51,7 +54,9 @@ fun AppListPanel(
     onNotificationClick: (NotificationSummary) -> Unit = {},
     onNotificationDismiss: (NotificationSummary) -> Unit = {},
     onSettled: (Boolean) -> Unit = {},
-    topInset: Dp = 0.dp,
+    // Derived rather than defaulted to zero: a caller that forgets it puts the first row
+    // under the status bar, which is exactly what happened in v0.1.0.
+    topInset: Dp = WindowInsets.statusBars.asPaddingValues().calculateTopPadding() + LIST_TOP_GAP,
     searchActive: Boolean = false,
     resultsContent: @Composable () -> Unit = {},
     overlayContent: @Composable BoxScope.() -> Unit = {},
@@ -155,3 +160,6 @@ private const val SCRIM_ALPHA = 0.55f
 private const val KEY_TOP_INSET = "app-list-top-inset"
 private const val KEY_BOTTOM_SPACE = "app-list-bottom-space"
 private val BOTTOM_SPACE = 96.dp
+
+/** Breathing room between the status bar and the first row. */
+private val LIST_TOP_GAP = 12.dp
